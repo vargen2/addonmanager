@@ -39,7 +39,14 @@ public class Main {
         //experiment2("weakauras-2");
         //experiment2("omni-cc");
 //experiment3();
-        experiment4("omni-cc");
+
+        Experi exp = new Experi();
+        exp.experimentRedirect("omni-cc");
+
+
+
+        //funkar
+        //experiment4("omni-cc");
     }
 
     static String hmm(String url) {
@@ -99,8 +106,8 @@ public class Main {
         String s = hmm(firstUrl);
 
         System.out.println(s);
-        String s2=hmm(s);
-        s2=s2.replaceAll("edge","media");
+        String s2 = hmm(s);
+        s2 = s2.replaceAll("edge", "media");
         System.out.println(s2);
         System.out.println("Connecting...");
         CloseableHttpClient client = HttpClients.createDefault();
@@ -249,7 +256,7 @@ public class Main {
         return mid.substring(0, mid.indexOf(end));
     }
 
-    private static List<Download> parseToDownloads(String input) {
+    static List<Download> parseToDownloads(String input) {
         int index1 = input.indexOf("<div class=\"listing-body\">");
         int index2 = input.substring(index1).indexOf("</table>");
         String data = input.substring(index1, index1 + index2);
@@ -273,7 +280,7 @@ public class Main {
         return downloads;
     }
 
-    private static String readFromUrl(String url) {
+    static String readFromUrl(String url) {
         HttpClient httpClient = HttpClient.newHttpClient();
         URI uri = URI.create(url);
         HttpRequest request = HttpRequest.newBuilder().uri(uri).build();

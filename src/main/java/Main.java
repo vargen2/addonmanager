@@ -1,30 +1,302 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jdk.incubator.http.HttpClient;
+import jdk.incubator.http.HttpHeaders;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.RedirectStrategy;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.nio.file.FileSystems;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("start");
-        experiment();
+        //experiment2("weakauras-2");
+        //experiment2("omni-cc");
+//experiment3();
+        experiment4("omni-cc");
+    }
 
+    static String hmm(String url) {
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        URI uri = URI.create(url);
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+        HttpResponse<Path> response = null;
+        System.out.println("hit1");
+        try {
+            OpenOption[] options =
+                    new OpenOption[]{StandardOpenOption.CREATE};
+            Path path = FileSystems.getDefault().getPath(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "aaaa");
+            response = httpClient.send(request, HttpResponse.BodyHandler.asFile(path));
+
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(response.statusCode());
+        //System.out.println(response.headers());
+        String headers = response.headers().toString();
+        //todo plocka ut loactionS
+        String newUrl = parse(headers, "location=[", "],");
+
+        return newUrl.replaceAll(" ", "+");
+    }
+
+    static String hmm2(String url) {
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        URI uri = URI.create(url);
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+        HttpResponse<Path> response = null;
+        System.out.println("hit4");
+        try {
+            OpenOption[] options =
+                    new OpenOption[]{StandardOpenOption.CREATE};
+            Path path = FileSystems.getDefault().getPath(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "aaaa");
+            response = httpClient.send(request, HttpResponse.BodyHandler.asFile(path));
+
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(response.statusCode());
+        //System.out.println(response.headers());
+        String headers = response.headers().toString();
+        //todo plocka ut loactionS
+        //String newUrl = parse(headers, "location=[", "],");
+        System.out.println(headers);
+        return "";
+    }
+
+    static void experiment4(String addonName) {
+        String result = readFromUrl("https://www.curseforge.com/wow/addons/" + addonName + "/files");
+        List<Download> downloads = parseToDownloads(result);
+
+
+        String firstUrl = "https://www.curseforge.com" + downloads.get(0).downloadLink + "/file";
+        String s = hmm(firstUrl);
+
+        System.out.println(s);
+        String s2=hmm(s);
+        s2=s2.replaceAll("edge","media");
+        System.out.println(s2);
+        System.out.println("Connecting...");
+        CloseableHttpClient client = HttpClients.createDefault();
+        //HttpGet get = new HttpGet("http://apache.mirrors.spacedump.net//httpcomponents/httpclient/binary/httpcomponents-client-5.0-beta1-bin.zip");
+        HttpGet get = new HttpGet(s2);
+        CloseableHttpResponse response = null;
+        try {
+            response = client.execute(get);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        InputStream input = null;
+        OutputStream output = null;
+        byte[] buffer = new byte[1024];
+
+        try {
+            System.out.println("Downloading file...");
+            input = response.getEntity().getContent();
+            output = new FileOutputStream(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "httpcomponents-client-4.0.1-bin.zip");
+            for (int length; (length = input.read(buffer)) > 0; ) {
+                output.write(buffer, 0, length);
+            }
+            System.out.println("File successfully downloaded!");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (output != null) try {
+                output.close();
+            } catch (IOException logOrIgnore) {
+            }
+            if (input != null) try {
+                input.close();
+            } catch (IOException logOrIgnore) {
+            }
+        }
+    }
+
+    static void experiment3() {
+        CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(LaxRedirectStrategy.INSTANCE).build();
+
+        HttpGet httpGet = new HttpGet("https://addons.cursecdn.com/files/2622/939/OmniCC+8.0.8.zip");
+        CloseableHttpResponse response = null;
+
+        try {
+            response = httpclient.execute(httpGet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // EntityUtils.consume(entity1);
+        for (Header head : response.getAllHeaders())
+            System.out.println(head);
+
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            String name = response.getFirstHeader("Content-Disposition").getValue();
+            //System.out.println(name);
+            String fileName = name.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1");
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream("C:\\" + fileName);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                entity.writeTo(fos);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void experiment2(String addonName) {
+        String result = readFromUrl("https://www.curseforge.com/wow/addons/" + addonName + "/files");
+        List<Download> downloads = parseToDownloads(result);
+
+
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        URI uri = URI.create("https://www.curseforge.com" + downloads.get(0).downloadLink + "/file");
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+        HttpResponse<Path> response = null;
+        System.out.println("hit1");
+        try {
+            OpenOption[] options =
+                    new OpenOption[]{StandardOpenOption.CREATE};
+            Path path = FileSystems.getDefault().getPath(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "aaaa");
+            response = httpClient.send(request, HttpResponse.BodyHandler.asFile(path));
+
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(response.statusCode());
+        //System.out.println(response.headers());
+        String headers = response.headers().toString();
+        //todo plocka ut loactionS
+        String newUrl = parse(headers, "location=[", "],");
+        //System.out.println(newUrl);
+
+        HttpClient httpClient2 = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
+        //URI uri2 = URI.create(newUrl.replaceAll(" ", "+"));
+        URI uri2 = URI.create("https://media.forgecdn.net/files/2622/939/OmniCC+8.0.8.zip");
+        HttpRequest request2 = HttpRequest.newBuilder().
+                uri(uri2)
+                .header("Content-Disposition", "attachment; filename=cccc")
+                .header("Accept-Encoding", "gzip, compress, br")
+                .header("Accept", "application/zip")
+                .header("Content-Type", "application/zip")
+                //.header("Content-Transfer-Encoding", "Binary")
+                //.header("Content-Length",".filesize($attachment_location)")
+                //.header("Content-Disposition", "attachment")//; filename=filePath")
+                //.header("Content-Disposition", "attachment; filename=cccc")
+                .build();
+
+        HttpResponse<Path> response2 = null;
+
+
+        try {
+            OpenOption[] options =
+                    new OpenOption[]{StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE};
+            Path path = FileSystems.getDefault().getPath(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "dddd");
+            response2 = httpClient2.send(request2, HttpResponse.BodyHandler.asFileDownload(path, options));
+
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            //System.out.println(response2.headers());
+        }
+        //File bbb = response.body().toFile();
+        System.out.println(response2.headers());
+
+        System.out.println("hit2");
+        //response.;
+    }
+
+    private static String parse(String input, String start, String end) {
+        int startI = input.indexOf(start) + start.length();
+        String mid = input.substring(startI);
+        return mid.substring(0, mid.indexOf(end));
+    }
+
+    private static List<Download> parseToDownloads(String input) {
+        int index1 = input.indexOf("<div class=\"listing-body\">");
+        int index2 = input.substring(index1).indexOf("</table>");
+        String data = input.substring(index1, index1 + index2);
+        Pattern pattern = Pattern.compile("<tr class=\"project-file-list__item\">");
+        Matcher matcher = pattern.matcher(data);
+
+        List<Download> downloads = new ArrayList<>();
+        while (matcher.find()) {
+            Download download = new Download();
+            String subString = data.substring(matcher.start());
+            download.release = parse(subString, "<span class=\"file-phase--release\" title=\"", "\"></span>");
+            download.title = parse(subString, "<td class=\"project-file__name\" title=\"", "\">");
+            download.fileSize = parse(subString, "<span class=\"table__content file__size\">", "</span>");
+            String a = parse(subString, "data-epoch=\"", "\"");
+            download.fileDateUploaded = LocalDateTime.ofEpochSecond(Integer.parseInt(a), 0, OffsetDateTime.now().getOffset());
+            download.gameVersion = parse(subString, "<span class=\"table__content version__label\">", "</span>");
+            download.downloads = Long.valueOf(parse(subString, "span class=\"table__content file__download\">", "</span>").replaceAll(",", ""));
+            download.downloadLink = parse(subString, " href=\"", "\"");
+            downloads.add(download);
+        }
+        return downloads;
+    }
+
+    private static String readFromUrl(String url) {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        URI uri = URI.create(url);
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
+        HttpResponse<String> response = null;
+        try {
+            response = httpClient.send(request, HttpResponse.BodyHandler.asString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return response.body();
     }
 
     public static void experiment() {
-        HttpClient httpClient=HttpClient.newHttpClient();
+        HttpClient httpClient = HttpClient.newHttpClient();
         URI uri = URI.create("https://wow.curseforge.com/api/game/versions");
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 //.timeout(Duration.ofMinutes(1))
                 //.header("Content-Type", "application/json")
-                .header("X-Api-Token","b6164a56-2080-4b24-ac3a-a47b16a8b553")
+                .header("X-Api-Token", "b6164a56-2080-4b24-ac3a-a47b16a8b553")
                 //.POST(BodyPublisher.fromFile(Paths.get("file.json")))
                 .build();
 
@@ -41,24 +313,9 @@ public class Main {
         System.out.println(response.body());
         Gson gson = new Gson();
         //TypeToken<ArrayList<GameVersion>> gameVersions = new TypeToken<ArrayList<GameVersion>>();
-        List<GameVersion> gameVersionList=gson.fromJson(response.body(),TypeToken.getParameterized(ArrayList.class, GameVersion.class).getType());
+        List<GameVersion> gameVersionList = gson.fromJson(response.body(), TypeToken.getParameterized(ArrayList.class, GameVersion.class).getType());
 
         gameVersionList.forEach(System.out::println);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         uri = URI.create("https://wow.curseforge.com/projects/weakauras-2");
@@ -67,11 +324,11 @@ public class Main {
                 .uri(uri)
                 //.timeout(Duration.ofMinutes(1))
                 //.header("Content-Type", "application/json")
-                .header("X-Api-Token","b6164a56-2080-4b24-ac3a-a47b16a8b553")
+                .header("X-Api-Token", "b6164a56-2080-4b24-ac3a-a47b16a8b553")
                 //.POST(BodyPublisher.fromFile(Paths.get("file.json")))
                 .build();
 
-         response =
+        response =
                 null;
         try {
             response = httpClient.send(request, HttpResponse.BodyHandler.asString());

@@ -1,20 +1,20 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpHeaders;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.util.EntityUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -24,24 +24,34 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Main {
+public class Main extends Application{
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
+        //primaryStage.getIcons().add(new Image("icon.png"));
+        primaryStage.setTitle("Addon Manager");
+        primaryStage.setScene(new Scene(root, 960, 540));
+        primaryStage.setY(0);
+        primaryStage.show();
+    }
     public static void main(String[] args) {
-        System.out.println("start");
+
         //experiment2("weakauras-2");
         //experiment2("omni-cc");
-//experiment3();
+        //experiment3();
 
-        Experi exp = new Experi();
-        exp.experimentRedirect("omni-cc");
+
+launch(args);
+
+        //FUNKAR
+        //Experi exp = new Experi();
+        //exp.experimentRedirect("omni-cc");
 
 
 
@@ -353,5 +363,6 @@ public class Main {
         //gameVersionList.forEach(System.out::println);
 
     }
+
 
 }

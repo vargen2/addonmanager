@@ -3,6 +3,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.SetChangeListener;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Controller {
 
@@ -47,29 +49,17 @@ public class Controller {
         });
 
         scanButton.setOnAction(event -> {
-            IntegerProperty counter=new SimpleIntegerProperty();
-            DirectoryScanner ds=new DirectoryScanner();
-            Task<Void> task = new Task<>() {
-                @Override
-                protected Void call() {
-
-                    //updateProgress(1,100);
-                    updateMessage("searching...");
-
-                    //var directorys = Model.searchForWowDirectorys();
-
-                    var directorys = ds.searchForWowDirectorys();
-
-                    //updateProgress(90,100);
-                    updateMessage("building...");
-                    int i=0;
-                    for (var directory : directorys) {
-                        Game game = new Game("Wow " + (++i), directory.getPath(), File.separator + "Interface" + File.separator + "AddOns");
+            AtomicInteger counter = new AtomicInteger(0);
+            DirectoryScanner ds = new DirectoryScanner();
+            SetChangeListener<File> fileListener = change -> {
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() {
+                        Game game = new Game("Wow " + (counter.addAndGet(1)), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
                         Platform.runLater(() -> {
                             if (tableView.itemsProperty().getValue().size() == 0)
                                 model.selectedGame.setValue(game);
                             model.games.add(game);
-
                         });
                         Task<Void> refreshTask = new Task<>() {
                             @Override
@@ -81,16 +71,26 @@ public class Controller {
                         Thread t = new Thread(refreshTask);
                         t.setDaemon(true);
                         t.start();
+                        return null;
                     }
-                    counter.setValue(i);
-                    //updateProgress(100,100);
+                };
+                Thread t = new Thread(task);
+                t.setDaemon(true);
+                t.start();
+            };
+            ds.fileObservableList.addListener(fileListener);
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    updateMessage("searching...");
+                    ds.searchForWowDirectorys();
+                    updateMessage("building...");
                     updateMessage("done");
                     return null;
                 }
             };
             task.setOnScheduled(event1 -> {
                 statusLabel.textProperty().bind(task.messageProperty());
-                //progressBar.progressProperty().bind(task.progressProperty());
                 progressBar.progressProperty().bind(ds.progress);
                 progressBar.setVisible(true);
             });
@@ -98,7 +98,8 @@ public class Controller {
                 progressBar.setVisible(false);
                 progressBar.progressProperty().unbind();
                 statusLabel.textProperty().unbind();
-                statusLabel.setText("found "+counter.get()+" games");
+                ds.fileObservableList.removeListener(fileListener);
+                statusLabel.setText("found " + counter.get() + " games");
             });
             Thread t = new Thread(task);
             t.setDaemon(true);

@@ -17,6 +17,8 @@ public class Experi {
         String result = Main.readFromUrl("https://www.curseforge.com/wow/addons/" + addonName + "/files");
         List<Download> downloads = Main.parseToDownloads(result);
 
+        //System.out.println(downloads);
+
         Download download = downloads.get(0);
         String firstUrl = "https://www.curseforge.com" + download.downloadLink + "/file";
 

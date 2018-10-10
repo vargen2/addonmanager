@@ -2,15 +2,17 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
@@ -48,7 +50,11 @@
             <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
 
             </TableView>
-            <Pane maxHeight="32.0" minHeight="32.0" prefHeight="32.0" />
+            <StackPane fx:id="bottomStackPane" maxHeight="32.0" minHeight="32.0" prefHeight="32.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ProgressBar maxHeight="30.0" minHeight="30.0" prefHeight="30.0" fx:id="progressBar" progress="0.0" visible="false" />
+                  <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" textAlignment="CENTER" />
+               </children></StackPane>
          </children>
       </VBox>
    </children>

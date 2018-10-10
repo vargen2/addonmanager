@@ -71,6 +71,7 @@ public class DirectoryScanner {
             }
         });
         max.set(directorys.size());
+        //System.out.println(max.get());
         progress.setValue((double) current.get() / (double) max.get());
         directorys.stream().parallel().forEach(this::searchDriveForWowDirectorys);
 

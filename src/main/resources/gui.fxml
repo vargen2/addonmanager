@@ -40,7 +40,7 @@
               <items>
                 <Button fx:id="experimentButton" mnemonicParsing="false" text="Experiment" />
 
-                  <ChoiceBox fx:id="gameChoiceBox" prefWidth="150.0" />
+                  <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0" />
                   <Pane HBox.hgrow="ALWAYS" />
                   <Button fx:id="scanButton" mnemonicParsing="false" text="Scan for games" />
               </items>

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Main extends Application{
+public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -40,6 +40,7 @@ public class Main extends Application{
         primaryStage.setY(0);
         primaryStage.show();
     }
+
     public static void main(String[] args) {
 
         //experiment2("weakauras-2");
@@ -47,12 +48,11 @@ public class Main extends Application{
         //experiment3();
 
 
-launch(args);
+        launch(args);
 
         //FUNKAR
         //Experi exp = new Experi();
         //exp.experimentRedirect("omni-cc");
-
 
 
         //funkar

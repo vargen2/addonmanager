@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import org.controlsfx.control.TaskProgressView?>
 <AnchorPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -38,7 +39,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <ToolBar maxHeight="32.0" minHeight="32.0" prefHeight="32.0" styleClass="root">
+            <ToolBar maxHeight="32.0" minHeight="32.0" prefHeight="32.0" >
               <items>
                 <Button fx:id="experimentButton" mnemonicParsing="false" text="Experiment" />
 
@@ -50,10 +51,12 @@
             <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
 
             </TableView>
-            <StackPane fx:id="bottomStackPane" maxHeight="32.0" minHeight="32.0" prefHeight="32.0" HBox.hgrow="ALWAYS">
+            <StackPane fx:id="bottomStackPane" maxHeight="128.0" minHeight= "128.0" prefHeight="128.0" HBox.hgrow="ALWAYS">
                <children>
-                  <ProgressBar maxHeight="30.0" minHeight="30.0" prefHeight="30.0" fx:id="progressBar" progress="0.0" visible="false" />
+                   <TaskProgressView fx:id="taskProgressView" prefHeight="90" minHeight="90" maxHeight="90"/>
+                   <ProgressBar maxHeight="10.0" minHeight="10.0" prefHeight="10.0" fx:id="progressBar" progress="0.0" visible="false" />
                   <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" textAlignment="CENTER" />
+
                </children></StackPane>
          </children>
       </VBox>

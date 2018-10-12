@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import org.controlsfx.control.TaskProgressView;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,6 +33,8 @@ public class Controller {
     private ProgressBar progressBar;
     @FXML
     private Label statusLabel;
+    @FXML
+    private TaskProgressView<Task<Void>> taskProgressView;
 
     @FXML
     private void initialize() {
@@ -74,6 +77,7 @@ public class Controller {
                         return null;
                     }
                 };
+                Platform.runLater(() -> taskProgressView.getTasks().add(task));
                 Thread t = new Thread(task);
                 t.setDaemon(true);
                 t.start();
@@ -89,6 +93,7 @@ public class Controller {
                     return null;
                 }
             };
+            Platform.runLater(() -> taskProgressView.getTasks().add(task));
             task.setOnScheduled(event1 -> {
                 statusLabel.textProperty().bind(task.messageProperty());
                 progressBar.progressProperty().bind(ds.progress);

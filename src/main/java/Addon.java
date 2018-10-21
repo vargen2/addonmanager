@@ -6,8 +6,10 @@ import java.time.LocalDateTime;
 public class Addon {
 
     enum ReleaseType {ALPHA, BETA, RELEASE}
+    enum UpdateMode {AUTO,MANUAL}
 
     private Addon.ReleaseType wantedReleaseType;
+    private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
     private ReleaseType releaseType;
     private StringProperty title;

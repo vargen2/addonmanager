@@ -1,64 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.TaskProgressView?>
-<AnchorPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
-   <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-            <ToolBar maxHeight="32.0" minHeight="32.0" prefHeight="32.0" >
-              <items>
-                <Button fx:id="experimentButton" mnemonicParsing="false" text="Experiment" />
+<AnchorPane stylesheets="style1.css" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
+        <!--<MenuBar>
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Close"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Delete"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About"/>
+            </Menu>
+        </MenuBar>-->
+        <StackPane VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
 
-                  <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0" />
-                  <Pane HBox.hgrow="ALWAYS" />
-                  <Button fx:id="scanButton" mnemonicParsing="false" text="Scan for games" />
-              </items>
-            </ToolBar>
-            <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+            <TabPane VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                <Tab text="addons" closable="false" >
+                    <StackPane fx:id="bottomStackPane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
 
-            </TableView>
-            <StackPane fx:id="bottomStackPane" maxHeight="128.0" minHeight= "128.0" prefHeight="128.0" HBox.hgrow="ALWAYS">
-               <children>
-                   <TaskProgressView fx:id="taskProgressView" prefHeight="90" minHeight="90" maxHeight="90"/>
-                   <ProgressBar maxHeight="10.0" minHeight="10.0" prefHeight="10.0" fx:id="progressBar" progress="0.0" visible="false" />
-                  <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" textAlignment="CENTER" />
+                        </TableView>
+                        <TaskProgressView fx:id="taskProgressView" prefHeight="0" minHeight="0" maxHeight="-Infinity"
+                                          VBox.vgrow="NEVER" StackPane.alignment="BOTTOM_CENTER"/>
 
-               </children></StackPane>
-         </children>
-      </VBox>
-   </children>
+                    </StackPane>
+                </Tab>
+                <Tab text="add" closable="false" >
+
+                </Tab>
+            </TabPane>
+            <!--<ToolBar maxHeight="32.0" minHeight="32.0" prefHeight="32.0" HBox.hgrow="ALWAYS" StackPane.alignment="TOP_RIGHT">
+                <Button fx:id="experimentButton" mnemonicParsing="false" text="Experiment"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh"/>
+                <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0"/>
+                <Button fx:id="scanButton" mnemonicParsing="false" text="Scan for games"/>
+            </ToolBar>-->
+            <HBox translateY="2" prefHeight="31" minHeight="31" maxHeight="31" prefWidth="450" minWidth="450" maxWidth="450" alignment="TOP_RIGHT" StackPane.alignment="TOP_RIGHT">
+                <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh"/>
+                <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0"/>
+            </HBox>
+        </StackPane>
+    </VBox>
 </AnchorPane>

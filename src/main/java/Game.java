@@ -47,6 +47,10 @@ public class Game {
         }
     }
 
+    public String getDirectory() {
+        return directory;
+    }
+
     @Override
     public String toString() {
         return name + " "+ directory;

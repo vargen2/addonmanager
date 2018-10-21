@@ -1,5 +1,8 @@
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -20,21 +23,19 @@ import java.nio.file.attribute.DosFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class Controller {
 
+
+//    @FXML
+//    private Button experimentButton, scanButton;
     @FXML
-    private Button experimentButton, scanButton;
-    @FXML
-    private ChoiceBox<Game> gameChoiceBox;
+    private ChoiceBox gameChoiceBox;
     @FXML
     private TableView<Addon> tableView;
     @FXML
     private StackPane bottomStackPane;
-    @FXML
-    private ProgressBar progressBar;
-    @FXML
-    private Label statusLabel;
     @FXML
     private TaskProgressView<Task<Void>> taskProgressView;
 
@@ -42,13 +43,77 @@ public class Controller {
     private void initialize() {
         Model model = new Model();
 
-        gameChoiceBox.setItems(model.games);
-        gameChoiceBox.valueProperty().bindBidirectional(model.selectedGame);
+        gameChoiceBox.getItems().add(new Separator());
 
-        progressBar.prefWidthProperty().bind(bottomStackPane.widthProperty());
-        statusLabel.prefWidthProperty().bind(bottomStackPane.widthProperty());
+        ChoiceBoxItem add = new ChoiceBoxItem(new Consumer() {
+            @Override
+            public void accept(Object o) {
 
-        experimentButton.setOnAction(event -> {
+            }
+        }, "Add Games...");
+        gameChoiceBox.getItems().add(add);
+        ChoiceBoxItem manual = new ChoiceBoxItem(new Consumer() {
+            @Override
+            public void accept(Object o) {
+
+            }
+        }, "Add Directory manually...");
+        gameChoiceBox.getItems().add(manual);
+        ChoiceBoxItem scan = new ChoiceBoxItem(new Consumer() {
+
+
+            @Override
+            public void accept(Object o) {
+                DirectoryScanner2 ds = new DirectoryScanner2(model, gameChoiceBox, taskProgressView);
+                Platform.runLater(() -> taskProgressView.getTasks().add(ds));
+
+                Thread t = new Thread(ds);
+                t.setDaemon(true);
+                t.start();
+            }
+        }, "Scan for Directories...");
+        gameChoiceBox.getItems().add(scan);
+
+        gameChoiceBox.setValue(add);
+        gameChoiceBox.valueProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                //System.out.println("triggred");
+                if(((ChoiceBoxItem)newValue).getGame()!=null){
+                    gameChoiceBox.getItems().remove(add);
+                    model.selectedGame.setValue(((ChoiceBoxItem)newValue).getGame());
+                }
+                if (newValue == manual || newValue == scan) {
+                    ((ChoiceBoxItem)newValue).getConsumer().accept(0);
+                    gameChoiceBox.setValue(oldValue);
+                }
+
+            }
+        });
+
+
+        //gameChoiceBox.setItems(model.games);
+        //gameChoiceBox.valueProperty().bindBidirectional(model.selectedGame);
+
+//        progressBar.prefWidthProperty().bind(bottomStackPane.widthProperty());
+//        statusLabel.prefWidthProperty().bind(bottomStackPane.widthProperty());
+//
+//        progressBar.setVisible(false);
+//        statusLabel.setVisible(false);
+
+        taskProgressView.getTasks().addListener(new ListChangeListener<Task<Void>>() {
+            @Override
+            public void onChanged(Change<? extends Task<Void>> c) {
+                c.next();
+                if (c.wasAdded())
+                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() + 70);
+                if (c.wasRemoved())
+                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() - 70);
+
+            }
+        });
+
+//        experimentButton.setOnAction(event -> {
             //Experi exp = new Experi();
             //exp.experimentRedirect("omni-cc");
 
@@ -67,19 +132,22 @@ public class Controller {
 //            FileObject fileObject = fsManager.resolveFile( "yourFileNameHere" );
 //            FileObject[] files = fileObject.findFiles( new FileTypeSelector( FileType.FOLDER ) )
 
-            var drives = File.listRoots();
-            var ds = new DirectoryStream(drives, "Interface\\Addons");
-            ds.dirs.addListener(new ListChangeListener<Path>() {
-                @Override
-                public void onChanged(Change<? extends Path> c) {
-                    c.next();
-                    var aaa = c.getAddedSubList();
-                    aaa.forEach(x -> System.out.println(x.toString()));
-                    System.out.println(DirectoryStream.counter);
-                }
-            });
-            ds.getDirs();
-            System.out.println("done");
+
+//            var drives = File.listRoots();
+//            var ds = new DirectoryStream(drives, "Interface\\Addons");
+//            ds.dirs.addListener(new ListChangeListener<Path>() {
+//                @Override
+//                public void onChanged(Change<? extends Path> c) {
+//                    c.next();
+//                    var aaa = c.getAddedSubList();
+//                    aaa.forEach(x -> System.out.println(x.toString()));
+//                    System.out.println(DirectoryStream.counter);
+//                }
+//            });
+//            ds.getDirs();
+//            System.out.println("done");
+
+
 //            var res=FileUtils.listFiles(new File("C:\\"),new NameFileFilter("Users"), DirectoryFileFilter.DIRECTORY);
 //            res.forEach(x->System.out.println(x.getPath()));
 
@@ -127,68 +195,16 @@ public class Controller {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-        });
+//        });
 
-        scanButton.setOnAction(event -> {
-            AtomicInteger counter = new AtomicInteger(0);
-            DirectoryScanner ds = new DirectoryScanner();
-            SetChangeListener<File> fileListener = change -> {
-                Task<Void> task = new Task<>() {
-                    @Override
-                    protected Void call() {
-                        Game game = new Game("Wow " + (counter.addAndGet(1)), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
-                        Platform.runLater(() -> {
-                            if (tableView.itemsProperty().getValue().size() == 0)
-                                model.selectedGame.setValue(game);
-                            model.games.add(game);
-                        });
-                        Task<Void> refreshTask = new Task<>() {
-                            @Override
-                            protected Void call() {
-                                game.refresh();
-                                return null;
-                            }
-                        };
-                        Thread t = new Thread(refreshTask);
-                        t.setDaemon(true);
-                        t.start();
-                        return null;
-                    }
-                };
-                Platform.runLater(() -> taskProgressView.getTasks().add(task));
-                Thread t = new Thread(task);
-                t.setDaemon(true);
-                t.start();
-            };
-            ds.fileObservableList.addListener(fileListener);
-            Task<Void> task = new Task<>() {
-                @Override
-                protected Void call() {
-                    updateMessage("searching...");
-                    ds.searchForWowDirectorys();
-                    updateMessage("building...");
-                    updateMessage("done");
-                    return null;
-                }
-            };
-            Platform.runLater(() -> taskProgressView.getTasks().add(task));
-            task.setOnScheduled(event1 -> {
-                statusLabel.textProperty().bind(task.messageProperty());
-                progressBar.progressProperty().bind(ds.progress);
-                progressBar.setVisible(true);
-            });
-            task.setOnSucceeded(workerStateEvent -> {
-                progressBar.setVisible(false);
-                progressBar.progressProperty().unbind();
-                statusLabel.textProperty().unbind();
-                ds.fileObservableList.removeListener(fileListener);
-                statusLabel.setText("found " + counter.get() + " games");
-            });
-            Thread t = new Thread(task);
-            t.setDaemon(true);
-            t.start();
-
-        });
+//        scanButton.setOnAction(event -> {
+//            DirectoryScanner2 ds = new DirectoryScanner2(model, gameChoiceBox, taskProgressView);
+//            Platform.runLater(() -> taskProgressView.getTasks().add(ds));
+//
+//            Thread t = new Thread(ds);
+//            t.setDaemon(true);
+//            t.start();
+//        });
 
         model.selectedGame.addListener((observable, oldValue, newValue) -> tableView.setItems(newValue.addons));
 
@@ -203,4 +219,66 @@ public class Controller {
         tableView.getColumns().setAll(nameCol, gameVersionCol);
 
     }
+
+    private void directoryscanner1(Model model) {
+        AtomicInteger counter = new AtomicInteger(0);
+        DirectoryScanner ds = new DirectoryScanner();
+        SetChangeListener<File> fileListener = change -> {
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    Game game = new Game("Wow " + (counter.addAndGet(1)), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
+                    Platform.runLater(() -> {
+                        if (tableView.itemsProperty().getValue().size() == 0)
+                            model.selectedGame.setValue(game);
+                        model.games.add(game);
+                    });
+                    Task<Void> refreshTask = new Task<>() {
+                        @Override
+                        protected Void call() {
+                            game.refresh();
+                            return null;
+                        }
+                    };
+                    Thread t = new Thread(refreshTask);
+                    t.setDaemon(true);
+                    t.start();
+                    return null;
+                }
+            };
+            Platform.runLater(() -> taskProgressView.getTasks().add(task));
+            Thread t = new Thread(task);
+            t.setDaemon(true);
+            t.start();
+        };
+        ds.fileObservableList.addListener(fileListener);
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                updateMessage("searching...");
+                ds.searchForWowDirectorys();
+                updateMessage("building...");
+                updateMessage("done");
+                return null;
+            }
+        };
+        Platform.runLater(() -> taskProgressView.getTasks().add(task));
+        task.setOnScheduled(event1 -> {
+//            statusLabel.textProperty().bind(task.messageProperty());
+//            progressBar.progressProperty().bind(ds.progress);
+//            progressBar.setVisible(true);
+        });
+        task.setOnSucceeded(workerStateEvent -> {
+//            progressBar.setVisible(false);
+//            progressBar.progressProperty().unbind();
+//            statusLabel.textProperty().unbind();
+            ds.fileObservableList.removeListener(fileListener);
+//            statusLabel.setText("found " + counter.get() + " games");
+        });
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
+    }
+
+
 }

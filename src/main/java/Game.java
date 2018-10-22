@@ -1,12 +1,17 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class Game {
 
@@ -29,27 +34,72 @@ public class Game {
             var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
             if (tocFile == null || tocFile[0] == null)
                 continue;
+            List<String> lines = null;
+
             try {
-                var lines = Files.readAllLines(tocFile[0].toPath());
-                Addon addon = new Addon(d.getName());
-                for (var line : lines) {
-                    if (line.contains("Interface:")) {
-                        addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
-                    } else if (line.contains("Version:")) {
-                        addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim());
-                    } else if (line.contains("Title:")) {
-                        addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
-                    }
+                lines = Files.readAllLines(tocFile[0].toPath());
+            } catch (MalformedInputException e) {
+                // System.out.println(use);
+
+                // System.out.println(tocFile[0].getPath());
+                // System.out.println(d.getPath());
+                // e.printStackTrace();
+
+                try {
+                    lines = Files.readAllLines(tocFile[0].toPath(), Charset.forName("ISO-8859-1"));
+                } catch (IOException e1) {
+                    //    System.out.println(use);
+                    //   System.out.println(tocFile[0].getPath());
+                    //   System.out.println(d.getPath());
+                    e1.printStackTrace();
                 }
-                addons.add(addon);
+
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (lines == null)
+                continue;
+            Addon addon = new Addon(d.getName());
+            for (var line : lines) {
+                if (line.contains("Interface:")) {
+                    addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
+                } else if (line.contains("Version:")) {
+                    addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim());
+                } else if (line.contains("Title:")) {
+                    addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
+                }
+            }
+            addons.add(addon);
         }
-        addons.parallelStream().forEach(addon -> {
 
+    }
+
+    public void refreshFromNet() {
+        Thread t=new Thread(new Task<>() {
+            @Override
+            protected Object call() throws Exception {
+                addons.parallelStream().forEach(addon -> {
+
+                    var task = new NewVersionsTask(addon,addon.getFolderName());
+
+                    Thread thread=new Thread(task);
+                    thread.setDaemon(true);
+                    thread.start();
+                    try {
+                        addon.setDownloads(task.get());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        System.out.println("addon: "+ addon.getFolderName()+" "+e.getMessage());
+                    }
+                });
+                return null;
+            }
         });
+        t.setDaemon(true);
+        t.start();
+
     }
 
     public String getDirectory() {

@@ -65,7 +65,7 @@ public class Controller {
 
             @Override
             public void accept(Object o) {
-                DirectoryScanner2 ds = new DirectoryScanner2(model, gameChoiceBox, taskProgressView);
+                DirectoryScanner2 ds = new DirectoryScanner2(model, gameChoiceBox, taskProgressView,true);
                 Platform.runLater(() -> taskProgressView.getTasks().add(ds));
 
                 Thread t = new Thread(ds);
@@ -215,15 +215,15 @@ public class Controller {
         TableColumn<Addon, String> nameCol = new TableColumn<>("Title");
         nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         nameCol.setPrefWidth(200);
-        TableColumn<Addon, String> versionCol = new TableColumn<>("Version");
-        versionCol.setCellFactory(new Callback<TableColumn<Addon, String>, TableCell<Addon, String>>() {
+        TableColumn<Addon, VersionCellData> versionCol = new TableColumn<>("Version");
+        versionCol.setCellFactory(new Callback<TableColumn<Addon, VersionCellData>, TableCell<Addon, VersionCellData>>() {
             @Override
-            public TableCell<Addon, String> call(TableColumn<Addon, String> param) {
+            public TableCell<Addon, VersionCellData> call(TableColumn<Addon, VersionCellData> param) {
                 return new VersionCell();
             }
         });
 
-        versionCol.setCellValueFactory(new PropertyValueFactory("version"));
+        versionCol.setCellValueFactory(new PropertyValueFactory("versionCellData"));
         versionCol.setPrefWidth(100);
 
         TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");

@@ -19,31 +19,31 @@ public class DirectoryScanner2 extends Task<Void> {
 
     private final AtomicInteger max = new AtomicInteger();
     private final AtomicInteger current = new AtomicInteger();
-    //public final DoubleProperty progress = new SimpleDoubleProperty();
-    public final ObservableSet<File> fileObservableList = FXCollections.synchronizedObservableSet(FXCollections.observableSet(new HashSet<File>()));
+    private boolean mustHaveExe = true;
+    private final ObservableSet<File> fileObservableList = FXCollections.synchronizedObservableSet(FXCollections.observableSet(new HashSet<File>()));
 
-    public DirectoryScanner2(Model model, ChoiceBox cb, TaskProgressView taskProgressView) {
-        AtomicInteger counter = new AtomicInteger(0);
-
+    public DirectoryScanner2(Model model, ChoiceBox cb, TaskProgressView taskProgressView, boolean mustHaveExe) {
+        this.mustHaveExe = mustHaveExe;
         SetChangeListener<File> fileListener = change -> {
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
 
-                    for(var g:model.games) {
-                        if(g.getDirectory().equals(change.getElementAdded().getPath()))
+                    for (var g : model.games) {
+                        if (g.getDirectory().equals(change.getElementAdded().getPath()))
                             return null;
                     }
-                    int index=counter.addAndGet(1);
-                    Game game = new Game("Wow " + (index), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
+
+                    Game game = new Game(change.getElementAdded().getName(), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
                     Platform.runLater(() -> {
-                        ChoiceBoxItem cbi=new ChoiceBoxItem(game);
-                        if (model.selectedGame.getValue()==null) {
+                        ChoiceBoxItem cbi = new ChoiceBoxItem(game);
+                        if (model.selectedGame.getValue() == null) {
 
 
                             cb.setValue(cbi);
                         }
-                        cb.getItems().add(index-1,cbi);
+                        cb.getItems().add(0, cbi);
+
                         model.games.add(game);
                     });
                     Task<Void> refreshTask = new Task<>() {
@@ -53,6 +53,7 @@ public class DirectoryScanner2 extends Task<Void> {
                             return null;
                         }
                     };
+                    refreshTask.setOnSucceeded(x->game.refreshFromNet());
                     Thread t = new Thread(refreshTask);
                     t.setDaemon(true);
                     t.start();
@@ -68,11 +69,9 @@ public class DirectoryScanner2 extends Task<Void> {
 
         setOnScheduled(event1 -> {
             updateProgress(0, 1);
-           // taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() + 90);
         });
         setOnSucceeded(workerStateEvent -> {
             fileObservableList.removeListener(fileListener);
-           // taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() - 90);
         });
         setOnCancelled(event -> fileObservableList.removeListener(fileListener));
         setOnFailed(event -> fileObservableList.removeListener(fileListener));
@@ -102,12 +101,8 @@ public class DirectoryScanner2 extends Task<Void> {
     private Consumer<File> finder = (child) -> {
         if (child.getPath().contains("$"))
             return;
-        if (child.getPath().contains("World of Warcraft")) {
-            var valid = new File(child.getPath() + File.separator + "Interface" + File.separator + "AddOns");
-            if (valid.isDirectory()) {
-                //System.out.println("added from consumer");
-                fileObservableList.add(child);
-            }
+        if (check(child)) {
+
         } else {
             searchForWowDirectorys(child);
         }
@@ -136,13 +131,9 @@ public class DirectoryScanner2 extends Task<Void> {
                 if (d.getPath().contains("$") || d.getPath().contains("Windows"))
                     continue;
 
-                if (d.getPath().contains("World of Warcraft")) {
-                    var valid = new File(d.getPath() + File.separator + "Interface" + File.separator + "AddOns");
-                    if (valid.isDirectory()) {
-//                        results.add(d);
-                        //System.out.println("added from root");
-                        fileObservableList.add(d);
-                    }
+                // if (d.getPath().contains("World of Warcraft")) {
+                if (check(d)) {
+
                 } else {
                     directorys.add(d);
                 }
@@ -153,12 +144,9 @@ public class DirectoryScanner2 extends Task<Void> {
                     if (s.getPath().contains("$"))
                         continue;
 
-                    if (s.getPath().contains("World of Warcraft")) {
-                        var valid = new File(s.getPath() + File.separator + "Interface" + File.separator + "AddOns");
-                        if (valid.isDirectory()) {
-                            //System.out.println("added from root 2");
-                            fileObservableList.add(s);
-                        }
+                    //if (s.getPath().contains("World of Warcraft")) {
+                    if (check(s)) {
+
                     } else {
                         directorys.add(s);
                     }
@@ -175,6 +163,23 @@ public class DirectoryScanner2 extends Task<Void> {
         return null;
     }
 
+
+    private boolean check(File dir) {
+        if (dir.getPath().contains("Interface" + File.separator + "AddOns")) {
+            if (mustHaveExe) {
+                var exes = dir.getParentFile().getParentFile().listFiles(exeFilter);
+                if (exes.length > 0) {
+                    fileObservableList.add(dir.getParentFile().getParentFile());
+                    return true;
+                }
+            } else {
+                fileObservableList.add(dir.getParentFile().getParentFile());
+                return true;
+            }
+        }
+        return false;
+    }
+
     private class Filter implements FileFilter {
 
         @Override
@@ -185,5 +190,17 @@ public class DirectoryScanner2 extends Task<Void> {
         }
     }
 
-    private final Filter directoryAndNotHidden = new Filter();
+    private final FileFilter directoryAndNotHidden = new Filter();
+
+    private static class ExeFilter implements FileFilter {
+
+        @Override
+        public boolean accept(File pathname) {
+            if (pathname.isFile() && pathname.getName().contains(".exe"))
+                return true;
+            return false;
+        }
+    }
+
+    private static final FileFilter exeFilter = new ExeFilter();
 }

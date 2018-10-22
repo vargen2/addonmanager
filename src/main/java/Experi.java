@@ -28,7 +28,7 @@ public class Experi {
 
         HttpGet get = new HttpGet(firstUrl);
         CloseableHttpResponse response = null;
-
+//todo closeable try instead?
         try {
             response = client.execute(get, httpContext);
         } catch (IOException e) {

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.TaskProgressView?>
-<AnchorPane stylesheets="style1.css" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.121"
+<AnchorPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.121"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
@@ -43,7 +43,7 @@
                 <Button fx:id="scanButton" mnemonicParsing="false" text="Scan for games"/>
             </ToolBar>-->
             <HBox translateY="2" prefHeight="31" minHeight="31" maxHeight="31" prefWidth="450" minWidth="450" maxWidth="450" alignment="TOP_RIGHT" StackPane.alignment="TOP_RIGHT">
-                <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh"/>
+                <Button fx:id="refreshButton" disable="true" mnemonicParsing="false" text="Refresh"/>
                 <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0"/>
             </HBox>
         </StackPane>

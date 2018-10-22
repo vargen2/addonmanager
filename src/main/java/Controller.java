@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.*;
@@ -28,8 +29,8 @@ import java.util.function.Consumer;
 public class Controller {
 
 
-//    @FXML
-//    private Button experimentButton, scanButton;
+    @FXML
+    private Button refreshButton;
     @FXML
     private ChoiceBox gameChoiceBox;
     @FXML
@@ -79,12 +80,12 @@ public class Controller {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 //System.out.println("triggred");
-                if(((ChoiceBoxItem)newValue).getGame()!=null){
+                if (((ChoiceBoxItem) newValue).getGame() != null) {
                     gameChoiceBox.getItems().remove(add);
-                    model.selectedGame.setValue(((ChoiceBoxItem)newValue).getGame());
+                    model.selectedGame.setValue(((ChoiceBoxItem) newValue).getGame());
                 }
                 if (newValue == manual || newValue == scan) {
-                    ((ChoiceBoxItem)newValue).getConsumer().accept(0);
+                    ((ChoiceBoxItem) newValue).getConsumer().accept(0);
                     gameChoiceBox.setValue(oldValue);
                 }
 
@@ -114,8 +115,8 @@ public class Controller {
         });
 
 //        experimentButton.setOnAction(event -> {
-            //Experi exp = new Experi();
-            //exp.experimentRedirect("omni-cc");
+        //Experi exp = new Experi();
+        //exp.experimentRedirect("omni-cc");
 
 
 //            Finder finder = new Finder("World of Warcraft",true);
@@ -206,17 +207,37 @@ public class Controller {
 //            t.start();
 //        });
 
-        model.selectedGame.addListener((observable, oldValue, newValue) -> tableView.setItems(newValue.addons));
+        model.selectedGame.addListener((observable, oldValue, newValue) -> {tableView.setItems(newValue.addons);
+            refreshButton.setDisable(newValue==null);
+        });
 
 
-        TableColumn<Addon, String> nameCol = new TableColumn<Addon, String>("Title");
-        nameCol.setCellValueFactory(new PropertyValueFactory("title"));
+        TableColumn<Addon, String> nameCol = new TableColumn<>("Title");
+        nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         nameCol.setPrefWidth(200);
-        TableColumn<Addon, String> gameVersionCol = new TableColumn<Addon, String>("Game Version");
+        TableColumn<Addon, String> versionCol = new TableColumn<>("Version");
+        versionCol.setCellFactory(new Callback<TableColumn<Addon, String>, TableCell<Addon, String>>() {
+            @Override
+            public TableCell<Addon, String> call(TableColumn<Addon, String> param) {
+                return new VersionCell();
+            }
+        });
+
+        versionCol.setCellValueFactory(new PropertyValueFactory("version"));
+        versionCol.setPrefWidth(100);
+
+        TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 
-        tableView.getColumns().setAll(nameCol, gameVersionCol);
+        tableView.getColumns().setAll(nameCol, versionCol, gameVersionCol);
+
+        refreshButton.setOnAction(event -> {
+            Game game = model.selectedGame.getValue();
+            if (game == null)
+                return;
+            game.refresh();
+        });
 
     }
 

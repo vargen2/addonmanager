@@ -24,19 +24,21 @@ public class Game {
     public void refresh() {
         File[] directories = new File(directory + addonDirectory).listFiles(File::isDirectory);
         for (var d : directories) {
+            if (addons.parallelStream().anyMatch(x -> (x.getFolderName().equals(d.getName()))))
+                continue;
             var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
             if (tocFile == null || tocFile[0] == null)
                 continue;
             try {
                 var lines = Files.readAllLines(tocFile[0].toPath());
-                Addon addon = new Addon();
+                Addon addon = new Addon(d.getName());
                 for (var line : lines) {
                     if (line.contains("Interface:")) {
-                        addon.setGameVersion(line.substring(line.indexOf("Interface:")+10).trim());
+                        addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
                     } else if (line.contains("Version:")) {
-                        addon.setVersion(line.substring(line.indexOf("Version:")+8).trim());
+                        addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim());
                     } else if (line.contains("Title:")) {
-                        addon.setTitle(line.substring(line.indexOf("Title:")+6).replaceAll("\\|c[a-zA-Z_0-9]{8}","").replaceAll("\\|r","").trim());
+                        addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
                     }
                 }
                 addons.add(addon);
@@ -45,6 +47,9 @@ public class Game {
                 e.printStackTrace();
             }
         }
+        addons.parallelStream().forEach(addon -> {
+
+        });
     }
 
     public String getDirectory() {
@@ -53,6 +58,6 @@ public class Game {
 
     @Override
     public String toString() {
-        return name + " "+ directory;
+        return name + " " + directory;
     }
 }

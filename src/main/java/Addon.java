@@ -1,3 +1,5 @@
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -8,7 +10,8 @@ public class Addon {
     enum ReleaseType {ALPHA, BETA, RELEASE}
     enum UpdateMode {AUTO,MANUAL}
 
-    private Addon.ReleaseType wantedReleaseType;
+    private String folderName;
+    private ReleaseType wantedReleaseType;
     private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
     private ReleaseType releaseType;
@@ -16,10 +19,40 @@ public class Addon {
     private StringProperty version;
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
+    private StringProperty titleVersion;
+    private ObjectProperty<VersionCell> versionCell;
 
+    public Addon(String folderName) {
+        this.folderName = folderName;
+    }
+
+    public VersionCell getVercionCell() {
+        return versionCellProperty().get();
+    }
+
+    public ObjectProperty<VersionCell> versionCellProperty() {
+        if (versionCell == null)
+            versionCell = new SimpleObjectProperty<VersionCell>(this,"versionCell");
+        System.out.println("komhit");
+        return versionCell;
+    }
+
+    private void updateTitleVersion(){
+        titleVersionProperty().setValue(titleProperty().get()+((versionProperty().get()!=null)? "\n"+versionProperty().get():""));
+    }
+    public String getTitleVersion() {
+        return titleVersionProperty().get();
+    }
+
+    public StringProperty titleVersionProperty() {
+        if (titleVersion == null)
+            titleVersion = new SimpleStringProperty(this, "titleVersion");
+        return titleVersion;
+    }
 
     public void setTitle(String value) {
         titleProperty().set(value);
+        updateTitleVersion();
     }
 
     public String getTitle() {
@@ -38,6 +71,7 @@ public class Addon {
 
     public void setVersion(String version) {
         this.versionProperty().set(version);
+        updateTitleVersion();
     }
 
     public StringProperty versionProperty() {
@@ -77,4 +111,7 @@ public class Addon {
         this.dateUploaded = dateUploaded;
     }
 
+    public String getFolderName() {
+        return folderName;
+    }
 }

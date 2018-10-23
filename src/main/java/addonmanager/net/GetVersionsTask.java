@@ -31,9 +31,11 @@ public class GetVersionsTask extends Task<List<Download>> {
             updateProgress(0, 1);
             Status status =new Status();
             status.setNewVersionsTask(this);
-            addon.setVersionCellData(status);
+            addon.setStatus(status);
         });
         setOnSucceeded(x -> updateProgress(1, 1));
+//        setOnCancelled();
+//        setOnFailed();
     }
 
     @Override

@@ -212,18 +212,19 @@ public class Controller {
         TableColumn<Addon, String> nameCol = new TableColumn<>("Title");
         nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         nameCol.setPrefWidth(200);
-        TableColumn<Addon, Status> versionCol = new TableColumn<>("Version");
+        TableColumn<Addon, Status> versionCol = new TableColumn<>("Status");
         versionCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
             @Override
             public TableCell<Addon, Status> call(TableColumn<Addon, Status> param) {
+
                 return new StatusCell();
             }
         });
 
-        versionCol.setCellValueFactory(new PropertyValueFactory("versionCellData"));
+        versionCol.setCellValueFactory(new PropertyValueFactory<Addon,Status>("status"));
         versionCol.setPrefWidth(100);
 
-        TableColumn<Addon, String> gameVersionCol = new TableColumn<>("addonmanager.core.Game Version");
+        TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 
@@ -238,65 +239,65 @@ public class Controller {
 
     }
 
-    private void directoryscanner1(Model model) {
-        AtomicInteger counter = new AtomicInteger(0);
-        DirectoryScanner ds = new DirectoryScanner();
-        SetChangeListener<File> fileListener = change -> {
-            Task<Void> task = new Task<>() {
-                @Override
-                protected Void call() {
-                    Game game = new Game("Wow " + (counter.addAndGet(1)), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
-                    Platform.runLater(() -> {
-                        if (tableView.itemsProperty().getValue().size() == 0)
-                            model.selectedGame.setValue(game);
-                        model.games.add(game);
-                    });
-                    Task<Void> refreshTask = new Task<>() {
-                        @Override
-                        protected Void call() {
-                            game.refresh();
-                            return null;
-                        }
-                    };
-                    Thread t = new Thread(refreshTask);
-                    t.setDaemon(true);
-                    t.start();
-                    return null;
-                }
-            };
-            Platform.runLater(() -> taskProgressView.getTasks().add(task));
-            Thread t = new Thread(task);
-            t.setDaemon(true);
-            t.start();
-        };
-        ds.fileObservableList.addListener(fileListener);
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                updateMessage("searching...");
-                ds.searchForWowDirectorys();
-                updateMessage("building...");
-                updateMessage("done");
-                return null;
-            }
-        };
-        Platform.runLater(() -> taskProgressView.getTasks().add(task));
-        task.setOnScheduled(event1 -> {
-//            statusLabel.textProperty().bind(task.messageProperty());
-//            progressBar.progressProperty().bind(ds.progress);
-//            progressBar.setVisible(true);
-        });
-        task.setOnSucceeded(workerStateEvent -> {
-//            progressBar.setVisible(false);
-//            progressBar.progressProperty().unbind();
-//            statusLabel.textProperty().unbind();
-            ds.fileObservableList.removeListener(fileListener);
-//            statusLabel.setText("found " + counter.get() + " games");
-        });
-        Thread t = new Thread(task);
-        t.setDaemon(true);
-        t.start();
-    }
+//    private void directoryscanner1(Model model) {
+//        AtomicInteger counter = new AtomicInteger(0);
+//        DirectoryScanner ds = new DirectoryScanner();
+//        SetChangeListener<File> fileListener = change -> {
+//            Task<Void> task = new Task<>() {
+//                @Override
+//                protected Void call() {
+//                    Game game = new Game("Wow " + (counter.addAndGet(1)), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
+//                    Platform.runLater(() -> {
+//                        if (tableView.itemsProperty().getValue().size() == 0)
+//                            model.selectedGame.setValue(game);
+//                        model.games.add(game);
+//                    });
+//                    Task<Void> refreshTask = new Task<>() {
+//                        @Override
+//                        protected Void call() {
+//                            game.refresh();
+//                            return null;
+//                        }
+//                    };
+//                    Thread t = new Thread(refreshTask);
+//                    t.setDaemon(true);
+//                    t.start();
+//                    return null;
+//                }
+//            };
+//            Platform.runLater(() -> taskProgressView.getTasks().add(task));
+//            Thread t = new Thread(task);
+//            t.setDaemon(true);
+//            t.start();
+//        };
+//        ds.fileObservableList.addListener(fileListener);
+//        Task<Void> task = new Task<>() {
+//            @Override
+//            protected Void call() {
+//                updateMessage("searching...");
+//                ds.searchForWowDirectorys();
+//                updateMessage("building...");
+//                updateMessage("done");
+//                return null;
+//            }
+//        };
+//        Platform.runLater(() -> taskProgressView.getTasks().add(task));
+//        task.setOnScheduled(event1 -> {
+////            statusLabel.textProperty().bind(task.messageProperty());
+////            progressBar.progressProperty().bind(ds.progress);
+////            progressBar.setVisible(true);
+//        });
+//        task.setOnSucceeded(workerStateEvent -> {
+////            progressBar.setVisible(false);
+////            progressBar.progressProperty().unbind();
+////            statusLabel.textProperty().unbind();
+//            ds.fileObservableList.removeListener(fileListener);
+////            statusLabel.setText("found " + counter.get() + " games");
+//        });
+//        Thread t = new Thread(task);
+//        t.setDaemon(true);
+//        t.start();
+//    }
 
 
 }

@@ -23,13 +23,14 @@ public class StatusCell extends TableCell<Addon, Status> {
         //getChildren().add(new Button("texte"));
         //getChildren().add(new Label("everythinf fine"));
         pane = new StackPane();
-        button = new Button("asdasd asd");
-        label = new Label("lable");
+        button = new Button("");
+        label = new Label("");
         StackPane.setAlignment(button, Pos.CENTER);
         StackPane.setAlignment(label, Pos.BOTTOM_CENTER);
         pane.getChildren().add(button);
         pane.getChildren().add(label);
         button.setVisible(false);
+        label.setVisible(false);
 
         progressBar = new ProgressBar();
         progressBar.setVisible(false);
@@ -42,22 +43,30 @@ public class StatusCell extends TableCell<Addon, Status> {
         super.updateItem(item, empty);
         var addon = getTableRow().getItem();
 
-        if(item==null)
+        if (addon != null && addon.getTitle() != null && addon.getTitle().contains("rabber")) {
+            System.out.println(addon.getTitle() + " " + addon.getVersion() + " ");
+            System.out.println(label.getText());
+            if (item != null)
+                System.out.println(item.getLatestVersion());
+        }
+        if (item == null)
             return;
 
-        if(item.getNewVersionsTask()!=null){
+        //System.out.println(addon.getTitle()+" "+addon.getVersion()+" "+item.getLatestVersion());
+        if (item.getNewVersionsTask() != null) {
             progressBar.progressProperty().bind(item.getNewVersionsTask().progressProperty());
             progressBar.setVisible(true);
             button.setVisible(false);
             label.setVisible(false);
-        }else {
+        } else {
             progressBar.setVisible(false);
             progressBar.progressProperty().unbind();
         }
 
-        if(item.getLatestVersion()!=null) {
+        if (item.getLatestVersion() != null) {
             label.setText(item.getLatestVersion());
             label.setVisible(true);
+
         }
 
         if (!empty)

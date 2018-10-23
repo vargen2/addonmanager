@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Addon {
@@ -13,7 +14,7 @@ public class Addon {
     enum ReleaseType {ALPHA, BETA, RELEASE}
     enum UpdateMode {AUTO,MANUAL}
 
-    private List<Download> downloads;
+    private List<Download> downloads=new ArrayList<>();
     private String folderName;
     private ReleaseType wantedReleaseType;
     private UpdateMode updateMode;
@@ -24,20 +25,20 @@ public class Addon {
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
     private StringProperty titleVersion;
-    private ObjectProperty<Status> versionCellData;
+    private ObjectProperty<Status> status;
 
-    public Status getVersionCellData() {
-        return versionCellDataProperty().get();
+    public Status getStatus() {
+        return statusProperty().get();
     }
 
-    public ObjectProperty<Status> versionCellDataProperty() {
-        if(versionCellData==null)
-            versionCellData=new SimpleObjectProperty<>(this,"versionCellData");
-        return versionCellData;
+    public ObjectProperty<Status> statusProperty() {
+        if(status ==null)
+            status =new SimpleObjectProperty<>(this,"status");
+        return status;
     }
 
-    public void setVersionCellData(Status status) {
-        this.versionCellDataProperty().set(status);
+    public void setStatus(Status status) {
+        statusProperty().set(status);
     }
 
     public Addon(String folderName) {

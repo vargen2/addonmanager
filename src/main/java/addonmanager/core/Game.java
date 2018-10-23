@@ -76,22 +76,37 @@ public class Game {
     }
 
     public void refreshFromNet() {
-        Thread t=new Thread(new Task<>() {
+        Thread t = new Thread(new Task<>() {
             @Override
             protected Object call() throws Exception {
-                addons.parallelStream().forEach(addon -> {
+                addons.stream().forEach(addon -> {
 
-                    var task = new GetVersionsTask(addon,addon.getFolderName());
+                    var task = new GetVersionsTask(addon, addon.getFolderName());
 
-                    Thread thread=new Thread(task);
+                    Thread thread = new Thread(task);
                     thread.setDaemon(true);
                     thread.start();
+                    List<Download> downloads = null;
                     try {
-                        addon.setDownloads(task.get());
+                        downloads = task.get();
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (ExecutionException e) {
-                        System.out.println("addon: "+ addon.getFolderName()+" "+e.getMessage());
+                        System.out.println("addon: " + addon.getFolderName() + " " + e.getMessage());
+                    }
+                    if (downloads != null) {
+                        addon.setDownloads(downloads);
+
+                        if (downloads.size() > 0) {
+                            Status status = new Status();
+                            status.setLatestVersion(downloads.get(0).title);
+                            //System.out.println(addon.getVersion() + " .   " + downloads.get(0).title);
+                            addon.setStatus(status);
+                        } else {
+                            Status status = new Status();
+                            addon.setStatus(status);
+                        }
                     }
                 });
                 return null;

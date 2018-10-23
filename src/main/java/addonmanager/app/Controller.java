@@ -62,7 +62,7 @@ public class Controller {
 
             @Override
             public void accept(Object o) {
-                DirectoryScanTask ds = new DirectoryScanTask(model, gameChoiceBox, taskProgressView,true);
+                DirectoryScanTask ds = new DirectoryScanTask(model, gameChoiceBox, taskProgressView,false);
                 Platform.runLater(() -> taskProgressView.getTasks().add(ds));
 
                 Thread t = new Thread(ds);

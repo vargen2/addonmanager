@@ -172,12 +172,14 @@ public class DirectoryScanTask extends Task<Void> {
     private boolean check(File dir) {
         if (dir.getPath().contains("Interface" + File.separator + "AddOns")) {
             if (mustHaveExe) {
+
                 var exes = dir.getParentFile().getParentFile().listFiles(exeFilter);
                 if (exes.length > 0) {
                     fileObservableList.add(dir.getParentFile().getParentFile());
                     return true;
                 }
             } else {
+                if(dir.getPath().contains("World of Warcraft Beta"))
                 fileObservableList.add(dir.getParentFile().getParentFile());
                 return true;
             }

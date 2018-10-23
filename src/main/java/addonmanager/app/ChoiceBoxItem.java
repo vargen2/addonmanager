@@ -1,3 +1,7 @@
+package addonmanager.app;
+
+import addonmanager.core.Game;
+
 import java.util.function.Consumer;
 
 public class ChoiceBoxItem {

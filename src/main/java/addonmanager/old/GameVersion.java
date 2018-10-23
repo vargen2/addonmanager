@@ -1,3 +1,5 @@
+package addonmanager.old;
+
 public class GameVersion {
 
     int id;
@@ -7,7 +9,7 @@ public class GameVersion {
 
     @Override
     public String toString() {
-        return "GameVersion{" +
+        return "addonmanager.old.GameVersion{" +
                 "id=" + id +
                 ", gameVersionTypeID=" + gameVersionTypeID +
                 ", name='" + name + '\'' +

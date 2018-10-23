@@ -1,8 +1,15 @@
+package addonmanager.app;
+
+import addonmanager.core.Addon;
+import addonmanager.core.Game;
+import addonmanager.core.Model;
+import addonmanager.core.Status;
+import addonmanager.file.DirectoryScanTask;
+import addonmanager.old.DirectoryScanner;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -10,19 +17,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.*;
 import org.controlsfx.control.TaskProgressView;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.AclFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.DosFileAttributeView;
-import java.nio.file.attribute.PosixFileAttributeView;
-import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -65,7 +62,7 @@ public class Controller {
 
             @Override
             public void accept(Object o) {
-                DirectoryScanner2 ds = new DirectoryScanner2(model, gameChoiceBox, taskProgressView,true);
+                DirectoryScanTask ds = new DirectoryScanTask(model, gameChoiceBox, taskProgressView,true);
                 Platform.runLater(() -> taskProgressView.getTasks().add(ds));
 
                 Thread t = new Thread(ds);
@@ -115,11 +112,11 @@ public class Controller {
         });
 
 //        experimentButton.setOnAction(event -> {
-        //Experi exp = new Experi();
+        //addonmanager.net.Experi exp = new addonmanager.net.Experi();
         //exp.experimentRedirect("omni-cc");
 
 
-//            Finder finder = new Finder("World of Warcraft",true);
+//            addonmanager.old.Finder finder = new addonmanager.old.Finder("World of Warcraft",true);
 //            try {
 //                Files.walkFileTree(File.listRoots()[0].toPath(), EnumSet.noneOf(FileVisitOption.class),4, finder);
 //                //Files.walkFileTree(File.listRoots()[0].toPath(), finder);
@@ -135,14 +132,14 @@ public class Controller {
 
 
 //            var drives = File.listRoots();
-//            var ds = new DirectoryStream(drives, "Interface\\Addons");
+//            var ds = new addonmanager.old.DirectoryStream(drives, "Interface\\Addons");
 //            ds.dirs.addListener(new ListChangeListener<Path>() {
 //                @Override
 //                public void onChanged(Change<? extends Path> c) {
 //                    c.next();
 //                    var aaa = c.getAddedSubList();
 //                    aaa.forEach(x -> System.out.println(x.toString()));
-//                    System.out.println(DirectoryStream.counter);
+//                    System.out.println(addonmanager.old.DirectoryStream.counter);
 //                }
 //            });
 //            ds.getDirs();
@@ -152,7 +149,7 @@ public class Controller {
 //            var res=FileUtils.listFiles(new File("C:\\"),new NameFileFilter("Users"), DirectoryFileFilter.DIRECTORY);
 //            res.forEach(x->System.out.println(x.getPath()));
 
-//            CommonIOFinder walker = new CommonIOFinder(
+//            addonmanager.old.CommonIOFinder walker = new addonmanager.old.CommonIOFinder(
 //                    //DirectoryFileFilter.DIRECTORY
 //            );
 //
@@ -172,7 +169,7 @@ public class Controller {
 //                    public FileVisitResult preVisitDirectory(Path file,
 //                                                             BasicFileAttributes attrs) {
 //
-//                        DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+//                        addonmanager.old.DirectoryStream.Filter<Path> filter = new addonmanager.old.DirectoryStream.Filter<Path>() {
 //                            @Override
 //                            public boolean accept(Path entry) throws IOException {
 //                                BasicFileAttributes attr = Files.readAttributes(entry,
@@ -181,7 +178,7 @@ public class Controller {
 //                                return (entry.startsWith("World of Warcraft"));
 //                            }
 //                        };
-//                        try (DirectoryStream<Path> stream = Files.newDirectoryStream(
+//                        try (addonmanager.old.DirectoryStream<Path> stream = Files.newDirectoryStream(
 //                                file, filter)) {
 //                            for (Path path : stream) {
 //                                System.out.println(path.toString());
@@ -199,7 +196,7 @@ public class Controller {
 //        });
 
 //        scanButton.setOnAction(event -> {
-//            DirectoryScanner2 ds = new DirectoryScanner2(model, gameChoiceBox, taskProgressView);
+//            addonmanager.file.DirectoryScanner2 ds = new addonmanager.file.DirectoryScanner2(model, gameChoiceBox, taskProgressView);
 //            Platform.runLater(() -> taskProgressView.getTasks().add(ds));
 //
 //            Thread t = new Thread(ds);
@@ -215,18 +212,18 @@ public class Controller {
         TableColumn<Addon, String> nameCol = new TableColumn<>("Title");
         nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         nameCol.setPrefWidth(200);
-        TableColumn<Addon, VersionCellData> versionCol = new TableColumn<>("Version");
-        versionCol.setCellFactory(new Callback<TableColumn<Addon, VersionCellData>, TableCell<Addon, VersionCellData>>() {
+        TableColumn<Addon, Status> versionCol = new TableColumn<>("Version");
+        versionCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
             @Override
-            public TableCell<Addon, VersionCellData> call(TableColumn<Addon, VersionCellData> param) {
-                return new VersionCell();
+            public TableCell<Addon, Status> call(TableColumn<Addon, Status> param) {
+                return new StatusCell();
             }
         });
 
         versionCol.setCellValueFactory(new PropertyValueFactory("versionCellData"));
         versionCol.setPrefWidth(100);
 
-        TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
+        TableColumn<Addon, String> gameVersionCol = new TableColumn<>("addonmanager.core.Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 

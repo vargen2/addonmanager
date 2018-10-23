@@ -1,15 +1,15 @@
+package addonmanager.core;
+
+import addonmanager.net.GetVersionsTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -81,7 +81,7 @@ public class Game {
             protected Object call() throws Exception {
                 addons.parallelStream().forEach(addon -> {
 
-                    var task = new NewVersionsTask(addon,addon.getFolderName());
+                    var task = new GetVersionsTask(addon,addon.getFolderName());
 
                     Thread thread=new Thread(task);
                     thread.setDaemon(true);

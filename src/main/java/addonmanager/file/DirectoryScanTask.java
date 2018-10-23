@@ -1,3 +1,8 @@
+package addonmanager.file;
+
+import addonmanager.app.ChoiceBoxItem;
+import addonmanager.core.Game;
+import addonmanager.core.Model;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -15,14 +20,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class DirectoryScanner2 extends Task<Void> {
+public class DirectoryScanTask extends Task<Void> {
 
     private final AtomicInteger max = new AtomicInteger();
     private final AtomicInteger current = new AtomicInteger();
     private boolean mustHaveExe = true;
     private final ObservableSet<File> fileObservableList = FXCollections.synchronizedObservableSet(FXCollections.observableSet(new HashSet<File>()));
 
-    public DirectoryScanner2(Model model, ChoiceBox cb, TaskProgressView taskProgressView, boolean mustHaveExe) {
+    public DirectoryScanTask(Model model, ChoiceBox cb, TaskProgressView taskProgressView, boolean mustHaveExe) {
         this.mustHaveExe = mustHaveExe;
         SetChangeListener<File> fileListener = change -> {
             Task<Void> task = new Task<>() {

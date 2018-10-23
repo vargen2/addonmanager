@@ -1,14 +1,18 @@
-public class VersionCellData {
-    private NewVersionsTask newVersionsTask;
+package addonmanager.core;
+
+import addonmanager.net.GetVersionsTask;
+
+public class Status {
+    private GetVersionsTask getVersionsTask;
     private String latestVersion;
     private Download download;
 
-    public NewVersionsTask getNewVersionsTask() {
-        return newVersionsTask;
+    public GetVersionsTask getNewVersionsTask() {
+        return getVersionsTask;
     }
 
-    public void setNewVersionsTask(NewVersionsTask newVersionsTask) {
-        this.newVersionsTask = newVersionsTask;
+    public void setNewVersionsTask(GetVersionsTask getVersionsTask) {
+        this.getVersionsTask = getVersionsTask;
     }
 
     public String getLatestVersion() {

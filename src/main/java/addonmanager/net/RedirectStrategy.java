@@ -1,3 +1,5 @@
+package addonmanager.net;
+
 import org.apache.http.ProtocolException;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -7,18 +9,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-public class MyRedirect extends LaxRedirectStrategy {
+public class RedirectStrategy extends LaxRedirectStrategy {
 
     @Override
     protected URI createLocationURI(String location) throws ProtocolException {
-        //System.out.println("before: " + location);
         location = location.replaceAll(" ", "+");
         location = location.replaceAll("%2B", "+");
-        //System.out.println("AFTER: " + location);
-
-        //Experi.tempFilename = location.substring(location.lastIndexOf("/")+1).replaceAll("\\+","-");
-
-        //System.out.println("redir: "+Experi.tempFilename);
         try {
             URIBuilder b = new URIBuilder((new URI(location)).normalize());
             String host = b.getHost();

@@ -1,3 +1,5 @@
+package addonmanager.old;
+
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.IOFileFilter;
 

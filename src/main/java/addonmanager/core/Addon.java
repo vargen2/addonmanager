@@ -1,3 +1,5 @@
+package addonmanager.core;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,36 +24,24 @@ public class Addon {
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
     private StringProperty titleVersion;
-    private ObjectProperty<VersionCell> versionCell;
-    private ObjectProperty<VersionCellData> versionCellData;
+    private ObjectProperty<Status> versionCellData;
 
-    public VersionCellData getVersionCellData() {
+    public Status getVersionCellData() {
         return versionCellDataProperty().get();
     }
 
-    public ObjectProperty<VersionCellData> versionCellDataProperty() {
+    public ObjectProperty<Status> versionCellDataProperty() {
         if(versionCellData==null)
             versionCellData=new SimpleObjectProperty<>(this,"versionCellData");
         return versionCellData;
     }
 
-    public void setVersionCellData(VersionCellData versionCellData) {
-        this.versionCellDataProperty().set(versionCellData);
+    public void setVersionCellData(Status status) {
+        this.versionCellDataProperty().set(status);
     }
 
     public Addon(String folderName) {
         this.folderName = folderName;
-    }
-
-    public VersionCell getVercionCell() {
-        return versionCellProperty().get();
-    }
-
-    public ObjectProperty<VersionCell> versionCellProperty() {
-        if (versionCell == null)
-            versionCell = new SimpleObjectProperty<VersionCell>(this,"versionCell");
-
-        return versionCell;
     }
 
     private void updateTitleVersion(){

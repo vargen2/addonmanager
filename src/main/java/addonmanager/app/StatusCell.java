@@ -1,13 +1,15 @@
-import javafx.beans.property.StringProperty;
+package addonmanager.app;
+
+import addonmanager.core.Addon;
+import addonmanager.core.Status;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
-public class VersionCell extends TableCell<Addon, VersionCellData> {
+public class StatusCell extends TableCell<Addon, Status> {
 
 
     private final StackPane pane;
@@ -15,7 +17,7 @@ public class VersionCell extends TableCell<Addon, VersionCellData> {
     private final Label label;
     private final ProgressBar progressBar;
 
-    public VersionCell() {
+    public StatusCell() {
 
         super();
         //getChildren().add(new Button("texte"));
@@ -36,7 +38,7 @@ public class VersionCell extends TableCell<Addon, VersionCellData> {
     }
 
     @Override
-    protected void updateItem(VersionCellData item, boolean empty) {
+    protected void updateItem(Status item, boolean empty) {
         super.updateItem(item, empty);
         var addon = getTableRow().getItem();
 
@@ -62,25 +64,5 @@ public class VersionCell extends TableCell<Addon, VersionCellData> {
             setGraphic(pane);
     }
 
-    //    @Override
-//    protected void updateItem(Number item, boolean empty) {
-//        // calling super here is very important - don't skip this!
-//        super.updateItem(item, empty);
-//
-//        // format the number as if it were a monetary value using the
-//        // formatting relevant to the current locale. This would format
-//        // 43.68 as "$43.68", and -23.67 as "-$23.67"
-//        setText(item == null ? "" : NumberFormat.getCurrencyInstance().format(item));
-//
-//        // change the text fill based on whether it is positive (green)
-//        // or negative (red). If the cell is selected, the text will
-//        // always be white (so that it can be read against the blue
-//        // background), and if the value is zero, we'll make it black.
-//        if (item != null) {
-//            double value = item.doubleValue();
-//            setTextFill(isSelected() ? Color.WHITE :
-//                    value == 0 ? Color.BLACK :
-//                            value < 0 ? Color.RED : Color.GREEN);
-//        }
-//    }
+
 }

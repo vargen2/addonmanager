@@ -1,3 +1,8 @@
+package addonmanager.net;
+
+import addonmanager.core.Addon;
+import addonmanager.core.Download;
+import addonmanager.core.Status;
 import javafx.concurrent.Task;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
@@ -12,21 +17,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NewVersionsTask extends Task<List<Download>> {
+public class GetVersionsTask extends Task<List<Download>> {
 
     private Addon addon;
     private String addonName;
 
-    public NewVersionsTask(Addon addon, String addonName) {
+    public GetVersionsTask(Addon addon, String addonName) {
         super();
         this.addon = addon;
         this.addonName = addonName;
 
         setOnScheduled(x -> {
             updateProgress(0, 1);
-            VersionCellData versionCellData=new VersionCellData();
-            versionCellData.setNewVersionsTask(this);
-            addon.setVersionCellData(versionCellData);
+            Status status =new Status();
+            status.setNewVersionsTask(this);
+            addon.setVersionCellData(status);
         });
         setOnSucceeded(x -> updateProgress(1, 1));
     }

@@ -6,10 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TableCell;
+import javafx.scene.control.*;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -23,9 +20,9 @@ public class StatusCell extends TableCell<Addon, Status> {
     private final Label label;
     private final ProgressBar progressBar;
 
-    public StatusCell() {
+    {
 
-        super();
+
         //getChildren().add(new Button("texte"));
         //getChildren().add(new Label("everythinf fine"));
         pane = new StackPane();
@@ -46,6 +43,8 @@ public class StatusCell extends TableCell<Addon, Status> {
         var bf = new BackgroundFill(new Color(Math.random(), Math.random(), Math.random(), 1), null, null);
         pane.setBackground(new Background(bf));
         setGraphic(pane);
+        System.out.println("hit");
+//        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 //        Platform.runLater(() -> {
 //                    getTableRow().selectedProperty().addListener(new ChangeListener<Boolean>() {
 //                        @Override
@@ -59,10 +58,9 @@ public class StatusCell extends TableCell<Addon, Status> {
 
     @Override
     protected void updateItem(Status item, boolean empty) {
+        if (item == getItem()) return;
         super.updateItem(item, empty);
-        pane.layout();
-        pane.requestLayout();
-        var addon = getTableRow().getItem();
+
 
 //        if (addon != null && addon.getTitle() != null && addon.getTitle().contains("rabber")) {
 //            System.out.println(addon.getTitle() + " " + addon.getVersion() + " ");
@@ -70,17 +68,27 @@ public class StatusCell extends TableCell<Addon, Status> {
 //            if (item != null)
 //                System.out.println(item.getLatestVersion());
 //        }
-        if (item == null) {
-            progressBar.setVisible(false);
-            button.setVisible(false);
-            label.setText("item null");
-            label.setVisible(true);
+//        if (empty) {
+//            progressBar.setVisible(false);
+//            button.setVisible(false);
+//            label.setText("");
+//            label.setVisible(false);
+//            setGraphic(null);
+//
+//            return;
+//
+//        }else {
+//            setGraphic(pane);
+//        }
+        var addon = getTableRow().getItem();
+        if (addon == null || addon.statusProperty() == null || addon.statusProperty().get() == null)
             return;
-
-        }
+        // pane.layout();
+        //  pane.requestLayout();
         //System.out.println(addon.getTitle()+" "+addon.getVersion()+" "+item.getLatestVersion());
-        if (item.getNewVersionsTask() != null) {
-            progressBar.progressProperty().bind(item.getNewVersionsTask().progressProperty());
+        System.out.println(addon.getFolderName() + " " + pane.getBackground().getFills().get(0).getFill().toString());
+        if (addon.statusProperty().get().getNewVersionsTask() != null) {
+            progressBar.progressProperty().bind(addon.statusProperty().get().getNewVersionsTask().progressProperty());
             progressBar.setVisible(true);
             button.setVisible(false);
             label.setVisible(false);
@@ -89,10 +97,10 @@ public class StatusCell extends TableCell<Addon, Status> {
             progressBar.progressProperty().unbind();
         }
 
-        if (item.getLatestVersion() != null) {
-            label.setText(item.getLatestVersion());
+        if (addon.statusProperty().get().getLatestVersion() != null) {
+            label.setText(addon.statusProperty().get().getLatestVersion());
             label.setVisible(true);
-            System.out.println(addon.getTitle() + " " + addon.getVersion() + " " + item.getLatestVersion() + " : " + label.getText());
+            //System.out.println(addon.getTitle() + " " + addon.getVersion() + " " + item.getLatestVersion() + " : " + label.getText());
         }
 
 //        if (!empty)

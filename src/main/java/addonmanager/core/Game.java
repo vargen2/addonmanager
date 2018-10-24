@@ -95,18 +95,18 @@ public class Game {
                     } catch (ExecutionException e) {
                         System.out.println("addon: " + addon.getFolderName() + " " + e.getMessage());
                     }
-                    if (downloads != null) {
+                    if (downloads != null && downloads.size() > 0) {
                         addon.setDownloads(downloads);
 
-                        if (downloads.size() > 0) {
-                            Status status = new Status();
-                            status.setLatestVersion(downloads.get(0).title);
-                            //System.out.println(addon.getVersion() + " .   " + downloads.get(0).title);
-                            addon.setStatus(status);
-                        } else {
-                            Status status = new Status();
-                            addon.setStatus(status);
-                        }
+
+                        Status status = new Status();
+                        status.setLatestVersion(downloads.get(0).title);
+                        //System.out.println(addon.getVersion() + " .   " + downloads.get(0).title);
+                        addon.setStatus(status);
+
+                    } else {
+                        Status status = new Status();
+                        addon.setStatus(status);
                     }
                 });
                 return null;

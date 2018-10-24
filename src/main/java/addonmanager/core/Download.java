@@ -13,7 +13,7 @@ public class Download {
 
     @Override
     public String toString() {
-        return "addonmanager.core.Download{" +
+        return "Download{" +
                 "release='" + release + '\'' +
                 ", title='" + title + '\'' +
                 ", fileSize='" + fileSize + '\'' +

@@ -212,7 +212,9 @@ public class Controller {
         TableColumn<Addon, String> nameCol = new TableColumn<>("Title");
         nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         nameCol.setPrefWidth(200);
-        TableColumn<Addon, Status> versionCol = new TableColumn<>("Status");
+
+
+        TableColumn<Addon,Status> versionCol = new TableColumn<>("Status");
         versionCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
             @Override
             public TableCell<Addon, Status> call(TableColumn<Addon, Status> param) {
@@ -221,8 +223,9 @@ public class Controller {
             }
         });
 
+
         versionCol.setCellValueFactory(new PropertyValueFactory<Addon,Status>("status"));
-        versionCol.setPrefWidth(100);
+        versionCol.setPrefWidth(200);
 
         TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));

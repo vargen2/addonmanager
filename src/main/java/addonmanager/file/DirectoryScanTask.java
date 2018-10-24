@@ -179,7 +179,7 @@ public class DirectoryScanTask extends Task<Void> {
                     return true;
                 }
             } else {
-                if(dir.getPath().contains("World of Warcraft Beta"))
+                //if(dir.getPath().contains("World of Warcraft Beta"))
                 fileObservableList.add(dir.getParentFile().getParentFile());
                 return true;
             }

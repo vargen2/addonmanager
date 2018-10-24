@@ -12,9 +12,10 @@ import java.util.List;
 public class Addon {
 
     enum ReleaseType {ALPHA, BETA, RELEASE}
-    enum UpdateMode {AUTO,MANUAL}
 
-    private List<Download> downloads=new ArrayList<>();
+    enum UpdateMode {AUTO, MANUAL}
+
+    private List<Download> downloads = new ArrayList<>();
     private String folderName;
     private ReleaseType wantedReleaseType;
     private UpdateMode updateMode;
@@ -25,15 +26,19 @@ public class Addon {
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
     private StringProperty titleVersion;
-    private ObjectProperty<Status> status;
+    private final ObjectProperty<Status> status;
+
+    public Addon(String folderName) {
+        this.folderName = folderName;
+        this.status = new SimpleObjectProperty<>(this, "status");
+    }
 
     public Status getStatus() {
         return statusProperty().get();
     }
 
     public ObjectProperty<Status> statusProperty() {
-        if(status ==null)
-            status =new SimpleObjectProperty<>(this,"status");
+
         return status;
     }
 
@@ -41,13 +46,12 @@ public class Addon {
         statusProperty().set(status);
     }
 
-    public Addon(String folderName) {
-        this.folderName = folderName;
+
+
+    private void updateTitleVersion() {
+        titleVersionProperty().setValue(titleProperty().get() + ((versionProperty().get() != null) ? "\n" + versionProperty().get() : ""));
     }
 
-    private void updateTitleVersion(){
-        titleVersionProperty().setValue(titleProperty().get()+((versionProperty().get()!=null)? "\n"+versionProperty().get():""));
-    }
     public String getTitleVersion() {
         return titleVersionProperty().get();
     }

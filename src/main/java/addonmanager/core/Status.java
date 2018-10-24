@@ -3,6 +3,7 @@ package addonmanager.core;
 import addonmanager.net.GetVersionsTask;
 
 public class Status {
+    private String folderName;
     private GetVersionsTask getVersionsTask;
     private String latestVersion;
     private Download download;
@@ -29,5 +30,13 @@ public class Status {
 
     public void setDownload(Download download) {
         this.download = download;
+    }
+
+    public String getFolderName() {
+        return folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
     }
 }

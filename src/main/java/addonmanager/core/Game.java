@@ -68,8 +68,8 @@ public class Game {
                 } else if (line.contains("Version:")) {
                     addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim());
                 } else if (line.contains("Title:")) {
-                    addon.setTitle(d.getName());
-                    // addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
+                    //addon.setTitle(d.getName());
+                     addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
                 } else if (line.contains("Dependencies") || line.contains("RequiredDeps")) {
                     abort = true;
                 }
@@ -87,7 +87,7 @@ public class Game {
             protected Object call() throws Exception {
                 addons.stream().forEach(addon -> {
 
-                    var task = new GetVersionsTask(addon, addon.getFolderName());
+                    var task = new GetVersionsTask(addon);
 
                     Thread thread = new Thread(task);
                     thread.setDaemon(true);
@@ -107,14 +107,17 @@ public class Game {
 
                         Status status = new Status();
                         status.setLatestVersion(downloads.get(0).title);
-                        //System.out.println(addon.getVersion() + " .   " + downloads.get(0).title);
+                        status.setFolderName(addon.getFolderName());
+                        System.out.println("addonfolder: " + addon.getFolderName()+" addon.title.replace: "+ addon.getTitle().replaceAll(" ","-")+" version:"+addon.getVersion() + " downloads.title: " + downloads.get(0).title);
                         addon.setStatus(status);
 
                     } else {
                         Status status = new Status();
+                        status.setFolderName(addon.getFolderName());
                         addon.setStatus(status);
                     }
                 });
+
                 return null;
             }
         });

@@ -20,20 +20,26 @@ import java.util.regex.Pattern;
 public class GetVersionsTask extends Task<List<Download>> {
 
     private Addon addon;
-    private String addonName;
+    private String[] urlName = new String[3];
 
-    public GetVersionsTask(Addon addon, String addonName) {
+    public GetVersionsTask(Addon addon) {
         super();
         this.addon = addon;
-        this.addonName = addonName;
-
+        urlName[0] = addon.getTitle().replaceAll(" ", "-");
+        urlName[1] = addon.getFolderName();
+        urlName[2] = addon.getTitle();
         setOnScheduled(x -> {
+            updateMessage("connecting...");
             updateProgress(0, 1);
-            Status status =new Status();
+            Status status = new Status();
+            status.setFolderName(addon.getFolderName());
             status.setNewVersionsTask(this);
             addon.setStatus(status);
         });
-        setOnSucceeded(x -> updateProgress(1, 1));
+        setOnSucceeded(x -> {
+            updateMessage("done");
+            updateProgress(1, 1);
+        });
 //        setOnCancelled();
 //        setOnFailed();
     }
@@ -43,22 +49,41 @@ public class GetVersionsTask extends Task<List<Download>> {
         List<Download> downloads = new ArrayList<>();
 
         updateProgress(0, 1);
-        HttpClient httpClient = HttpClient.newHttpClient();
-        URI uri = URI.create("https://www.curseforge.com/wow/addons/" + addonName + "/files");
-        HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
-        HttpResponse<String> response = null;
-        try {
-            response = httpClient.send(request, HttpResponse.BodyHandler.asString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        String input = "";
+        for (String anUrlName : urlName) {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            URI uri;
+            try {
+                uri = URI.create("https://www.curseforge.com/wow/addons/" + anUrlName + "/files");
+            } catch (IllegalArgumentException e) {
+                continue;
+            }
+
+            HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
+            HttpResponse<String> response = null;
+            try {
+                response = httpClient.send(request, HttpResponse.BodyHandler.asString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (response.statusCode() != 200) {
+                System.out.println("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                updateMessage("retrying...");
+                continue;
+
+            } else {
+                input = response.body();
+                break;
+            }
+
         }
-        if (response.statusCode() != 200)
+        if (input.length() == 0) {
+            updateMessage("failed...");
             return downloads;
-        String input = response.body();
-
-
+        }
+        updateMessage("parsing...");
         updateProgress(0.5, 1);
 
         int index1 = input.indexOf("<div class=\"listing-body\">");
@@ -83,6 +108,7 @@ public class GetVersionsTask extends Task<List<Download>> {
             downloads.add(download);
         }
         updateProgress(1, 1);
+
         return downloads;
 
     }

@@ -55,10 +55,11 @@ public class DirectoryScanTask extends Task<Void> {
                         @Override
                         protected Void call() {
                             game.refresh();
+                            game.refreshFromNet();
                             return null;
                         }
                     };
-                    refreshTask.setOnSucceeded(x->game.refreshFromNet());
+                   // refreshTask.setOnSucceeded(x -> );
                     Thread t = new Thread(refreshTask);
                     t.setDaemon(true);
                     t.start();
@@ -170,17 +171,27 @@ public class DirectoryScanTask extends Task<Void> {
 
 
     private boolean check(File dir) {
-        if (dir.getPath().contains("Interface" + File.separator + "AddOns")) {
+        //if (dir.getPath().contains("Interface" + File.separator + "AddOns")) {
+        if (dir.getName().equals("Interface")) {
+            var childs = dir.listFiles(directoryAndNotHidden);
+            if (childs == null)
+                return false;
+
+            if (Arrays.stream(childs).noneMatch(x -> x.getName().equals("AddOns")))
+                return false;
+
+
+            var parent = dir.getParentFile();
             if (mustHaveExe) {
 
-                var exes = dir.getParentFile().getParentFile().listFiles(exeFilter);
-                if (exes.length > 0) {
-                    fileObservableList.add(dir.getParentFile().getParentFile());
+                var exes = parent.listFiles(exeFilter);
+                if (exes != null && exes.length > 0) {
+                    fileObservableList.add(parent);
                     return true;
                 }
             } else {
                 //if(dir.getPath().contains("World of Warcraft Beta"))
-                fileObservableList.add(dir.getParentFile().getParentFile());
+                fileObservableList.add(parent);
                 return true;
             }
         }

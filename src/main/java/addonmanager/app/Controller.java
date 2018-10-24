@@ -15,6 +15,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import org.controlsfx.control.TaskProgressView;
@@ -62,7 +63,7 @@ public class Controller {
 
             @Override
             public void accept(Object o) {
-                DirectoryScanTask ds = new DirectoryScanTask(model, gameChoiceBox, taskProgressView,false);
+                DirectoryScanTask ds = new DirectoryScanTask(model, gameChoiceBox, taskProgressView, false);
                 Platform.runLater(() -> taskProgressView.getTasks().add(ds));
 
                 Thread t = new Thread(ds);
@@ -204,8 +205,9 @@ public class Controller {
 //            t.start();
 //        });
 
-        model.selectedGame.addListener((observable, oldValue, newValue) -> {tableView.setItems(newValue.addons);
-            refreshButton.setDisable(newValue==null);
+        model.selectedGame.addListener((observable, oldValue, newValue) -> {
+            tableView.setItems(newValue.addons);
+            refreshButton.setDisable(newValue == null);
         });
 
 
@@ -214,17 +216,17 @@ public class Controller {
         nameCol.setPrefWidth(200);
 
 
-        TableColumn<Addon,Status> versionCol = new TableColumn<>("Status");
+        TableColumn<Addon, Status> versionCol = new TableColumn<>("Status");
         versionCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
             @Override
             public TableCell<Addon, Status> call(TableColumn<Addon, Status> param) {
-
+                //System.out.println(param.toString());
                 return new StatusCell();
             }
         });
 
 
-        versionCol.setCellValueFactory(new PropertyValueFactory<Addon,Status>("status"));
+        versionCol.setCellValueFactory(new PropertyValueFactory<Addon, Status>("status"));
         versionCol.setPrefWidth(200);
 
         TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
@@ -232,12 +234,18 @@ public class Controller {
         gameVersionCol.setPrefWidth(100);
 
         tableView.getColumns().setAll(nameCol, versionCol, gameVersionCol);
+//        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
+//            tableView.refresh();
+//
+//            System.out.println("scroll");
+//        });
 
         refreshButton.setOnAction(event -> {
             Game game = model.selectedGame.getValue();
             if (game == null)
                 return;
             game.refresh();
+            // tableView.refresh();
         });
 
     }

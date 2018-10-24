@@ -42,8 +42,8 @@ public class StatusCell extends TableCell<Addon, Status> {
 
         var bf = new BackgroundFill(new Color(Math.random(), Math.random(), Math.random(), 1), null, null);
         pane.setBackground(new Background(bf));
-        setGraphic(pane);
-        System.out.println("hit");
+        //setGraphic(pane);
+        //System.out.println("hit");
 //        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 //        Platform.runLater(() -> {
 //                    getTableRow().selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -58,7 +58,10 @@ public class StatusCell extends TableCell<Addon, Status> {
 
     @Override
     protected void updateItem(Status item, boolean empty) {
-        if (item == getItem()) return;
+        if (item == getItem()) {
+            System.out.println("item==getitem()");
+            return;
+        }
         super.updateItem(item, empty);
 
 
@@ -68,18 +71,19 @@ public class StatusCell extends TableCell<Addon, Status> {
 //            if (item != null)
 //                System.out.println(item.getLatestVersion());
 //        }
-//        if (empty) {
-//            progressBar.setVisible(false);
-//            button.setVisible(false);
-//            label.setText("");
-//            label.setVisible(false);
-//            setGraphic(null);
-//
-//            return;
-//
-//        }else {
-//            setGraphic(pane);
-//        }
+        if (empty) {
+            progressBar.setVisible(false);
+            button.setVisible(false);
+            label.setText("");
+            label.setVisible(false);
+            setGraphic(null);
+
+            return;
+
+        } else {
+            if (getGraphic() != pane)
+                setGraphic(pane);
+        }
         var addon = getTableRow().getItem();
         if (addon == null || addon.statusProperty() == null || addon.statusProperty().get() == null)
             return;

@@ -61,15 +61,21 @@ public class Game {
             if (lines == null)
                 continue;
             Addon addon = new Addon(d.getName());
+            boolean abort = false;
             for (var line : lines) {
                 if (line.contains("Interface:")) {
                     addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
                 } else if (line.contains("Version:")) {
                     addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim());
                 } else if (line.contains("Title:")) {
-                    addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
+                    addon.setTitle(d.getName());
+                    // addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
+                } else if (line.contains("Dependencies") || line.contains("RequiredDeps")) {
+                    abort = true;
                 }
             }
+            if (abort)
+                continue;
             addons.add(addon);
         }
 

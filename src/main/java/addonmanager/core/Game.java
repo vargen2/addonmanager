@@ -85,7 +85,7 @@ public class Game {
         Thread t = new Thread(new Task<>() {
             @Override
             protected Object call() throws Exception {
-                addons.stream().forEach(addon -> {
+                addons.parallelStream().forEach(addon -> {
 
                     var task = new GetVersionsTask(addon);
 

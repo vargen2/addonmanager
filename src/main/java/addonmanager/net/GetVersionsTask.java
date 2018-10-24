@@ -30,7 +30,7 @@ public class GetVersionsTask extends Task<List<Download>> {
         urlName[2] = addon.getTitle();
         setOnScheduled(x -> {
             updateMessage("connecting...");
-            updateProgress(0, 1);
+           // updateProgress(0, 1);
             Status status = new Status();
             status.setFolderName(addon.getFolderName());
             status.setNewVersionsTask(this);
@@ -48,7 +48,7 @@ public class GetVersionsTask extends Task<List<Download>> {
     protected List<Download> call() throws Exception {
         List<Download> downloads = new ArrayList<>();
 
-        updateProgress(0, 1);
+        //updateProgress(0, 1);
         String input = "";
         for (String anUrlName : urlName) {
             HttpClient httpClient = HttpClient.newHttpClient();
@@ -84,7 +84,7 @@ public class GetVersionsTask extends Task<List<Download>> {
             return downloads;
         }
         updateMessage("parsing...");
-        updateProgress(0.5, 1);
+        updateProgress(0.7, 1);
 
         int index1 = input.indexOf("<div class=\"listing-body\">");
         int index2 = input.substring(index1).indexOf("</table>");
@@ -107,7 +107,7 @@ public class GetVersionsTask extends Task<List<Download>> {
             download.downloadLink = parse(subString, " href=\"", "\"");
             downloads.add(download);
         }
-        updateProgress(1, 1);
+        updateProgress(0.9, 1);
 
         return downloads;
 

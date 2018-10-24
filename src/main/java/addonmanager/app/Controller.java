@@ -245,7 +245,7 @@ public class Controller {
             if (game == null)
                 return;
             game.refresh();
-            // tableView.refresh();
+            game.refreshFromNet();
         });
 
     }

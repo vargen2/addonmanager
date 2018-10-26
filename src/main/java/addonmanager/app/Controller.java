@@ -215,9 +215,33 @@ public class Controller {
         nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         nameCol.setPrefWidth(200);
 
+        TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
+        releaseTypeCol.setCellValueFactory(new PropertyValueFactory("releaseType"));
+        releaseTypeCol.setPrefWidth(50);
+        releaseTypeCol.setCellFactory(new Callback<TableColumn<Addon, Addon.ReleaseType>, TableCell<Addon, Addon.ReleaseType>>() {
+            @Override
+            public TableCell<Addon, Addon.ReleaseType> call(TableColumn<Addon, Addon.ReleaseType> param) {
+                return new TableCell<Addon, Addon.ReleaseType>() {
 
-        TableColumn<Addon, Status> versionCol = new TableColumn<>("Status");
-        versionCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
+                    @Override
+                    public void updateItem(Addon.ReleaseType item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (!isEmpty()) {
+                            this.setStyle("-fx-font-size: 2em");
+                            setText(item.toString());
+                        }
+                    }
+                };
+            }
+        });
+
+        TableColumn<Addon, String> latestVersionCol = new TableColumn<>("Latest Version");
+        latestVersionCol.setCellValueFactory(new PropertyValueFactory("latestVersion"));
+        latestVersionCol.setPrefWidth(100);
+
+
+        TableColumn<Addon, Status> statusCol = new TableColumn<>("Status");
+        statusCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
             @Override
             public TableCell<Addon, Status> call(TableColumn<Addon, Status> param) {
                 //System.out.println(param.toString());
@@ -225,22 +249,24 @@ public class Controller {
             }
         });
 
+        statusCol.setCellValueFactory(new PropertyValueFactory<Addon, Status>("status"));
+        statusCol.setPrefWidth(200);
 
-        versionCol.setCellValueFactory(new PropertyValueFactory<Addon, Status>("status"));
-        versionCol.setPrefWidth(200);
 
         TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 
-        tableView.getColumns().setAll(nameCol, versionCol, gameVersionCol);
+        tableView.getColumns().setAll(nameCol, releaseTypeCol, statusCol, gameVersionCol);
 //        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
 //            tableView.refresh();
 //
 //            System.out.println("scroll");
 //        });
 
-        refreshButton.setOnAction(event -> {
+        refreshButton.setOnAction(event ->
+
+        {
             Game game = model.selectedGame.getValue();
             if (game == null)
                 return;

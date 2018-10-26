@@ -11,16 +11,30 @@ import java.util.List;
 
 public class Addon {
 
-    enum ReleaseType {ALPHA, BETA, RELEASE}
+    public enum ReleaseType {
+        ALPHA("A"),
+        BETA("B"),
+        RELEASE("R");
+
+        private final String name;
+
+        ReleaseType(String name){
+            this.name=name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
     enum UpdateMode {AUTO, MANUAL}
 
     private List<Download> downloads = new ArrayList<>();
     private String folderName;
-    private ReleaseType wantedReleaseType;
     private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
-    private ReleaseType releaseType;
+    private ObjectProperty<ReleaseType> releaseType;
     private StringProperty title;
     private StringProperty version;
     private LocalDateTime dateUploaded;
@@ -31,6 +45,7 @@ public class Addon {
     public Addon(String folderName) {
         this.folderName = folderName;
         this.status = new SimpleObjectProperty<>(this, "status");
+        setReleaseType(ReleaseType.RELEASE);
     }
 
     public Status getStatus() {
@@ -45,7 +60,6 @@ public class Addon {
     public void setStatus(Status status) {
         statusProperty().set(status);
     }
-
 
 
     private void updateTitleVersion() {
@@ -107,13 +121,18 @@ public class Addon {
     }
 
     public ReleaseType getReleaseType() {
-        return releaseType;
+        return releaseTypeProperty().get();
     }
 
     public void setReleaseType(ReleaseType releaseType) {
-        this.releaseType = releaseType;
+        releaseTypeProperty().setValue(releaseType);
     }
 
+    public ObjectProperty<ReleaseType> releaseTypeProperty() {
+        if (releaseType == null)
+            releaseType = new SimpleObjectProperty<>(this, "releaseType");
+        return releaseType;
+    }
 
     public LocalDateTime getDateUploaded() {
         return dateUploaded;

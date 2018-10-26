@@ -66,7 +66,7 @@ public class DirectoryScanTask extends Task<Void> {
                     return null;
                 }
             };
-            Platform.runLater(() -> taskProgressView.getTasks().add(task));
+           // Platform.runLater(() -> taskProgressView.getTasks().add(task));
             Thread t = new Thread(task);
             t.setDaemon(true);
             t.start();

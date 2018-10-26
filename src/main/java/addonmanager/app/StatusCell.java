@@ -38,7 +38,6 @@ public class StatusCell extends TableCell<Addon, Status> {
         this.pane.getChildren().add(this.label);
         this.button.setVisible(false);
         this.label.setVisible(false);
-
         this.progressBar = new ProgressBar();
         this.progressBar.setVisible(false);
         StackPane.setAlignment(this.progressBar, Pos.TOP_CENTER);

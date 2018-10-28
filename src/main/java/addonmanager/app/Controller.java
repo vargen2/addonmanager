@@ -238,7 +238,7 @@ public class Controller {
 //        });
 
         TableColumn<Addon, String> latestVersionCol = new TableColumn<>("Latest Version");
-        latestVersionCol.setCellValueFactory(new PropertyValueFactory("latestVersion"));
+        latestVersionCol.setCellValueFactory(new PropertyValueFactory("latestDownload"));
         latestVersionCol.setPrefWidth(100);
 
 

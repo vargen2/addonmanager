@@ -46,7 +46,7 @@ public class StatusCell extends TableCell<Addon, Status> {
         //var bf = new BackgroundFill(new Color(Math.random(), Math.random(), Math.random(), 1), null, null);
         //pane.setBackground(new Background(bf));
         //setGraphic(pane);
-       // System.out.println("cnostructor");
+        // System.out.println("cnostructor");
 //        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 //        Platform.runLater(() -> {
 //                    getTableRow().selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -62,8 +62,8 @@ public class StatusCell extends TableCell<Addon, Status> {
             String sp = "";
             if (addon != null && addon.getStatus() != null)
 
-            System.out.println(getTableRow().getItem().getTitle() + " " + getTableRow().getItem().getVersion() + " label " + this.label + " labeltext " +
-                    this.label.getText() + " statusprop " + sp + " pane " + this.pane);
+                System.out.println(getTableRow().getItem().getTitle() + " " + getTableRow().getItem().getVersion() + " label " + this.label + " labeltext " +
+                        this.label.getText() + " statusprop " + sp + " pane " + this.pane);
         });
     }
 
@@ -83,8 +83,10 @@ public class StatusCell extends TableCell<Addon, Status> {
 
         super.updateItem(item, empty);
         if (empty) {
+            pane.setVisible(false);
             setGraphic(null);
         } else {
+            pane.setVisible(true);
             progressBar.progressProperty().unbind();
 
             final TableColumn<Addon, Status> column = getTableColumn();
@@ -92,7 +94,10 @@ public class StatusCell extends TableCell<Addon, Status> {
 
             if (statusObjectValue != null) {
 
-                var tempStatus=statusObjectValue.getValue();
+                var tempStatus = statusObjectValue.getValue();
+//                if (addon != null && addon.getFolderName() != null&&tempStatus!=null && tempStatus.getFolderName() != null)
+//                    System.out.println(addon.getTitle() + " " + tempStatus.getFolderName());
+
                 if (tempStatus != null && tempStatus.getNewVersionsTask() != null) {
 
                     progressBar.progressProperty().bind(tempStatus.getNewVersionsTask().progressProperty());
@@ -105,24 +110,26 @@ public class StatusCell extends TableCell<Addon, Status> {
                     progressBar.setVisible(false);
                     progressBar.progressProperty().unbind();
                 }
-//                if(tempStatus!=null&&tempStatus.getLatestVersion() !=null){
-//                    if(!label.textProperty().isBound()) {
-//                        label.setText(tempStatus.getLatestVersion());
-//                        label.setVisible(true);
-//                    }
-//                }else {
 
-//                }
 
-                if(tempStatus!=null &&tempStatus.getDownload() !=null){
+                if (tempStatus != null && tempStatus.getDownload() != null) {
+                    //System.out.println("hit ever");
                     //if(!label.textProperty().isBound()) {
-                        button.setText("can download");
-                        button.setVisible(true);
-                        label.setText("can donload");
-                        label.setVisible(true);
+                    label.textProperty().unbind();
+                    label.setVisible(false);
+                    progressBar.setVisible(false);
+                    progressBar.progressProperty().unbind();
+                    button.setText(tempStatus.getFolderName());
+                    button.setVisible(true);
+                    //  label.setText("can donload");
+                    //  label.setVisible(true);
                     //}
+                }else {
+                    button.setVisible(false);
                 }
+                //System.out.println("status obj value !=null");
             } else if (item != null) {
+                System.out.println("item !=null");
                 if (item.getNewVersionsTask() != null) {
                     progressBar.setProgress(item.getNewVersionsTask().getProgress());
                     progressBar.setVisible(true);
@@ -131,8 +138,8 @@ public class StatusCell extends TableCell<Addon, Status> {
                     progressBar.progressProperty().unbind();
                 }
 
-//                if(item.getLatestVersion() !=null){
-//                    label.setText(item.getLatestVersion());
+//                if(item.getLatestDownload() !=null){
+//                    label.setText(item.getLatestDownload());
 //                    label.setVisible(true);
 //                }else {
 //                    label.setText("item");
@@ -150,7 +157,7 @@ public class StatusCell extends TableCell<Addon, Status> {
 //            System.out.println(addon.getTitle() + " " + addon.getVersion() + " ");
 //            System.out.println(label.getText());
 //            if (item != null)
-//                System.out.println(item.getLatestVersion());
+//                System.out.println(item.getLatestDownload());
 //        }
 
 //        if (empty) {
@@ -174,7 +181,7 @@ public class StatusCell extends TableCell<Addon, Status> {
 //        if (addon == null || addon.statusProperty() == null || addon.statusProperty().get() == null)
 //            return;
 //
-//        //System.out.println(addon.getTitle()+" "+addon.getVersion()+" "+item.getLatestVersion());
+//        //System.out.println(addon.getTitle()+" "+addon.getVersion()+" "+item.getLatestDownload());
 //        //System.out.println(addon.getFolderName() + " " + pane.getBackground().getFills().get(0).getFill().toString());
 //        if (addon.statusProperty().get().getNewVersionsTask() != null) {
 //            progressBar.progressProperty().bind(addon.statusProperty().get().getNewVersionsTask().progressProperty());
@@ -186,10 +193,10 @@ public class StatusCell extends TableCell<Addon, Status> {
 //            progressBar.progressProperty().unbind();
 //        }
 //
-//        if (addon.statusProperty().get().getLatestVersion() != null) {
-//            label.setText(addon.statusProperty().get().getLatestVersion());
+//        if (addon.statusProperty().get().getLatestDownload() != null) {
+//            label.setText(addon.statusProperty().get().getLatestDownload());
 //            label.setVisible(true);
-//            //System.out.println(addon.getTitle() + " " + addon.getVersion() + " " + item.getLatestVersion() + " : " + label.getText());
+//            //System.out.println(addon.getTitle() + " " + addon.getVersion() + " " + item.getLatestDownload() + " : " + label.getText());
 //        }
 
 //        if (!empty)

@@ -13,14 +13,6 @@ public class Download {
 
     @Override
     public String toString() {
-        return "Download{" +
-                "release='" + release + '\'' +
-                ", title='" + title + '\'' +
-                ", fileSize='" + fileSize + '\'' +
-                ", fileDateUploaded=" + fileDateUploaded +
-                ", gameVersion='" + gameVersion + '\'' +
-                ", downloads=" + downloads +
-                ", downloadLink='" + downloadLink + '\'' +
-                '}';
+        return title;
     }
 }

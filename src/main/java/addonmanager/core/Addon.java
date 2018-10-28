@@ -5,12 +5,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.text.Collator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class Addon {
 
@@ -40,7 +37,7 @@ public class Addon {
     private ObjectProperty<ReleaseType> releaseType;
     private StringProperty title;
     private StringProperty version;
-    private StringProperty latestVersion;
+    private final ObjectProperty<Download> latestDownload;
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
     private StringProperty titleVersion;
@@ -49,8 +46,10 @@ public class Addon {
     public Addon(String folderName) {
         this.folderName = folderName;
         this.status = new SimpleObjectProperty<>(this, "status");
+        this.latestDownload=new SimpleObjectProperty<Download>(this, "latestDownload");
+        setLatestDownload(null);
         setReleaseType(ReleaseType.RELEASE);
-        updateLatestVersion();
+        updateLatestDownload();
     }
 
     public Status getStatus() {
@@ -111,38 +110,26 @@ public class Addon {
         return version;
     }
 
-    public String getLatestVersion() {
-        return latestVersionProperty().get();
+    public Download getLatestDownload() {
+        return latestDownloadProperty().get();
     }
 
-    public void setLatestVersion(String version) {
-        this.latestVersionProperty().set(version);
-        Collator collator = Collator.getInstance(new Locale("sv", "SE"));
-        collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
-        if (getLatestVersion() != null && getVersion() != null) {
-            System.out.println(getTitle() + " " + collator.compare(getLatestVersion(), getVersion()));
-            if(collator.compare(getLatestVersion(), getVersion()) > 0){
-                Status newStatus=new Status();
-                newStatus.setDownload(downloads.get(0));
-                setStatus(newStatus);
+    public void setLatestDownload(Download version) {
+        this.latestDownloadProperty().set(version);
 
-            }
-        }
 
     }
 
-    public StringProperty latestVersionProperty() {
-        if (latestVersion == null)
-            latestVersion = new SimpleStringProperty(this, "latestVersion");
-        return latestVersion;
+    public ObjectProperty<Download> latestDownloadProperty() {
+        return latestDownload;
     }
 
-    public void updateLatestVersion() {
+    public void updateLatestDownload() {
         if (downloads.isEmpty()) {
-            setLatestVersion("no data");
+            setLatestDownload(null);
             return;
         }
-        downloads.stream().filter(x -> x.release.equalsIgnoreCase(getReleaseType().name)).map(x -> x.title).findFirst().ifPresent(this::setLatestVersion);
+        downloads.stream().filter(x -> x.release.equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
 
     }
 
@@ -192,6 +179,6 @@ public class Addon {
 
     public void setDownloads(List<Download> downloads) {
         this.downloads = downloads;
-        updateLatestVersion();
+        updateLatestDownload();
     }
 }

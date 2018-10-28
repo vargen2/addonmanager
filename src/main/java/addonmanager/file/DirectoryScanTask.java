@@ -199,7 +199,8 @@ public class DirectoryScanTask extends Task<Void> {
                     return true;
                 }
             } else {
-                if (dir.getPath().contains("World of Warcraft Beta"))
+                //laptop /stationär
+                //if (dir.getPath().contains("World of Warcraft Beta"))
                     fileObservableList.add(parent);
                 return true;
             }

@@ -31,10 +31,11 @@ public class GetVersionsTask extends Task<List<Download>> {
         setOnScheduled(x -> {
             updateMessage("connecting...");
            // updateProgress(0, 1);
-            Status status = new Status();
-            status.setFolderName(addon.getFolderName());
-            status.setNewVersionsTask(this);
-            addon.setStatus(status);
+//            Status status = new Status();
+//            status.setFolderName(addon.getFolderName());
+//            status.setNewVersionsTask(this);
+//            addon.setStatus(status);
+            addon.setNewVersionsTask(this);
         });
         setOnSucceeded(x -> {
             updateMessage("done");

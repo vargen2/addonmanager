@@ -242,16 +242,16 @@ public class Controller {
         latestVersionCol.setPrefWidth(100);
 
 
-        TableColumn<Addon, Status> statusCol = new TableColumn<>("Status");
-        statusCol.setCellFactory(new Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>>() {
+        TableColumn<Addon, Addon.State> statusCol = new TableColumn<>("Status");
+        statusCol.setCellFactory(new Callback<TableColumn<Addon, Addon.State>, TableCell<Addon, Addon.State>>() {
             @Override
-            public TableCell<Addon, Status> call(TableColumn<Addon, Status> param) {
+            public TableCell<Addon, Addon.State> call(TableColumn<Addon, Addon.State> param) {
                 //System.out.println(param.toString());
                 return new StatusCell();
             }
         });
 
-        statusCol.setCellValueFactory(new PropertyValueFactory<Addon, Status>("status"));
+        statusCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.State>("state"));
         statusCol.setPrefWidth(200);
 
 

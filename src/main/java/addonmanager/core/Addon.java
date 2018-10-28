@@ -1,5 +1,6 @@
 package addonmanager.core;
 
+import addonmanager.net.GetVersionsTask;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Addon {
+
+    public enum State {NONE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
 
     public enum ReleaseType {
         ALPHA("alpha"),
@@ -41,28 +44,46 @@ public class Addon {
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
     private StringProperty titleVersion;
-    private final ObjectProperty<Status> status;
+    // private final ObjectProperty<Status> status;
+    private final ObjectProperty<State> state;
+    private GetVersionsTask getVersionsTask;
 
     public Addon(String folderName) {
         this.folderName = folderName;
-        this.status = new SimpleObjectProperty<>(this, "status");
-        this.latestDownload=new SimpleObjectProperty<Download>(this, "latestDownload");
+        //  this.status = new SimpleObjectProperty<>(this, "status");
+        this.state = new SimpleObjectProperty<>(this, "state");
+        this.latestDownload = new SimpleObjectProperty<Download>(this, "latestDownload");
         setLatestDownload(null);
         setReleaseType(ReleaseType.RELEASE);
         updateLatestDownload();
+        setState(State.NONE);
     }
 
-    public Status getStatus() {
-        return statusProperty().get();
+//    public Status getStatus() {
+//        return statusProperty().get();
+//    }
+//
+//    public ObjectProperty<Status> statusProperty() {
+//
+//        return status;
+//    }
+//
+//    public void setStatus(Status status) {
+//        statusProperty().set(status);
+//    }
+
+
+    public State getState() {
+        return stateProperty().get();
     }
 
-    public ObjectProperty<Status> statusProperty() {
+    public ObjectProperty<State> stateProperty() {
 
-        return status;
+        return state;
     }
 
-    public void setStatus(Status status) {
-        statusProperty().set(status);
+    public void setState(State state) {
+        stateProperty().set(state);
     }
 
 
@@ -127,10 +148,11 @@ public class Addon {
     public void updateLatestDownload() {
         if (downloads.isEmpty()) {
             setLatestDownload(null);
+            setState(State.NONE);
             return;
         }
         downloads.stream().filter(x -> x.release.equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
-
+        setState(State.CAN_UPDATE);
     }
 
     public String getGameVersion() {
@@ -181,4 +203,14 @@ public class Addon {
         this.downloads = downloads;
         updateLatestDownload();
     }
+
+    public GetVersionsTask getNewVersionsTask() {
+        return getVersionsTask;
+    }
+
+    public void setNewVersionsTask(GetVersionsTask getVersionsTask) {
+        this.getVersionsTask = getVersionsTask;
+        setState(State.GETTING_VERSIONS);
+    }
+
 }

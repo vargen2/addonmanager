@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -94,7 +95,7 @@ public class Game {
                     Thread thread = new Thread(task);
                     thread.setDaemon(true);
                     thread.start();
-                    List<Download> downloads = null;
+                    List<Download> downloads = new ArrayList<>();
                     try {
                         downloads = task.get();
 
@@ -104,41 +105,43 @@ public class Game {
                         System.out.println("addon: " + addon.getFolderName() + " " + e.getMessage());
                     }
 
-                    if (downloads != null && downloads.size() > 0) {
-                        addon.setDownloads(downloads);
 
-                        Collator collator = Collator.getInstance(new Locale("sv", "SE"));
-                        collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
-                        if (addon.getLatestDownload() != null && addon.getVersion() != null) {
-
-                            System.out.println(addon.getTitle() + " " + collator.compare(addon.getLatestDownload().title, addon.getVersion()));
-                            if(collator.compare(addon.getLatestDownload().title, addon.getVersion()) > 0){
-                                Status newStatus=new Status();
-                                newStatus.setFolderName(addon.getFolderName());
-                                newStatus.setDownload(addon.getLatestDownload());
-                                addon.setStatus(newStatus);
-
-                            }else {
-                                Status status = new Status();
-                                status.setFolderName(addon.getFolderName());
-                                addon.setStatus(status);
-                            }
-                        }else {
-                            Status status = new Status();
-                            status.setFolderName(addon.getFolderName());
-                            addon.setStatus(status);
-                        }
-                        //Status status = new Status();
-                        //status.setLatestDownload(downloads.get(0).title);
-                       // status.setFolderName(addon.getFolderName());
-                        System.out.println("addonfolder: " + addon.getFolderName()+" addon.title.replace: "+ addon.getTitle().replaceAll(" ","-")+" version:"+addon.getVersion() + " downloads.title: " + downloads.get(0).title);
-                       // addon.setStatus(status);
-
-                    } else {
-                        Status status = new Status();
-                        status.setFolderName(addon.getFolderName());
-                        addon.setStatus(status);
-                    }
+                    addon.setDownloads(downloads);
+//                    if (downloads != null && downloads.size() > 0) {
+//                        addon.setDownloads(downloads);
+//
+//                        Collator collator = Collator.getInstance(new Locale("sv", "SE"));
+//                        collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
+//                        if (addon.getLatestDownload() != null && addon.getVersion() != null) {
+//
+//                            System.out.println(addon.getTitle() + " " + collator.compare(addon.getLatestDownload().title, addon.getVersion()));
+//                            if(collator.compare(addon.getLatestDownload().title, addon.getVersion()) > 0){
+//                                Status newStatus=new Status();
+//                                newStatus.setFolderName(addon.getFolderName());
+//                                newStatus.setDownload(addon.getLatestDownload());
+//                                addon.setStatus(newStatus);
+//
+//                            }else {
+//                                Status status = new Status();
+//                                status.setFolderName(addon.getFolderName());
+//                                addon.setStatus(status);
+//                            }
+//                        }else {
+//                            Status status = new Status();
+//                            status.setFolderName(addon.getFolderName());
+//                            addon.setStatus(status);
+//                        }
+//                        //Status status = new Status();
+//                        //status.setLatestDownload(downloads.get(0).title);
+//                       // status.setFolderName(addon.getFolderName());
+//                        System.out.println("addonfolder: " + addon.getFolderName()+" addon.title.replace: "+ addon.getTitle().replaceAll(" ","-")+" version:"+addon.getVersion() + " downloads.title: " + downloads.get(0).title);
+//                       // addon.setStatus(status);
+//
+//                    } else {
+//                        Status status = new Status();
+//                        status.setFolderName(addon.getFolderName());
+//                        addon.setStatus(status);
+//                    }
                 });
 
                 return null;

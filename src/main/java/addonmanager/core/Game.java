@@ -105,11 +105,11 @@ public class Game {
                         addon.setDownloads(downloads);
 
 
-                        Status status = new Status();
-                        status.setLatestVersion(downloads.get(0).title);
-                        status.setFolderName(addon.getFolderName());
+                        //Status status = new Status();
+                        //status.setLatestVersion(downloads.get(0).title);
+                       // status.setFolderName(addon.getFolderName());
                         System.out.println("addonfolder: " + addon.getFolderName()+" addon.title.replace: "+ addon.getTitle().replaceAll(" ","-")+" version:"+addon.getVersion() + " downloads.title: " + downloads.get(0).title);
-                        addon.setStatus(status);
+                       // addon.setStatus(status);
 
                     } else {
                         Status status = new Status();

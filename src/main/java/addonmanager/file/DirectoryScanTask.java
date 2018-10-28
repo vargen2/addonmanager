@@ -41,32 +41,41 @@ public class DirectoryScanTask extends Task<Void> {
 
                     Game game = new Game(change.getElementAdded().getName(), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
                     Platform.runLater(() -> {
+                        Task<Void> refreshTask;
                         ChoiceBoxItem cbi = new ChoiceBoxItem(game);
                         if (model.selectedGame.getValue() == null) {
-
-
                             cb.setValue(cbi);
+                            refreshTask = new Task<Void>() {
+                                @Override
+                                protected Void call() {
+                                    game.refresh();
+                                    game.refreshFromNet();
+                                    return null;
+                                }
+                            };
+                        } else {
+                            refreshTask = new Task<Void>() {
+                                @Override
+                                protected Void call() {
+                                    game.refresh();
+                                    return null;
+                                }
+                            };
                         }
                         cb.getItems().add(0, cbi);
 
                         model.games.add(game);
+
+                        // refreshTask.setOnSucceeded(x -> );
+                        Thread t = new Thread(refreshTask);
+                        t.setDaemon(true);
+                        t.start();
                     });
-                    Task<Void> refreshTask = new Task<>() {
-                        @Override
-                        protected Void call() {
-                            game.refresh();
-                            game.refreshFromNet();
-                            return null;
-                        }
-                    };
-                   // refreshTask.setOnSucceeded(x -> );
-                    Thread t = new Thread(refreshTask);
-                    t.setDaemon(true);
-                    t.start();
+
                     return null;
                 }
             };
-           // Platform.runLater(() -> taskProgressView.getTasks().add(task));
+            // Platform.runLater(() -> taskProgressView.getTasks().add(task));
             Thread t = new Thread(task);
             t.setDaemon(true);
             t.start();
@@ -190,8 +199,8 @@ public class DirectoryScanTask extends Task<Void> {
                     return true;
                 }
             } else {
-                //if(dir.getPath().contains("World of Warcraft Beta"))
-                fileObservableList.add(parent);
+                if (dir.getPath().contains("World of Warcraft Beta"))
+                    fileObservableList.add(parent);
                 return true;
             }
         }

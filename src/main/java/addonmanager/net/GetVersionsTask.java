@@ -92,12 +92,12 @@ public class GetVersionsTask extends Task<List<Download>> {
         Pattern pattern = Pattern.compile("<tr class=\"project-file-list__item\">");
         Matcher matcher = pattern.matcher(data);
 
-        //System.out.println(addonName+" "+input.length());
 
         while (matcher.find()) {
             Download download = new Download();
             String subString = data.substring(matcher.start());
-            download.release = parse(subString, "<span class=\"file-phase--release\" title=\"", "\"></span>");
+            String temp =parse(subString, "<td class=\"project-file__release-type\">", "</td>");
+            download.release = parse(temp, "title=\"", "\"></span>");
             download.title = parse(subString, "<td class=\"project-file__name\" title=\"", "\">");
             download.fileSize = parse(subString, "<span class=\"table__content file__size\">", "</span>");
             String a = parse(subString, "data-epoch=\"", "\"");
@@ -118,4 +118,6 @@ public class GetVersionsTask extends Task<List<Download>> {
         String mid = input.substring(startI);
         return mid.substring(0, mid.indexOf(end));
     }
+
+
 }

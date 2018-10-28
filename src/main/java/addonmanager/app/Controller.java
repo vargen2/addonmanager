@@ -218,22 +218,24 @@ public class Controller {
         TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
         releaseTypeCol.setCellValueFactory(new PropertyValueFactory("releaseType"));
         releaseTypeCol.setPrefWidth(50);
-        releaseTypeCol.setCellFactory(new Callback<TableColumn<Addon, Addon.ReleaseType>, TableCell<Addon, Addon.ReleaseType>>() {
-            @Override
-            public TableCell<Addon, Addon.ReleaseType> call(TableColumn<Addon, Addon.ReleaseType> param) {
-                return new TableCell<Addon, Addon.ReleaseType>() {
-
-                    @Override
-                    public void updateItem(Addon.ReleaseType item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (!isEmpty()) {
-                            this.setStyle("-fx-font-size: 2em");
-                            setText(item.toString());
-                        }
-                    }
-                };
-            }
-        });
+//        releaseTypeCol.setCellFactory(new Callback<TableColumn<Addon, Addon.ReleaseType>, TableCell<Addon, Addon.ReleaseType>>() {
+//            @Override
+//            public TableCell<Addon, Addon.ReleaseType> call(TableColumn<Addon, Addon.ReleaseType> param) {
+//                return new TableCell<Addon, Addon.ReleaseType>() {
+//
+//                    @Override
+//                    public void updateItem(Addon.ReleaseType item, boolean empty) {
+//                        super.updateItem(item, empty);
+//                        if (!isEmpty()) {
+//                            this.setStyle("-fx-font-size: 2em");
+//                            setText(item.toString());
+//                        }else {
+//                            setText(null);
+//                        }
+//                    }
+//                };
+//            }
+//        });
 
         TableColumn<Addon, String> latestVersionCol = new TableColumn<>("Latest Version");
         latestVersionCol.setCellValueFactory(new PropertyValueFactory("latestVersion"));
@@ -257,7 +259,7 @@ public class Controller {
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 
-        tableView.getColumns().setAll(nameCol, releaseTypeCol, statusCol, gameVersionCol);
+        tableView.getColumns().setAll(nameCol, releaseTypeCol,latestVersionCol, statusCol, gameVersionCol);
 //        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
 //            tableView.refresh();
 //

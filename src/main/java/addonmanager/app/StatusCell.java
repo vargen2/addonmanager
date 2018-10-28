@@ -32,7 +32,7 @@ public class StatusCell extends TableCell<Addon, Status> {
         this.pane = new StackPane();
         this.button = new Button("");
         this.label = new Label("");
-        StackPane.setAlignment(this.button, Pos.CENTER);
+        StackPane.setAlignment(this.button, Pos.TOP_CENTER);
         StackPane.setAlignment(this.label, Pos.BOTTOM_CENTER);
         this.pane.getChildren().add(this.button);
         this.pane.getChildren().add(this.label);
@@ -60,8 +60,8 @@ public class StatusCell extends TableCell<Addon, Status> {
         setOnMouseClicked(event -> {
             var addon = getTableRow().getItem();
             String sp = "";
-            if (addon != null && addon.getStatus() != null && addon.getStatus().getLatestVersion() != null)
-                sp = addon.getStatus().getLatestVersion();
+            if (addon != null && addon.getStatus() != null)
+
             System.out.println(getTableRow().getItem().getTitle() + " " + getTableRow().getItem().getVersion() + " label " + this.label + " labeltext " +
                     this.label.getText() + " statusprop " + sp + " pane " + this.pane);
         });
@@ -105,18 +105,23 @@ public class StatusCell extends TableCell<Addon, Status> {
                     progressBar.setVisible(false);
                     progressBar.progressProperty().unbind();
                 }
-                if(tempStatus!=null&&tempStatus.getLatestVersion() !=null){
-                    if(!label.textProperty().isBound()) {
-                        label.setText(tempStatus.getLatestVersion());
-                        label.setVisible(true);
-                    }
-                }else {
-                    if(!label.textProperty().isBound()) {
-                        label.setText("status observable");
-                        label.setVisible(true);
-                    }
-                }
+//                if(tempStatus!=null&&tempStatus.getLatestVersion() !=null){
+//                    if(!label.textProperty().isBound()) {
+//                        label.setText(tempStatus.getLatestVersion());
+//                        label.setVisible(true);
+//                    }
+//                }else {
 
+//                }
+
+                if(tempStatus!=null &&tempStatus.getDownload() !=null){
+                    //if(!label.textProperty().isBound()) {
+                        button.setText("can download");
+                        button.setVisible(true);
+                        label.setText("can donload");
+                        label.setVisible(true);
+                    //}
+                }
             } else if (item != null) {
                 if (item.getNewVersionsTask() != null) {
                     progressBar.setProgress(item.getNewVersionsTask().getProgress());
@@ -126,13 +131,13 @@ public class StatusCell extends TableCell<Addon, Status> {
                     progressBar.progressProperty().unbind();
                 }
 
-                if(item.getLatestVersion() !=null){
-                    label.setText(item.getLatestVersion());
-                    label.setVisible(true);
-                }else {
-                    label.setText("item");
-                    label.setVisible(true);
-                }
+//                if(item.getLatestVersion() !=null){
+//                    label.setText(item.getLatestVersion());
+//                    label.setVisible(true);
+//                }else {
+//                    label.setText("item");
+//                    label.setVisible(true);
+//                }
             }
 
             setGraphic(pane);

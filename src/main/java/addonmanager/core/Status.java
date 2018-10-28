@@ -5,7 +5,7 @@ import addonmanager.net.GetVersionsTask;
 public class Status {
     private String folderName;
     private GetVersionsTask getVersionsTask;
-    private String latestVersion;
+
     private Download download;
 
     public GetVersionsTask getNewVersionsTask() {
@@ -16,13 +16,7 @@ public class Status {
         this.getVersionsTask = getVersionsTask;
     }
 
-    public String getLatestVersion() {
-        return latestVersion;
-    }
 
-    public void setLatestVersion(String latestVersion) {
-        this.latestVersion = latestVersion;
-    }
 
     public Download getDownload() {
         return download;

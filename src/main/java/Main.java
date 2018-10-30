@@ -1,8 +1,12 @@
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -14,6 +18,12 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 960, 540));
         primaryStage.setY(0);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(t -> {
+            t.consume();
+
+            Platform.exit();
+
+        });
     }
 
     public static void main(String[] args) {

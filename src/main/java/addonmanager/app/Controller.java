@@ -3,25 +3,21 @@ package addonmanager.app;
 import addonmanager.core.Addon;
 import addonmanager.core.Game;
 import addonmanager.core.Model;
-import addonmanager.core.Status;
 import addonmanager.file.DirectoryScanTask;
-import addonmanager.old.DirectoryScanner;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.collections.SetChangeListener;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
+import org.controlsfx.control.PopOver;
+import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.TaskProgressView;
 
-import java.io.File;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class Controller {
@@ -211,13 +207,13 @@ public class Controller {
         });
 
 
-        TableColumn<Addon, String> nameCol = new TableColumn<>("Title");
-        nameCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
-        nameCol.setPrefWidth(200);
+        TableColumn<Addon, String> titleVersionCol = new TableColumn<>("Title");
+        titleVersionCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
+        titleVersionCol.setPrefWidth(200);
 
-        TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
-        releaseTypeCol.setCellValueFactory(new PropertyValueFactory("releaseType"));
-        releaseTypeCol.setPrefWidth(50);
+//        TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
+//        releaseTypeCol.setCellValueFactory(new PropertyValueFactory("releaseType"));
+//        releaseTypeCol.setPrefWidth(50);
 //        releaseTypeCol.setCellFactory(new Callback<TableColumn<Addon, Addon.ReleaseType>, TableCell<Addon, Addon.ReleaseType>>() {
 //            @Override
 //            public TableCell<Addon, Addon.ReleaseType> call(TableColumn<Addon, Addon.ReleaseType> param) {
@@ -237,29 +233,23 @@ public class Controller {
 //            }
 //        });
 
-        TableColumn<Addon, String> latestVersionCol = new TableColumn<>("Latest Version");
-        latestVersionCol.setCellValueFactory(new PropertyValueFactory("latestDownload"));
-        latestVersionCol.setPrefWidth(100);
+        TableColumn<Addon, String> releaseLatestCol = new TableColumn<>("Latest Version");
+        releaseLatestCol.setCellValueFactory(new PropertyValueFactory("releaseLatest"));
+        releaseLatestCol.setPrefWidth(100);
+        releaseLatestCol.setCellFactory(ReleaseLatestVersionCell.cellFactory());
 
+        TableColumn<Addon, Addon.State> stateCol = new TableColumn<>("Status");
+        stateCol.setCellFactory(StatusCell.cellFactory());
 
-        TableColumn<Addon, Addon.State> statusCol = new TableColumn<>("Status");
-        statusCol.setCellFactory(new Callback<TableColumn<Addon, Addon.State>, TableCell<Addon, Addon.State>>() {
-            @Override
-            public TableCell<Addon, Addon.State> call(TableColumn<Addon, Addon.State> param) {
-                //System.out.println(param.toString());
-                return new StatusCell();
-            }
-        });
-
-        statusCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.State>("state"));
-        statusCol.setPrefWidth(200);
+        stateCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.State>("state"));
+        stateCol.setPrefWidth(200);
 
 
         TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 
-        tableView.getColumns().setAll(nameCol, releaseTypeCol,latestVersionCol, statusCol, gameVersionCol);
+        tableView.getColumns().setAll(titleVersionCol,releaseLatestCol, stateCol, gameVersionCol);
 //        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
 //            tableView.refresh();
 //

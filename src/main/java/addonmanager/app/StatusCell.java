@@ -15,6 +15,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
 
 public class StatusCell extends TableCell<Addon, State> {
 
@@ -218,5 +219,8 @@ public class StatusCell extends TableCell<Addon, State> {
 
     }
 
+    public static Callback<TableColumn<Addon, State>, TableCell<Addon, State>> cellFactory(){
+        return param -> new StatusCell();
+    }
 
 }

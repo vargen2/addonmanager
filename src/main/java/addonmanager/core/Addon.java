@@ -34,19 +34,24 @@ public class Addon {
     enum UpdateMode {AUTO, MANUAL}
 
     private List<Download> downloads = new ArrayList<>();
+    private GetVersionsTask getVersionsTask;
     private String folderName;
     private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
-    private ObjectProperty<ReleaseType> releaseType;
+
     private StringProperty title;
     private StringProperty version;
-    private final ObjectProperty<Download> latestDownload;
+    private StringProperty titleVersion;
+
     private LocalDateTime dateUploaded;
     private StringProperty gameVersion;
-    private StringProperty titleVersion;
-    // private final ObjectProperty<Status> status;
+
+    private ObjectProperty<ReleaseType> releaseType;
+    private final ObjectProperty<Download> latestDownload;
+    private StringProperty releaseLatest;
+
     private final ObjectProperty<State> state;
-    private GetVersionsTask getVersionsTask;
+
 
     public Addon(String folderName) {
         this.folderName = folderName;
@@ -56,21 +61,9 @@ public class Addon {
         setLatestDownload(null);
         setReleaseType(ReleaseType.RELEASE);
         updateLatestDownload();
+
         setState(State.NONE);
     }
-
-//    public Status getStatus() {
-//        return statusProperty().get();
-//    }
-//
-//    public ObjectProperty<Status> statusProperty() {
-//
-//        return status;
-//    }
-//
-//    public void setStatus(Status status) {
-//        statusProperty().set(status);
-//    }
 
 
     public State getState() {
@@ -135,7 +128,7 @@ public class Addon {
         return latestDownloadProperty().get();
     }
 
-    public void setLatestDownload(Download version) {
+    private void setLatestDownload(Download version) {
         this.latestDownloadProperty().set(version);
 
 
@@ -175,12 +168,28 @@ public class Addon {
 
     public void setReleaseType(ReleaseType releaseType) {
         releaseTypeProperty().setValue(releaseType);
+        updateLatestDownload();
+        updateReleaseLatest();
     }
 
     public ObjectProperty<ReleaseType> releaseTypeProperty() {
         if (releaseType == null)
             releaseType = new SimpleObjectProperty<>(this, "releaseType");
         return releaseType;
+    }
+
+    private void updateReleaseLatest() {
+        releaseLatestProperty().setValue(getReleaseType().name + ((getLatestDownload() != null) ? "\n" + getLatestDownload() : ""));
+    }
+
+    public String getReleaseLatest() {
+        return releaseLatestProperty().get();
+    }
+
+    public StringProperty releaseLatestProperty() {
+        if (releaseLatest == null)
+            releaseLatest = new SimpleStringProperty(this, "releaseLatest");
+        return releaseLatest;
     }
 
     public LocalDateTime getDateUploaded() {
@@ -202,6 +211,7 @@ public class Addon {
     public void setDownloads(List<Download> downloads) {
         this.downloads = downloads;
         updateLatestDownload();
+        updateReleaseLatest();
     }
 
     public GetVersionsTask getNewVersionsTask() {

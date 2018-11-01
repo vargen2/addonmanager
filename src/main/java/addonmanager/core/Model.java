@@ -10,7 +10,11 @@ public class Model {
     public final ObservableList<Game> games = FXCollections.observableArrayList();
     public final Property<Game> selectedGame = new SimpleObjectProperty<Game>();
 
-
+    public void setReleaseTypeSelectedGame(Addon.ReleaseType releaseType) {
+        if (selectedGame.getValue() == null)
+            return;
+        selectedGame.getValue().addons.forEach(x -> x.setReleaseType(releaseType));
+    }
 //    public static Queue<File> searchForWowDirectorys() {
 //        var drives = File.listRoots();
 //

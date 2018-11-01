@@ -15,4 +15,14 @@ public class Download {
     public String toString() {
         return title;
     }
+
+    public String toDetailedString() {
+        return "release='" + release + '\'' +
+                ", title='" + title + '\'' +
+                ", fileSize='" + fileSize + '\'' +
+                ", fileDateUploaded=" + fileDateUploaded +
+                ", gameVersion='" + gameVersion + '\'' +
+                ", downloads=" + downloads +
+                ", downloadLink='" + downloadLink + '\'';
+    }
 }

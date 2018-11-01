@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.SegmentedButton;
@@ -26,6 +27,8 @@ public class Controller {
     @FXML
     private Button refreshButton;
     @FXML
+    private Button settingsButton;
+    @FXML
     private ChoiceBox gameChoiceBox;
     @FXML
     private TableView<Addon> tableView;
@@ -37,6 +40,7 @@ public class Controller {
     @FXML
     private void initialize() {
         Model model = new Model();
+        Settings settings = new Settings(model);
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -249,22 +253,29 @@ public class Controller {
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(100);
 
-        tableView.getColumns().setAll(titleVersionCol,releaseLatestCol, stateCol, gameVersionCol);
+        tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
 //        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
 //            tableView.refresh();
 //
 //            System.out.println("scroll");
 //        });
 
-        refreshButton.setOnAction(event ->
-
-        {
+        refreshButton.setOnAction(event -> {
             Game game = model.selectedGame.getValue();
             if (game == null)
                 return;
             game.refresh();
             game.refreshFromNet();
         });
+
+        settingsButton.setOnAction(event -> {
+            if(!settings.isShowing())
+                settings.show(settingsButton);
+            else
+                settings.hide();
+        });
+
+
 
     }
 

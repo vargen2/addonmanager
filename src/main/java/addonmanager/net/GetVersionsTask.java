@@ -2,7 +2,6 @@ package addonmanager.net;
 
 import addonmanager.core.Addon;
 import addonmanager.core.Download;
-import addonmanager.core.Status;
 import javafx.concurrent.Task;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
@@ -30,17 +29,17 @@ public class GetVersionsTask extends Task<List<Download>> {
         urlName[2] = addon.getTitle();
         setOnScheduled(x -> {
             updateMessage("connecting...");
-           // updateProgress(0, 1);
+            // updateProgress(0, 1);
 //            Status status = new Status();
 //            status.setFolderName(addon.getFolderName());
 //            status.setNewVersionsTask(this);
 //            addon.setStatus(status);
             addon.setNewVersionsTask(this);
         });
-        setOnSucceeded(x -> {
-            updateMessage("done");
-            updateProgress(1, 1);
-        });
+//        setOnSucceeded(x -> {
+//            updateMessage("done");
+//            updateProgress(1, 1);
+//        });
 //        setOnCancelled();
 //        setOnFailed();
     }
@@ -50,6 +49,7 @@ public class GetVersionsTask extends Task<List<Download>> {
         List<Download> downloads = new ArrayList<>();
 
         //updateProgress(0, 1);
+        String retrying = "retrying";
         String input = "";
         for (String anUrlName : urlName) {
             HttpClient httpClient = HttpClient.newHttpClient();
@@ -71,7 +71,8 @@ public class GetVersionsTask extends Task<List<Download>> {
             }
             if (response.statusCode() != 200) {
                 System.out.println("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
-                updateMessage("retrying...");
+                retrying += ".";
+                updateMessage(retrying);
                 continue;
 
             } else {
@@ -97,7 +98,7 @@ public class GetVersionsTask extends Task<List<Download>> {
         while (matcher.find()) {
             Download download = new Download();
             String subString = data.substring(matcher.start());
-            String temp =parse(subString, "<td class=\"project-file__release-type\">", "</td>");
+            String temp = parse(subString, "<td class=\"project-file__release-type\">", "</td>");
             download.release = parse(temp, "title=\"", "\"></span>");
             download.title = parse(subString, "<td class=\"project-file__name\" title=\"", "\">");
             download.fileSize = parse(subString, "<span class=\"table__content file__size\">", "</span>");
@@ -108,8 +109,8 @@ public class GetVersionsTask extends Task<List<Download>> {
             download.downloadLink = parse(subString, " href=\"", "\"");
             downloads.add(download);
         }
-        updateProgress(0.9, 1);
-
+        updateProgress(1, 1);
+        updateMessage("done");
         return downloads;
 
     }

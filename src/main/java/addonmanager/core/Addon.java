@@ -1,18 +1,26 @@
 package addonmanager.core;
 
+import addonmanager.file.ReplaceAddonTask;
 import addonmanager.net.GetVersionsTask;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
+import java.nio.file.Files;
+import java.text.Collator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Addon {
 
-    public enum State {NONE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
+    public enum Status {NONE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
 
     public enum ReleaseType {
         ALPHA("alpha"),
@@ -35,7 +43,9 @@ public class Addon {
 
     private List<Download> downloads = new ArrayList<>();
     private GetVersionsTask getVersionsTask;
+    private ReplaceAddonTask replaceAddonTask;
     private String folderName;
+    private String absolutePath;
     private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
 
@@ -50,33 +60,33 @@ public class Addon {
     private final ObjectProperty<Download> latestDownload;
     private StringProperty releaseLatest;
 
-    private final ObjectProperty<State> state;
+    private final ObjectProperty<Status> status;
 
 
-    public Addon(String folderName) {
+    public Addon(String folderName, String absolutePath) {
         this.folderName = folderName;
+        this.absolutePath = absolutePath;
         //  this.status = new SimpleObjectProperty<>(this, "status");
-        this.state = new SimpleObjectProperty<>(this, "state");
+        this.status = new SimpleObjectProperty<>(this, "status");
         this.latestDownload = new SimpleObjectProperty<Download>(this, "latestDownload");
         setLatestDownload(null);
         setReleaseType(ReleaseType.RELEASE);
         updateLatestDownload();
-
-        setState(State.NONE);
+        setStatus(Status.NONE);
     }
 
 
-    public State getState() {
-        return stateProperty().get();
+    public Status getStatus() {
+        return statusProperty().get();
     }
 
-    public ObjectProperty<State> stateProperty() {
+    public ObjectProperty<Status> statusProperty() {
 
-        return state;
+        return status;
     }
 
-    public void setState(State state) {
-        stateProperty().set(state);
+    public void setStatus(Status status) {
+        statusProperty().set(status);
     }
 
 
@@ -141,11 +151,24 @@ public class Addon {
     public void updateLatestDownload() {
         if (downloads.isEmpty()) {
             setLatestDownload(null);
-            setState(State.NONE);
+            setStatus(Status.NONE);
             return;
         }
         downloads.stream().filter(x -> x.release.equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
-        setState(State.CAN_UPDATE);
+        Collator collator = Collator.getInstance(new Locale("sv", "SE"));
+        collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
+        if (getLatestDownload() != null && getVersion() != null) {
+
+            if (collator.compare(getLatestDownload().title, getVersion()) > 0) {
+                setStatus(Status.CAN_UPDATE);
+
+            } else {
+                setStatus(Status.UP_TO_DATE);
+            }
+        }else if(getLatestDownload() !=null && getVersion()==null){
+            setStatus(Status.CAN_UPDATE);
+        }
+
     }
 
     public String getGameVersion() {
@@ -220,7 +243,58 @@ public class Addon {
 
     public void setNewVersionsTask(GetVersionsTask getVersionsTask) {
         this.getVersionsTask = getVersionsTask;
-        setState(State.GETTING_VERSIONS);
+        setStatus(Status.GETTING_VERSIONS);
     }
 
+    public ReplaceAddonTask getReplaceAddonTask() {
+        return replaceAddonTask;
+    }
+
+    public void setReplaceAddonTask(ReplaceAddonTask replaceAddonTask) {
+        this.replaceAddonTask = replaceAddonTask;
+        setStatus(Status.UPDATING);
+    }
+
+    public String getAbsolutePath() {
+        return absolutePath;
+    }
+
+    //todo move this method to file.someetinhg
+    public void refreshToc() {
+        File d = new File(absolutePath);
+        var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
+        if (tocFile == null || tocFile[0] == null)
+            return;
+        List<String> lines = null;
+
+        try {
+            lines = Files.readAllLines(tocFile[0].toPath());
+        } catch (MalformedInputException e) {
+
+
+            try {
+                lines = Files.readAllLines(tocFile[0].toPath(), Charset.forName("ISO-8859-1"));
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (lines == null)
+            return;
+
+        for (var line : lines) {
+            if (line.contains("Interface:")) {
+                setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
+            } else if (line.contains("Version:")) {
+                setVersion(line.substring(line.indexOf("Version:") + 8).trim());
+            } else if (line.contains("Title:")) {
+
+                setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
+            }
+        }
+    }
 }

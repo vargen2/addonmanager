@@ -1,26 +1,18 @@
 package addonmanager.app;
 
 import addonmanager.core.Addon;
-import addonmanager.core.Addon.State;
 import addonmanager.core.Download;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.SegmentedButton;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.temporal.TemporalAmount;
 
 public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
 
@@ -29,7 +21,7 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
 
     public ReleaseLatestVersionCell() {
         super();
-
+        setPrefHeight(40.0);
         setOnMouseClicked(event -> {
 
             if (popOver != null && popOver.isShowing()) {

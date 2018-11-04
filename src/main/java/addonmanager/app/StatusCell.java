@@ -1,78 +1,49 @@
 package addonmanager.app;
 
 import addonmanager.core.Addon;
-import addonmanager.core.Addon.State;
-import addonmanager.core.Status;
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
+import addonmanager.core.Addon.Status;
+import addonmanager.file.ReplaceAddonTask;
+import addonmanager.net.DownloadAddonTask;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ProgressBarTableCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
-public class StatusCell extends TableCell<Addon, State> {
-
+public class StatusCell extends TableCell<Addon, Status> {
 
     private final StackPane pane;
     private final Button button;
     private final Label label;
     private final ProgressBar progressBar;
-    private ObservableValue<State> statusObjectValue;
+    private ObservableValue<Status> statusObjectValue;
 
     public StatusCell() {
         super();
 
-        //getChildren().add(new Button("texte"));
-        //getChildren().add(new Label("everythinf fine"));
-        this.pane = new StackPane();
-        this.button = new Button("");
-        this.label = new Label("");
-        StackPane.setAlignment(this.button, Pos.TOP_CENTER);
-        StackPane.setAlignment(this.label, Pos.BOTTOM_CENTER);
-        this.pane.getChildren().add(this.button);
-        this.pane.getChildren().add(this.label);
-        this.button.setVisible(false);
-        this.label.setVisible(false);
-        this.progressBar = new ProgressBar();
-        this.progressBar.setVisible(false);
-        StackPane.setAlignment(this.progressBar, Pos.TOP_CENTER);
-        this.pane.getChildren().add(this.progressBar);
-
-        //var bf = new BackgroundFill(new Color(Math.random(), Math.random(), Math.random(), 1), null, null);
-        //pane.setBackground(new Background(bf));
-        //setGraphic(pane);
-        // System.out.println("cnostructor");
-//        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-//        Platform.runLater(() -> {
-//                    getTableRow().selectedProperty().addListener(new ChangeListener<Boolean>() {
-//                        @Override
-//                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-//                            System.out.println(getTableRow().getItem().getTitle() + " " + getTableRow().getItem().getVersion() + "" + getTableRow().getItem().statusProperty().getValue());
-//                        }
-//                    });
-//                }
-//        );
-        setOnMouseClicked(event -> {
-//            var addon = getTableRow().getItem();
-//            String sp = "";
-//            if (addon != null && addon.getStatus() != null)
-//
-//                System.out.println(getTableRow().getItem().getTitle() + " " + getTableRow().getItem().getVersion() + " label " + this.label + " labeltext " +
-//                        this.label.getText() + " statusprop " + sp + " pane " + this.pane);
-        });
+        button = new Button("");
+        label = new Label("");
+        progressBar = new ProgressBar();
+        button.setVisible(false);
+        label.setVisible(false);
+        progressBar.setVisible(false);
+        StackPane.setAlignment(button, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.CENTER);
+        StackPane.setAlignment(progressBar, Pos.CENTER);
+//        pane.getChildren().add(button);
+//        pane.getChildren().add(progressBar);
+//        pane.getChildren().add(label);
+        label.setPrefHeight(20);
+        progressBar.setPrefHeight(20);
+        pane = new StackPane(progressBar, button, label);
     }
 
     //todo debugga
     // TODO: 2018-10-24 progressindicator instead
     @Override
-    protected void updateItem(State item, boolean empty) {
+    protected void updateItem(Status item, boolean empty) {
         //pane.layout();
         //pane.requestLayout();
         var addon = getTableRow().getItem();
@@ -88,10 +59,16 @@ public class StatusCell extends TableCell<Addon, State> {
             pane.setVisible(false);
             setGraphic(null);
         } else {
+            if (!pane.prefWidthProperty().isBound()) {
+                pane.prefWidthProperty().bind(getTableColumn().widthProperty());
+                //label.prefWidthProperty().bind(getTableColumn().widthProperty());
+                button.prefWidthProperty().bind(getTableColumn().widthProperty());
+                progressBar.prefWidthProperty().bind(getTableColumn().widthProperty());
+            }
             pane.setVisible(true);
             progressBar.progressProperty().unbind();
 
-            final TableColumn<Addon, State> column = getTableColumn();
+            final TableColumn<Addon, Status> column = getTableColumn();
             statusObjectValue = column == null ? null : column.getCellObservableValue(getIndex());
 
             if (statusObjectValue != null) {
@@ -100,7 +77,7 @@ public class StatusCell extends TableCell<Addon, State> {
 //                if (addon != null && addon.getFolderName() != null&&tempStatus!=null && tempStatus.getFolderName() != null)
 //                    System.out.println(addon.getTitle() + " " + tempStatus.getFolderName());
 
-                if (tempStatus != null &&tempStatus==State.GETTING_VERSIONS&& addon!=null) {
+                if (tempStatus != null && tempStatus == Status.GETTING_VERSIONS && addon != null) {
 
                     progressBar.progressProperty().bind(addon.getNewVersionsTask().progressProperty());
                     progressBar.setVisible(true);
@@ -111,20 +88,53 @@ public class StatusCell extends TableCell<Addon, State> {
                 }
 
 
-                if (tempStatus != null && tempStatus==State.CAN_UPDATE &&addon!=null) {
+                if (tempStatus != null && tempStatus == Status.CAN_UPDATE && addon != null) {
                     //System.out.println("hit ever");
                     //if(!label.textProperty().isBound()) {
                     label.textProperty().unbind();
                     label.setVisible(false);
                     progressBar.setVisible(false);
                     progressBar.progressProperty().unbind();
-                    button.setText(addon.getFolderName());
+                    button.setText("update");
+                    button.setOnAction(event -> {
+                        ReplaceAddonTask replaceAddonTask = new ReplaceAddonTask(addon);
+                        Thread t = new Thread(replaceAddonTask);
+                        t.setDaemon(true);
+                        t.start();
+
+                    });
+
                     button.setVisible(true);
                     //  label.setText("can donload");
                     //  label.setVisible(true);
                     //}
                 }
-                if (tempStatus != null && tempStatus==State.NONE &&addon!=null) {
+                if (tempStatus != null && tempStatus == Status.UPDATING && addon != null) {
+
+                    progressBar.progressProperty().bind(addon.getReplaceAddonTask().progressProperty());
+                    progressBar.setVisible(true);
+                    label.textProperty().bind(addon.getReplaceAddonTask().messageProperty());
+                    label.setVisible(true);
+                    button.setVisible(false);
+                    button.setText("");
+                }
+
+                if (tempStatus != null && tempStatus == Status.UP_TO_DATE && addon != null) {
+                    //System.out.println("hit ever");
+                    //if(!label.textProperty().isBound()) {
+                    label.textProperty().unbind();
+                    label.setVisible(true);
+                    label.setText("up to date");
+                    progressBar.setVisible(false);
+                    progressBar.progressProperty().unbind();
+                    button.setText("");
+                    button.setVisible(false);
+                    //  label.setText("can donload");
+                    //  label.setVisible(true);
+                    //}
+                }
+
+                if (tempStatus != null && tempStatus == Status.NONE && addon != null) {
                     //System.out.println("hit ever");
                     //if(!label.textProperty().isBound()) {
                     label.textProperty().unbind();
@@ -137,8 +147,8 @@ public class StatusCell extends TableCell<Addon, State> {
                     //  label.setText("can donload");
                     //  label.setVisible(true);
                     //}
-                }
 
+                }
 
                 //System.out.println("status obj value !=null");
             } else if (item != null) {
@@ -219,7 +229,7 @@ public class StatusCell extends TableCell<Addon, State> {
 
     }
 
-    public static Callback<TableColumn<Addon, State>, TableCell<Addon, State>> cellFactory(){
+    public static Callback<TableColumn<Addon, Status>, TableCell<Addon, Status>> cellFactory() {
         return param -> new StatusCell();
     }
 

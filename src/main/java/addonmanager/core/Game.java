@@ -63,7 +63,7 @@ public class Game {
             }
             if (lines == null)
                 continue;
-            Addon addon = new Addon(d.getName());
+            Addon addon = new Addon(d.getName(),d.getPath());
             boolean abort = false;
             for (var line : lines) {
                 if (line.contains("Interface:")) {
@@ -154,6 +154,10 @@ public class Game {
 
     public String getDirectory() {
         return directory;
+    }
+
+    public String getAddonDirectory() {
+        return addonDirectory;
     }
 
     @Override

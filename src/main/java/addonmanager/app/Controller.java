@@ -13,10 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.util.Callback;
-import org.controlsfx.control.PopOver;
-import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.TaskProgressView;
 
 import java.util.function.Consumer;
@@ -215,6 +211,7 @@ public class Controller {
         titleVersionCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         titleVersionCol.setPrefWidth(200);
 
+
 //        TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
 //        releaseTypeCol.setCellValueFactory(new PropertyValueFactory("releaseType"));
 //        releaseTypeCol.setPrefWidth(50);
@@ -242,10 +239,10 @@ public class Controller {
         releaseLatestCol.setPrefWidth(100);
         releaseLatestCol.setCellFactory(ReleaseLatestVersionCell.cellFactory());
 
-        TableColumn<Addon, Addon.State> stateCol = new TableColumn<>("Status");
+        TableColumn<Addon, Addon.Status> stateCol = new TableColumn<>("Status");
         stateCol.setCellFactory(StatusCell.cellFactory());
 
-        stateCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.State>("state"));
+        stateCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.Status>("status"));
         stateCol.setPrefWidth(200);
 
 
@@ -254,7 +251,8 @@ public class Controller {
         gameVersionCol.setPrefWidth(100);
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
-//        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
+
+        //        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
 //            tableView.refresh();
 //
 //            System.out.println("scroll");

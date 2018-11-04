@@ -1,6 +1,7 @@
 package addonmanager.core;
 
 import addonmanager.file.ReplaceAddonTask;
+import addonmanager.net.FindProject;
 import addonmanager.net.GetVersionsTask;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -46,6 +47,7 @@ public class Addon {
     private ReplaceAddonTask replaceAddonTask;
     private String folderName;
     private String absolutePath;
+    private String projectUrl;
     private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
 
@@ -296,5 +298,13 @@ public class Addon {
                 setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
             }
         }
+    }
+
+    public String getProjectUrl() {
+        return projectUrl;
+    }
+
+    public void setProjectUrl(String projectUrl) {
+        this.projectUrl = projectUrl;
     }
 }

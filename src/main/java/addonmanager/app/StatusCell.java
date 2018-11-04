@@ -3,12 +3,9 @@ package addonmanager.app;
 import addonmanager.core.Addon;
 import addonmanager.core.Addon.Status;
 import addonmanager.file.ReplaceAddonTask;
-import addonmanager.net.DownloadAddonTask;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 
@@ -38,6 +35,11 @@ public class StatusCell extends TableCell<Addon, Status> {
         label.setPrefHeight(20);
         progressBar.setPrefHeight(20);
         pane = new StackPane(progressBar, button, label);
+        setOnMouseClicked(event -> {
+            var addon = getTableRow().getItem();
+            if (addon != null && addon.getProjectUrl() != null)
+                System.out.println(addon.getProjectUrl());
+        });
     }
 
     //todo debugga

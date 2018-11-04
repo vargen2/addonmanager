@@ -1,8 +1,7 @@
 package addonmanager.file;
 
 import addonmanager.core.Addon;
-import addonmanager.core.Game;
-import addonmanager.net.DownloadAddonTask;
+import addonmanager.net.DownloadAddon;
 import javafx.concurrent.Task;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -13,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 
 public class ReplaceAddonTask extends Task<String> {
@@ -42,20 +42,26 @@ public class ReplaceAddonTask extends Task<String> {
 
     @Override
     protected String call() throws Exception {
+        if (!Files.isDirectory(Paths.get("temp")))
+            FileUtils.forceMkdir(new File("temp"));
+        if (!Files.isDirectory(Paths.get("backup")))
+            FileUtils.forceMkdir(new File("backup"));
         File tempWorkingDir = new File("temp" + File.separator + addon.getFolderName());
         //dl zip file to /temp 0.3
-        DownloadAddonTask downloadAddonTask = new DownloadAddonTask();
-        File zipFile = downloadAddonTask.downLoadFile(addon.getFolderName(), addon.getLatestDownload(), this::updateMessage, this::updateProgress);
+        updateProgress(0.0,1);
+        updateMessage("downloading...");
+        DownloadAddon downloadAddon = new DownloadAddon(addon,this::updateProgress);
+        File zipFile = downloadAddon.downLoadFile();
 
-        if(!zipFile.exists())
+        if (!zipFile.exists())
             cancel();
-        System.out.println("zip exists");
+        //System.out.println("zip exists");
         //check if zip file downloaded
 
         //unzip dl filed to /temp
         //File targetDir = new File("temp/");
         updateMessage("unzipping...");
-        updateProgress(0.35, 1.0);
+        updateProgress(0.8, 1.0);
         try (InputStream inputStream = Files.newInputStream(zipFile.toPath())) {
             ArchiveInputStream i = new ZipArchiveInputStream(new BufferedInputStream(inputStream));
             ArchiveEntry entry = null;
@@ -80,37 +86,40 @@ public class ReplaceAddonTask extends Task<String> {
                     }
                 }
             }
+        } catch (IOException e)
+        {
+            e.printStackTrace();
         }
-        updateProgress(0.4, 1.0);
+        updateProgress(0.85, 1.0);
 
         //check if ok
-        if(!tempWorkingDir.exists())
+        if (!tempWorkingDir.exists())
             cancel();
 
-        System.out.println("tempworkdir exists");
+       // System.out.println("tempworkdir exists");
         //if ok move old addon to /backup
         File addonDir = new File(addon.getAbsolutePath().replace(addon.getFolderName(), ""));
         updateMessage("removing old");
         File[] addonFolders = tempWorkingDir.listFiles(File::isDirectory);
-        for(File addonFolder:addonFolders){
-            File dir = new File(addonDir+File.separator+addonFolder.getName());
-            if(!dir.exists())
+        for (File addonFolder : addonFolders) {
+            File dir = new File(addonDir + File.separator + addonFolder.getName());
+            if (!dir.exists())
                 continue;
             System.out.println(dir.getPath());
             File destDir = new File("backup");
             FileUtils.moveDirectoryToDirectory(dir, destDir, !destDir.exists());
         }
 
-        updateProgress(0.5, 1.0);
+        updateProgress(0.9, 1.0);
 
         //move from /temp to /addons
         updateMessage("moving new");
 
-        for(File addonFolder:addonFolders) {
+        for (File addonFolder : addonFolders) {
             File tempAddon = new File(tempWorkingDir.getPath() + File.separator + addonFolder.getName());
             FileUtils.moveDirectoryToDirectory(tempAddon, addonDir, false);
         }
-        updateProgress(0.6, 1.0);
+        updateProgress(0.95, 1.0);
 
 
         //if not ok rollback
@@ -119,10 +128,10 @@ public class ReplaceAddonTask extends Task<String> {
         updateMessage("cleanup...");
         FileUtils.deleteQuietly(zipFile);
         FileUtils.deleteQuietly(tempWorkingDir);
-        for(File addonFolder:addonFolders) {
+        for (File addonFolder : addonFolders) {
             FileUtils.deleteQuietly(new File("backup" + File.separator + addonFolder.getName()));
         }
-        updateProgress(0.8, 1.0);
+        updateProgress(1.0, 1.0);
 
         return "done";
     }

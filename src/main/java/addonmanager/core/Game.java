@@ -1,6 +1,6 @@
 package addonmanager.core;
 
-import addonmanager.net.GetVersionsTask;
+import addonmanager.app.task.GetVersionsTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -10,10 +10,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class Game {

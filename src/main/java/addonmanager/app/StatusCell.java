@@ -2,7 +2,7 @@ package addonmanager.app;
 
 import addonmanager.core.Addon;
 import addonmanager.core.Addon.Status;
-import addonmanager.file.ReplaceAddonTask;
+import addonmanager.app.task.ReplaceAddonTask;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;

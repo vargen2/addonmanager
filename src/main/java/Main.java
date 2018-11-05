@@ -10,6 +10,8 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
+    // TODO: 2018-11-05 Logga alla exceptions och eller visa dom till något statusmessage
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));

@@ -2,7 +2,7 @@ package addonmanager.net.version;
 
 import addonmanager.core.Addon;
 import addonmanager.core.Download;
-import addonmanager.net.GetVersionsTask;
+import addonmanager.net.Util;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
@@ -83,16 +83,16 @@ public class WowAce extends DownloadVersions {
         while (matcher.find()) {
             Download download = new Download();
             String subString = data.substring(matcher.start());
-            String temp = GetVersionsTask.parse(subString, "<td class=\"project-file-release-type\">", "</td>");
-            download.release = GetVersionsTask.parse(temp, "title=\"", "\"></div>");
-            download.title = GetVersionsTask.parse(subString, "data-name=\"", "\">");
-            download.fileSize = GetVersionsTask.parse(subString, "<td class=\"project-file-size\">", "</td>").trim();
-            String a = GetVersionsTask.parse(subString, "data-epoch=\"", "\"");
+            String temp = Util.parse(subString, "<td class=\"project-file-release-type\">", "</td>");
+            download.release = Util.parse(temp, "title=\"", "\"></div>");
+            download.title = Util.parse(subString, "data-name=\"", "\">");
+            download.fileSize = Util.parse(subString, "<td class=\"project-file-size\">", "</td>").trim();
+            String a = Util.parse(subString, "data-epoch=\"", "\"");
             download.fileDateUploaded = LocalDateTime.ofEpochSecond(Integer.parseInt(a), 0, OffsetDateTime.now().getOffset());
-            download.gameVersion = GetVersionsTask.parse(subString, "<span class=\"version-label\">", "</span>");
-            String tempDL = GetVersionsTask.parse(subString, "<td class=\"project-file-downloads\">", "</td>").replaceAll(",", "").trim();
+            download.gameVersion = Util.parse(subString, "<span class=\"version-label\">", "</span>");
+            String tempDL = Util.parse(subString, "<td class=\"project-file-downloads\">", "</td>").replaceAll(",", "").trim();
             download.downloads = Long.valueOf(tempDL);
-            download.downloadLink = GetVersionsTask.parse(subString, " href=\"", "\"");
+            download.downloadLink = Util.parse(subString, " href=\"", "\"");
             downloads.add(download);
         }
         updateProgress.accept(1.0, 1.0);

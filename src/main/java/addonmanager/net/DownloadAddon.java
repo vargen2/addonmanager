@@ -1,5 +1,6 @@
 package addonmanager.net;
 
+import addonmanager.Updateable;
 import addonmanager.core.Addon;
 import addonmanager.core.Download;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,15 +16,16 @@ import java.util.function.Consumer;
 
 public class DownloadAddon {
 
-    private Addon addon;
-    private BiConsumer<Double, Double> updateProgress;
-
-    public DownloadAddon(Addon addon, BiConsumer<Double, Double> updateProgress) {
-        this.addon = addon;
-        this.updateProgress = updateProgress;
+    public static File downLoadFile(Addon addon) {
+        return downLoadFile(addon, Updateable.EMPTY_UPDATEABLE);
     }
 
-    public File downLoadFile() {
+    public static File downLoadFile(Addon addon, Updateable updateable) {
+        return downLoadFile(addon, 1, updateable);
+    }
+
+    public static File downLoadFile(Addon addon, double barMax, Updateable updateable) {
+        updateable.updateMessage("downloading...");
         String addonName = addon.getFolderName();
         Download download = addon.getLatestDownload();
         double multiplier = 0;
@@ -33,7 +35,7 @@ public class DownloadAddon {
             multiplier = 1000;
         }
         String temp = download.fileSize.replaceAll("\\p{IsAlphabetic}", "").trim();
-        double fileSize = Double.parseDouble(temp.replace(",", "."))*multiplier;
+        double fileSize = Double.parseDouble(temp.replace(",", ".")) * multiplier;
         String firstUrl = addon.getProjectUrl() + download.downloadLink.substring(download.downloadLink.indexOf("/files"));
         ///String firstUrl = "https://www.curseforge.com"+download.downloadlink+ "/file";
         CloseableHttpClient client = HttpClients.custom().disableCookieManagement().setRedirectStrategy(new RedirectStrategy()).build();
@@ -47,7 +49,7 @@ public class DownloadAddon {
                 for (int length; (length = input.read(buffer)) > 0; ) {
                     output.write(buffer, 0, length);
                     downloaded += length;
-                    updateProgress.accept(0.7 * (downloaded / fileSize), 1.0);
+                    updateable.updateProgress(barMax * (downloaded / fileSize), 1.0);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,6 +59,7 @@ public class DownloadAddon {
         }
 
         return new File("temp" + File.separator + addonName + "-" + download.title + ".zip");
+
     }
 
 

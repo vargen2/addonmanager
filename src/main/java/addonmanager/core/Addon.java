@@ -1,8 +1,7 @@
 package addonmanager.core;
 
-import addonmanager.file.ReplaceAddonTask;
-import addonmanager.net.FindProject;
-import addonmanager.net.GetVersionsTask;
+import addonmanager.app.task.ReplaceAddonTask;
+import addonmanager.app.task.GetVersionsTask;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

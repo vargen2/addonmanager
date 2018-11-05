@@ -2,7 +2,7 @@ package addonmanager.net.version;
 
 import addonmanager.core.Addon;
 import addonmanager.core.Download;
-import addonmanager.net.GetVersionsTask;
+import addonmanager.net.Util;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
@@ -85,15 +85,15 @@ public class WwwCurseForge extends DownloadVersions {
         while (matcher.find()) {
             Download download = new Download();
             String subString = data.substring(matcher.start());
-            String temp = GetVersionsTask.parse(subString, "<td class=\"project-file__release-type\">", "</td>");
-            download.release = GetVersionsTask.parse(temp, "title=\"", "\"></span>");
-            download.title = GetVersionsTask.parse(subString, "<td class=\"project-file__name\" title=\"", "\">");
-            download.fileSize = GetVersionsTask.parse(subString, "<span class=\"table__content file__size\">", "</span>").trim();
-            String a = GetVersionsTask.parse(subString, "data-epoch=\"", "\"");
+            String temp = Util.parse(subString, "<td class=\"project-file__release-type\">", "</td>");
+            download.release = Util.parse(temp, "title=\"", "\"></span>");
+            download.title = Util.parse(subString, "<td class=\"project-file__name\" title=\"", "\">");
+            download.fileSize = Util.parse(subString, "<span class=\"table__content file__size\">", "</span>").trim();
+            String a = Util.parse(subString, "data-epoch=\"", "\"");
             download.fileDateUploaded = LocalDateTime.ofEpochSecond(Integer.parseInt(a), 0, OffsetDateTime.now().getOffset());
-            download.gameVersion = GetVersionsTask.parse(subString, "<span class=\"table__content version__label\">", "</span>");
-            download.downloads = Long.valueOf(GetVersionsTask.parse(subString, "span class=\"table__content file__download\">", "</span>").replaceAll(",", ""));
-            download.downloadLink = GetVersionsTask.parse(subString, " href=\"", "\"");
+            download.gameVersion = Util.parse(subString, "<span class=\"table__content version__label\">", "</span>");
+            download.downloads = Long.valueOf(Util.parse(subString, "span class=\"table__content file__download\">", "</span>").replaceAll(",", ""));
+            download.downloadLink = Util.parse(subString, " href=\"", "\"");
             downloads.add(download);
         }
         updateProgress.accept(1.0, 1.0);

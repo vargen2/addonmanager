@@ -62,7 +62,7 @@ public class FindProject {
         int index1 = input.indexOf("<p class=\"infobox__cta\"");
         int index2 = input.substring(index1).indexOf("</p>");
         String data = input.substring(index1, index1 + index2);
-        String result=GetVersionsTask.parse(data,"<a href=\"","\">");
+        String result=Util.parse(data,"<a href=\"","\">");
 
 
         return result;

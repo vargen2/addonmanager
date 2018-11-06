@@ -299,7 +299,7 @@ public class Addon {
         return absolutePath;
     }
 
-    //todo move this method to file.someetinhg
+    //todo move this method to file.RefreshToc(Addon addon)
     public void refreshToc() {
         File d = new File(absolutePath);
         var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));

@@ -3,6 +3,7 @@ package addonmanager.app.core.file;
 import addonmanager.app.gui.ChoiceBoxItem;
 import addonmanager.app.core.Game;
 import addonmanager.app.core.Model;
+import addonmanager.app.gui.Controller;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -49,7 +50,7 @@ public class DirectoryScanTask extends Task<Void> {
                                 @Override
                                 protected Void call() {
                                     game.refresh();
-                                    game.refreshFromNet();
+                                    Controller.tempRefreshFromNet(game);
                                     return null;
                                 }
                             };

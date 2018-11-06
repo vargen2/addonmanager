@@ -4,6 +4,7 @@ import addonmanager.app.core.Addon;
 import addonmanager.app.core.Game;
 import addonmanager.app.core.Model;
 import addonmanager.app.core.file.DirectoryScanTask;
+import addonmanager.app.gui.task.GetVersionsTask;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -263,18 +264,44 @@ public class Controller {
             if (game == null)
                 return;
             game.refresh();
-            game.refreshFromNet();
+            //game.refreshFromNet();
+            tempRefreshFromNet(game);
         });
 
         settingsButton.setOnAction(event -> {
-            if(!settings.isShowing())
+            if (!settings.isShowing())
                 settings.show(settingsButton);
             else
                 settings.hide();
         });
 
 
+    }
 
+    public static void tempRefreshFromNet(Game game) {
+        Thread t = new Thread(new Task<>() {
+            @Override
+            protected Object call() throws Exception {
+                game.addons.forEach(addon -> {
+
+                    var task = new GetVersionsTask(addon);
+
+                    Thread thread = new Thread(task);
+                    thread.setDaemon(true);
+                    thread.start();
+                    try {
+                        //todo lägg till denna i settings
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+                return null;
+            }
+        });
+
+        t.setDaemon(true);
+        t.start();
     }
 
 //    private void directoryscanner1(Model model) {

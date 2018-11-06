@@ -1,10 +1,13 @@
 package addonmanager.app.gui;
 
+import addonmanager.Updateable;
 import addonmanager.app.core.Addon;
+import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
 import addonmanager.app.core.Model;
-import addonmanager.app.core.file.DirectoryScanTask;
-import addonmanager.app.gui.task.GetVersionsTask;
+import addonmanager.app.gui.task.FindGamesTask;
+import addonmanager.app.gui.task.FoundGameTask;
+import addonmanager.app.gui.task.RefreshGameTask;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import org.controlsfx.control.TaskProgressView;
 
+import java.io.File;
 import java.util.function.Consumer;
 
 public class Controller {
@@ -55,18 +59,18 @@ public class Controller {
             }
         }, "Add Directory manually...");
         gameChoiceBox.getItems().add(manual);
-        ChoiceBoxItem scan = new ChoiceBoxItem(new Consumer() {
-
-
-            @Override
-            public void accept(Object o) {
-                DirectoryScanTask ds = new DirectoryScanTask(model, gameChoiceBox, taskProgressView, false);
-                Platform.runLater(() -> taskProgressView.getTasks().add(ds));
-
-                Thread t = new Thread(ds);
+        ChoiceBoxItem scan = new ChoiceBoxItem(o -> {
+            Consumer<File> consumer = file -> {
+                Thread t = new Thread(new FoundGameTask(file, model, gameChoiceBox));
                 t.setDaemon(true);
                 t.start();
-            }
+            };
+            FindGamesTask ds = new FindGamesTask(consumer, false);
+            Platform.runLater(() -> taskProgressView.getTasks().add(ds));
+
+            Thread t = new Thread(ds);
+            t.setDaemon(true);
+            t.start();
         }, "Scan for Directories...");
         gameChoiceBox.getItems().add(scan);
 
@@ -88,15 +92,6 @@ public class Controller {
         });
 
 
-        //gameChoiceBox.setItems(model.games);
-        //gameChoiceBox.valueProperty().bindBidirectional(model.selectedGame);
-
-//        progressBar.prefWidthProperty().bind(bottomStackPane.widthProperty());
-//        statusLabel.prefWidthProperty().bind(bottomStackPane.widthProperty());
-//
-//        progressBar.setVisible(false);
-//        statusLabel.setVisible(false);
-
         taskProgressView.getTasks().addListener(new ListChangeListener<Task<Void>>() {
             @Override
             public void onChanged(Change<? extends Task<Void>> c) {
@@ -109,98 +104,6 @@ public class Controller {
             }
         });
 
-//        experimentButton.setOnAction(event -> {
-        //addonmanager.app.core.net.Experi exp = new addonmanager.app.core.net.Experi();
-        //exp.experimentRedirect("omni-cc");
-
-
-//            addonmanager.old.Finder finder = new addonmanager.old.Finder("World of Warcraft",true);
-//            try {
-//                Files.walkFileTree(File.listRoots()[0].toPath(), EnumSet.noneOf(FileVisitOption.class),4, finder);
-//                //Files.walkFileTree(File.listRoots()[0].toPath(), finder);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            finder.done();
-
-
-//            FileSystemManager fsManager = VFS.getManager();
-//            FileObject fileObject = fsManager.resolveFile( "yourFileNameHere" );
-//            FileObject[] files = fileObject.findFiles( new FileTypeSelector( FileType.FOLDER ) )
-
-
-//            var drives = File.listRoots();
-//            var ds = new addonmanager.old.DirectoryStream(drives, "Interface\\Addons");
-//            ds.dirs.addListener(new ListChangeListener<Path>() {
-//                @Override
-//                public void onChanged(Change<? extends Path> c) {
-//                    c.next();
-//                    var aaa = c.getAddedSubList();
-//                    aaa.forEach(x -> System.out.println(x.toString()));
-//                    System.out.println(addonmanager.old.DirectoryStream.counter);
-//                }
-//            });
-//            ds.getDirs();
-//            System.out.println("done");
-
-
-//            var res=FileUtils.listFiles(new File("C:\\"),new NameFileFilter("Users"), DirectoryFileFilter.DIRECTORY);
-//            res.forEach(x->System.out.println(x.getPath()));
-
-//            addonmanager.old.CommonIOFinder walker = new addonmanager.old.CommonIOFinder(
-//                    //DirectoryFileFilter.DIRECTORY
-//            );
-//
-//            try {
-//                var aa=walker.getDirectories(new File("C:\\"));
-//                aa.forEach(x->System.out.println(x.toString()));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
-//            Path dirs = Paths.get("C:/");
-//
-//            try {
-//                Files.walkFileTree(dirs, new SimpleFileVisitor<Path>() {
-//                    @Override
-//                    public FileVisitResult preVisitDirectory(Path file,
-//                                                             BasicFileAttributes attrs) {
-//
-//                        addonmanager.old.DirectoryStream.Filter<Path> filter = new addonmanager.old.DirectoryStream.Filter<Path>() {
-//                            @Override
-//                            public boolean accept(Path entry) throws IOException {
-//                                BasicFileAttributes attr = Files.readAttributes(entry,
-//                                        BasicFileAttributes.class);
-//
-//                                return (entry.startsWith("World of Warcraft"));
-//                            }
-//                        };
-//                        try (addonmanager.old.DirectoryStream<Path> stream = Files.newDirectoryStream(
-//                                file, filter)) {
-//                            for (Path path : stream) {
-//                                System.out.println(path.toString());
-//                            }
-//                        } catch (IOException ex) {
-//                            ex.printStackTrace();
-//                        }
-//                        return FileVisitResult.CONTINUE;
-//
-//                    }
-//                });
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-
-//        scanButton.setOnAction(event -> {
-//            addonmanager.app.core.file.DirectoryScanner2 ds = new addonmanager.app.core.file.DirectoryScanner2(model, gameChoiceBox, taskProgressView);
-//            Platform.runLater(() -> taskProgressView.getTasks().add(ds));
-//
-//            Thread t = new Thread(ds);
-//            t.setDaemon(true);
-//            t.start();
-//        });
 
         model.selectedGame.addListener((observable, oldValue, newValue) -> {
             tableView.setItems(newValue.addons);
@@ -253,19 +156,15 @@ public class Controller {
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
 
-        //        tableView.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
-//            tableView.refresh();
-//
-//            System.out.println("scroll");
-//        });
 
         refreshButton.setOnAction(event -> {
             Game game = model.selectedGame.getValue();
             if (game == null)
                 return;
-            game.refresh();
-            //game.refreshFromNet();
-            tempRefreshFromNet(game);
+
+            Thread thread = new Thread(new RefreshGameTask(game));
+            thread.setDaemon(true);
+            thread.start();
         });
 
         settingsButton.setOnAction(event -> {
@@ -279,91 +178,34 @@ public class Controller {
     }
 
 
-    public static void tempRefreshFromNet(Game game) {
-        Thread t = new Thread(new Task<>() {
-            @Override
-            protected Object call() throws Exception {
-                game.addons.forEach(addon -> {
+    public static void refreshFromNet(Game game) {
 
-                    var task = new GetVersionsTask(addon);
+        game.addons.forEach(addon -> {
+            Thread thread = new Thread(new Task() {
+                @Override
+                protected Object call() throws Exception {
+                    Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
+                    addon.setUpdateable(updateable);
 
-                    Thread thread = new Thread(task);
-                    thread.setDaemon(true);
-                    thread.start();
-                    try {
-                        //todo lägg till denna i settings
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (!App.downLoadVersions(addon)) {
+                        cancel();
+                        return null;
                     }
-                });
-                return null;
+                    return null;
+                }
+            });
+            thread.setDaemon(true);
+            thread.start();
+            try {
+                //todo lägg till denna i settings
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
 
-        t.setDaemon(true);
-        t.start();
-    }
 
-//    private void directoryscanner1(Model model) {
-//        AtomicInteger counter = new AtomicInteger(0);
-//        DirectoryScanner ds = new DirectoryScanner();
-//        SetChangeListener<File> fileListener = change -> {
-//            Task<Void> task = new Task<>() {
-//                @Override
-//                protected Void call() {
-//                    Game game = new Game("Wow " + (counter.addAndGet(1)), change.getElementAdded().getPath(), File.separator + "Interface" + File.separator + "AddOns");
-//                    Platform.runLater(() -> {
-//                        if (tableView.itemsProperty().getValue().size() == 0)
-//                            model.selectedGame.setValue(game);
-//                        model.games.add(game);
-//                    });
-//                    Task<Void> refreshTask = new Task<>() {
-//                        @Override
-//                        protected Void call() {
-//                            game.refresh();
-//                            return null;
-//                        }
-//                    };
-//                    Thread t = new Thread(refreshTask);
-//                    t.setDaemon(true);
-//                    t.start();
-//                    return null;
-//                }
-//            };
-//            Platform.runLater(() -> taskProgressView.getTasks().add(task));
-//            Thread t = new Thread(task);
-//            t.setDaemon(true);
-//            t.start();
-//        };
-//        ds.fileObservableList.addListener(fileListener);
-//        Task<Void> task = new Task<>() {
-//            @Override
-//            protected Void call() {
-//                updateMessage("searching...");
-//                ds.searchForWowDirectorys();
-//                updateMessage("building...");
-//                updateMessage("done");
-//                return null;
-//            }
-//        };
-//        Platform.runLater(() -> taskProgressView.getTasks().add(task));
-//        task.setOnScheduled(event1 -> {
-////            statusLabel.textProperty().bind(task.messageProperty());
-////            progressBar.progressProperty().bind(ds.progress);
-////            progressBar.setVisible(true);
-//        });
-//        task.setOnSucceeded(workerStateEvent -> {
-////            progressBar.setVisible(false);
-////            progressBar.progressProperty().unbind();
-////            statusLabel.textProperty().unbind();
-//            ds.fileObservableList.removeListener(fileListener);
-////            statusLabel.setText("found " + counter.get() + " games");
-//        });
-//        Thread t = new Thread(task);
-//        t.setDaemon(true);
-//        t.start();
-//    }
+    }
 
 
 }

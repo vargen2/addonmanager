@@ -1,6 +1,7 @@
 package addonmanager.app.gui;
 
 import addonmanager.app.core.Addon;
+import addonmanager.app.core.App;
 import addonmanager.app.core.Model;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -28,9 +29,9 @@ public class Settings {
         Button b1 = new Button("release");
         Button b2 = new Button("beta");
         Button b3 = new Button("alpha");
-        b1.setOnAction(event -> model.setReleaseTypeSelectedGame(Addon.ReleaseType.RELEASE));
-        b2.setOnAction(event -> model.setReleaseTypeSelectedGame(Addon.ReleaseType.BETA));
-        b3.setOnAction(event -> model.setReleaseTypeSelectedGame(Addon.ReleaseType.ALPHA));
+        b1.setOnAction(event -> App.setReleaseTypeSelectedGame(model.selectedGame.getValue(), Addon.ReleaseType.RELEASE));
+        b2.setOnAction(event -> App.setReleaseTypeSelectedGame(model.selectedGame.getValue(), Addon.ReleaseType.BETA));
+        b3.setOnAction(event -> App.setReleaseTypeSelectedGame(model.selectedGame.getValue(), Addon.ReleaseType.ALPHA));
         HBox releaseTypeHBox = new HBox(0, b1, b2, b3);
         releaseTypeVBox = new VBox(0, releaseTypeLabel, releaseTypeHBox);
         rootVBox = new VBox(0, releaseTypeVBox);

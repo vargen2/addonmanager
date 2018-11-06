@@ -1,5 +1,6 @@
 package addonmanager.app.core.net.version;
 
+import addonmanager.Updateable;
 import addonmanager.app.core.Addon;
 import addonmanager.app.core.Download;
 import addonmanager.app.core.net.Util;
@@ -20,12 +21,13 @@ import java.util.regex.Pattern;
 
 public class WowCurseForge extends DownloadVersions {
 
-    public WowCurseForge(Addon addon, Consumer<String> updateMessage, BiConsumer<Double, Double> updateProgress) {
-        super(addon, updateMessage, updateProgress);
+    public WowCurseForge(Addon addon) {
+        super(addon);
     }
 
     @Override
     public List<Download> getDownloads() {
+        Updateable updateable = addon.getUpdateable();
         List<Download> downloads = new ArrayList<>();
 
 
@@ -54,7 +56,7 @@ public class WowCurseForge extends DownloadVersions {
         if (response.statusCode() != 200) {
             System.out.println("DL fail " + addon.getProjectUrl());
 
-            updateMessage.accept("DL fail " + addon.getProjectUrl());
+            updateable.updateMessage("DL fail " + addon.getProjectUrl());
             return downloads;
 
         } else {
@@ -64,12 +66,12 @@ public class WowCurseForge extends DownloadVersions {
 
 
         if (input.length() == 0) {
-            updateMessage.accept("failed...");
+            updateable.updateMessage("failed...");
             //System.out.println("failed.." + addon.getProjectUrl());
             return downloads;
         }
-        updateMessage.accept("parsing...");
-        updateProgress.accept(0.7, 1.0);
+        updateable.updateMessage("parsing...");
+        updateable.updateProgress(0.7, 1.0);
 
         int index1 = input.indexOf("<div class=\"listing-body\">");
         int index2 = input.substring(index1).indexOf("</table>");
@@ -92,8 +94,8 @@ public class WowCurseForge extends DownloadVersions {
             download.downloadLink = Util.parse(subString, " href=\"", "\"");
             downloads.add(download);
         }
-        updateProgress.accept(1.0, 1.0);
-        updateMessage.accept("done");
+        updateable.updateProgress(1.0, 1.0);
+        updateable.updateMessage("done");
         return downloads;
     }
 

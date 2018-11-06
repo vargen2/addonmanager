@@ -1,7 +1,6 @@
 package addonmanager.app.core;
 
 import addonmanager.Updateable;
-import addonmanager.app.gui.task.GetVersionsTask;
 import javafx.beans.property.*;
 
 import java.io.File;
@@ -39,10 +38,6 @@ public class Addon {
     enum UpdateMode {AUTO, MANUAL}
 
     private List<Download> downloads = new ArrayList<>();
-    //private GetVersionsTask getVersionsTask;
-    //private ReplaceAddonTask replaceAddonTask;
-//    private StringProperty message;
-//    private DoubleProperty progress;
     private Updateable updateable=Updateable.EMPTY_UPDATEABLE;
     private String folderName;
     private String absolutePath;
@@ -67,8 +62,7 @@ public class Addon {
     public Addon(String folderName, String absolutePath) {
         this.folderName = folderName;
         this.absolutePath = absolutePath;
-        //  this.status = new SimpleObjectProperty<>(this, "status");
-        this.status = new SimpleObjectProperty<>(this, "status");
+          this.status = new SimpleObjectProperty<>(this, "status");
         this.latestDownload = new SimpleObjectProperty<Download>(this, "latestDownload");
         setLatestDownload(null);
         setReleaseType(ReleaseType.RELEASE);
@@ -77,35 +71,6 @@ public class Addon {
     }
 
 
-//    public String getMessage() {
-//        return messageProperty().get();
-//    }
-//
-//    public StringProperty messageProperty() {
-//        if(message==null)
-//            message=new SimpleStringProperty(this,"message");
-//        return message;
-//    }
-//
-//    public void setMessage(String message) {
-//        messageProperty().setValue(message);
-//    }
-
-
-
-//    public double getProgress() {
-//        return progressProperty().get();
-//    }
-//
-//    public DoubleProperty progressProperty() {
-//        if(progress==null)
-//            progress=new SimpleDoubleProperty(this,"progress");
-//        return progress;
-//    }
-//
-//    public void setProgress(double progress) {
-//        progressProperty().setValue(progress);
-//    }
 
 
     public Updateable getUpdateable() {
@@ -277,66 +242,49 @@ public class Addon {
         updateReleaseLatest();
     }
 
-//    public GetVersionsTask getNewVersionsTask() {
-//        return getVersionsTask;
-//    }
-//
-//    public void setNewVersionsTask(GetVersionsTask getVersionsTask) {
-//        this.getVersionsTask = getVersionsTask;
-//        setStatus(Status.GETTING_VERSIONS);
-//    }
-
-//    public ReplaceAddonTask getReplaceAddonTask() {
-//        return replaceAddonTask;
-//    }
-//
-//    public void setReplaceAddonTask(ReplaceAddonTask replaceAddonTask) {
-//        this.replaceAddonTask = replaceAddonTask;
-//        setStatus(Status.UPDATING);
-//    }
 
     public String getAbsolutePath() {
         return absolutePath;
     }
 
     //todo move this method to file.RefreshToc(Addon addon)
-    public void refreshToc() {
-        File d = new File(absolutePath);
-        var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
-        if (tocFile == null || tocFile[0] == null)
-            return;
-        List<String> lines = null;
-
-        try {
-            lines = Files.readAllLines(tocFile[0].toPath());
-        } catch (MalformedInputException e) {
-
-
-            try {
-                lines = Files.readAllLines(tocFile[0].toPath(), Charset.forName("ISO-8859-1"));
-            } catch (IOException e1) {
-
-                e1.printStackTrace();
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (lines == null)
-            return;
-
-        for (var line : lines) {
-            if (line.contains("Interface:")) {
-                setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
-            } else if (line.contains("Version:")) {
-                setVersion(line.substring(line.indexOf("Version:") + 8).trim());
-            } else if (line.contains("Title:")) {
-
-                setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
-            }
-        }
-    }
+//    public void refreshToc() {
+//        File d = new File(absolutePath);
+//        var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
+//        if (tocFile == null || tocFile[0] == null)
+//            return;
+//        List<String> lines = null;
+//
+//        try {
+//            lines = Files.readAllLines(tocFile[0].toPath());
+//        } catch (MalformedInputException e) {
+//
+//
+//            try {
+//                lines = Files.readAllLines(tocFile[0].toPath(), Charset.forName("ISO-8859-1"));
+//            } catch (IOException e1) {
+//
+//                e1.printStackTrace();
+//            }
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        if (lines == null)
+//            return;
+//
+//        for (var line : lines) {
+//            if (line.contains("Interface:")) {
+//                setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
+//            } else if (line.contains("Version:")) {
+//                setVersion(line.substring(line.indexOf("Version:") + 8).trim());
+//            } else if (line.contains("Title:")) {
+//
+//                setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
+//            }
+//        }
+//    }
 
     public String getProjectUrl() {
         return projectUrl;

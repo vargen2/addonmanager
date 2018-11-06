@@ -1,5 +1,9 @@
 package addonmanager.app.core;
 
+import addonmanager.Updateable;
+import addonmanager.app.core.file.FindGames;
+import addonmanager.app.core.file.RefreshGameDirectory;
+import addonmanager.app.core.file.RefreshToc;
 import addonmanager.app.core.file.ReplaceAddon;
 import addonmanager.app.core.net.DownloadAddon;
 import addonmanager.app.core.net.FindProject;
@@ -8,15 +12,37 @@ import addonmanager.app.core.net.version.DownloadVersions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 public class App {
+
+    public static void setReleaseTypeSelectedGame(Game game, Addon.ReleaseType releaseType) {
+        if (game == null)
+            return;
+        game.addons.forEach(x -> x.setReleaseType(releaseType));
+    }
+
+    public static List<Game> findGames(Updateable updateable, Consumer<File> consumer, boolean mustHaveExe) {
+        FindGames findGames = new FindGames(updateable, consumer, mustHaveExe);
+        return findGames.find();
+    }
+
+    public static List<Game> findGames(boolean mustHaveExe) {
+        return findGames(Updateable.EMPTY_UPDATEABLE, file -> {
+        }, mustHaveExe);
+    }
+
+    public static void refreshGameDirectory(Game game) {
+        RefreshGameDirectory.refresh(game);
+    }
 
     public static boolean downLoadVersions(Addon addon) {
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
             addon.setProjectUrl(FindProject.find(addon));
 
-        DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon, addon.getUpdateable()::updateMessage, addon.getUpdateable()::updateProgress);
+        DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
 
         List<Download> downloads = downloadVersions.getDownloads();
         if (downloads.isEmpty()) {
@@ -25,7 +51,7 @@ public class App {
         }
         int page = 2;
         while (downloads.stream().noneMatch(x -> x.release.equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
-            DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon, addon.getUpdateable()::updateMessage, addon.getUpdateable()::updateProgress);
+            DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon);
             moreDownloadversions.setPage(page);
             downloads.addAll(moreDownloadversions.getDownloads());
             page++;
@@ -51,7 +77,7 @@ public class App {
             addon.setStatus(Addon.Status.NONE);
             return false;
         }
-        addon.refreshToc();
+        RefreshToc.refresh(addon);
         addon.setStatus(Addon.Status.UP_TO_DATE);
         return true;
     }

@@ -39,7 +39,7 @@ public class Addon {
     enum UpdateMode {AUTO, MANUAL}
 
     private List<Download> downloads = new ArrayList<>();
-    private GetVersionsTask getVersionsTask;
+    //private GetVersionsTask getVersionsTask;
     //private ReplaceAddonTask replaceAddonTask;
 //    private StringProperty message;
 //    private DoubleProperty progress;
@@ -277,14 +277,14 @@ public class Addon {
         updateReleaseLatest();
     }
 
-    public GetVersionsTask getNewVersionsTask() {
-        return getVersionsTask;
-    }
-
-    public void setNewVersionsTask(GetVersionsTask getVersionsTask) {
-        this.getVersionsTask = getVersionsTask;
-        setStatus(Status.GETTING_VERSIONS);
-    }
+//    public GetVersionsTask getNewVersionsTask() {
+//        return getVersionsTask;
+//    }
+//
+//    public void setNewVersionsTask(GetVersionsTask getVersionsTask) {
+//        this.getVersionsTask = getVersionsTask;
+//        setStatus(Status.GETTING_VERSIONS);
+//    }
 
 //    public ReplaceAddonTask getReplaceAddonTask() {
 //        return replaceAddonTask;

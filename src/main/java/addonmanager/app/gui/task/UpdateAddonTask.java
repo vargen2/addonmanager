@@ -18,6 +18,7 @@ public class UpdateAddonTask extends Task<Void> {
     protected Void call() {
         Updateable updateable = Updateable.createUpdateable(this,this::updateMessage, this::updateProgress);
         addon.setUpdateable(updateable);
+        updateProgress(0,1);
         if(!App.updateAddon(addon)){
             updateMessage("canceled");
             cancel();

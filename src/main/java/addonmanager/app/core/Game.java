@@ -93,18 +93,18 @@ public class Game {
                     Thread thread = new Thread(task);
                     thread.setDaemon(true);
                     thread.start();
-                    List<Download> downloads = new ArrayList<>();
-                    try {
-                        downloads = task.get();
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        System.out.println("addon: " + addon.getFolderName() + " " + e.getMessage());
-                    }
-
-
-                    addon.setDownloads(downloads);
+//                    List<Download> downloads = new ArrayList<>();
+//                    try {
+//                        downloads = task.get();
+//
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } catch (ExecutionException e) {
+//                        System.out.println("addon: " + addon.getFolderName() + " " + e.getMessage());
+//                    }
+//
+//
+//                    addon.setDownloads(downloads);
 //                    if (downloads != null && downloads.size() > 0) {
 //                        addon.setDownloads(downloads);
 //

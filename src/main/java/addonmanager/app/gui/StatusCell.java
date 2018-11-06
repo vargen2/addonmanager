@@ -79,11 +79,11 @@ public class StatusCell extends TableCell<Addon, Status> {
 //                if (addon != null && addon.getFolderName() != null&&tempStatus!=null && tempStatus.getFolderName() != null)
 //                    System.out.println(addon.getTitle() + " " + tempStatus.getFolderName());
 
-                if (tempStatus != null && tempStatus == Status.GETTING_VERSIONS && addon != null) {
+                if (tempStatus != null && (tempStatus == Status.GETTING_VERSIONS || tempStatus == Status.UPDATING) && addon != null) {
 
-                    progressBar.progressProperty().bind(addon.getNewVersionsTask().progressProperty());
+                    progressBar.progressProperty().bind(addon.getUpdateable().progressProperty());
                     progressBar.setVisible(true);
-                    label.textProperty().bind(addon.getNewVersionsTask().messageProperty());
+                    label.textProperty().bind(addon.getUpdateable().messageProperty());
                     label.setVisible(true);
                     button.setVisible(false);
                     button.setText("");
@@ -111,18 +111,18 @@ public class StatusCell extends TableCell<Addon, Status> {
                     //  label.setVisible(true);
                     //}
                 }
-                if (tempStatus != null && tempStatus == Status.UPDATING && addon != null) {
-
-                    //addon.progressProperty().addListener((observable, oldValue, newValue) -> progressBar.setProgress((double)newValue));
-                    //progressBar.progressProperty().bind(addon.progressProperty());
-                    progressBar.progressProperty().bind(addon.getUpdateable().progressProperty());
-                    progressBar.setVisible(true);
-                    // addon.messageProperty().addListener((observable, oldValue, newValue) -> label.setText(newValue));
-                    label.textProperty().bind(addon.getUpdateable().messageProperty());
-                    label.setVisible(true);
-                    button.setVisible(false);
-                    button.setText("");
-                }
+//                if (tempStatus != null && tempStatus == Status.UPDATING && addon != null) {
+//
+//                    //addon.progressProperty().addListener((observable, oldValue, newValue) -> progressBar.setProgress((double)newValue));
+//                    //progressBar.progressProperty().bind(addon.progressProperty());
+//                    progressBar.progressProperty().bind(addon.getUpdateable().progressProperty());
+//                    progressBar.setVisible(true);
+//                    // addon.messageProperty().addListener((observable, oldValue, newValue) -> label.setText(newValue));
+//                    label.textProperty().bind(addon.getUpdateable().messageProperty());
+//                    label.setVisible(true);
+//                    button.setVisible(false);
+//                    button.setText("");
+//                }
 
                 if (tempStatus != null && tempStatus == Status.UP_TO_DATE && addon != null) {
                     //System.out.println("hit ever");

@@ -3,6 +3,7 @@ package addonmanager.app.gui.task;
 import addonmanager.Updateable;
 import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
+import addonmanager.app.core.file.FileOperations;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public class FindGamesTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        App.findGames(Updateable.createUpdateable(this, this::updateMessage, this::updateProgress), consumer, mustHaveExe);
+        FileOperations.findGames(Updateable.createUpdateable(this, this::updateMessage, this::updateProgress), consumer, mustHaveExe);
         return null;
     }
 

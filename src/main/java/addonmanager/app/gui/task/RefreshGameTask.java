@@ -2,6 +2,7 @@ package addonmanager.app.gui.task;
 
 import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
+import addonmanager.app.core.file.FileOperations;
 import addonmanager.app.gui.Controller;
 import javafx.concurrent.Task;
 
@@ -16,7 +17,7 @@ public class RefreshGameTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        App.refreshGameDirectory(game);
+        FileOperations.refreshGameDirectory(game);
         Controller.refreshFromNet(game);
         return null;
     }

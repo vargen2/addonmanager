@@ -3,6 +3,7 @@ package addonmanager.app.core.net;
 import addonmanager.Updateable;
 import addonmanager.app.core.Addon;
 import addonmanager.app.core.Download;
+import addonmanager.app.core.file.FileOperations;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -19,6 +20,8 @@ public class DownloadAddon {
     }
 
     public static File downLoadFile(Addon addon, double from, double to) {
+        if (!FileOperations.directoriesExists())
+            return null;
         Updateable updateable = addon.getUpdateable();
         updateable.updateMessage("downloading...");
         String addonName = addon.getFolderName();

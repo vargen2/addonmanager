@@ -5,9 +5,9 @@ import addonmanager.app.core.Game;
 
 import java.io.File;
 
-public class RefreshGameDirectory {
+class RefreshGameDirectory {
 
-    public static void refresh(Game game) {
+    static void refresh(Game game) {
         File[] directories = new File(game.getDirectory() + game.getAddonDirectory()).listFiles(File::isDirectory);
         if (directories == null)
             return;

@@ -1,17 +1,12 @@
 package addonmanager.app.core;
 
-import addonmanager.Updateable;
-import addonmanager.app.core.file.FindGames;
-import addonmanager.app.core.file.RefreshGameDirectory;
-import addonmanager.app.core.file.RefreshToc;
-import addonmanager.app.core.file.ReplaceAddon;
+import addonmanager.app.core.file.FileOperations;
 import addonmanager.app.core.net.DownloadAddon;
 import addonmanager.app.core.net.FindProject;
 import addonmanager.app.core.net.version.DownloadVersions;
 
 import java.io.File;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class App {
 
@@ -27,20 +22,8 @@ public class App {
         game.addons.forEach(x -> x.setReleaseType(releaseType));
     }
 
-    public static List<Game> findGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
-        FindGames findGames = new FindGames(updateable, consumer, mustHaveExe);
-        return findGames.find();
-    }
 
-    public static List<Game> findGames(boolean mustHaveExe) {
-        return findGames(Updateable.EMPTY_UPDATEABLE, game -> {
-        }, mustHaveExe);
-    }
-
-    public static void refreshGameDirectory(Game game) {
-        RefreshGameDirectory.refresh(game);
-    }
-
+    //todo movto net.NetOperations net.NetActions??
     public static boolean downLoadVersions(Addon addon) {
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
@@ -64,24 +47,15 @@ public class App {
         return true;
     }
 
+
     public static boolean updateAddon(Addon addon) {
         addon.setStatus(Addon.Status.UPDATING);
-        if (!ReplaceAddon.directoriesExists()) {
-            addon.setStatus(Addon.Status.NONE);
-            return false;
-        }
         File zipFile = DownloadAddon.downLoadFile(addon, 0, 0.7);
-        if (!zipFile.exists()) {
+        if (!FileOperations.replaceAddon(addon, zipFile, 0.8, 1.0)) {
             addon.setStatus(Addon.Status.NONE);
             return false;
         }
-
-        ReplaceAddon replaceAddon = new ReplaceAddon(addon, zipFile);
-        if (!replaceAddon.replace(0.8, 1.0)) {
-            addon.setStatus(Addon.Status.NONE);
-            return false;
-        }
-        RefreshToc.refresh(addon);
+        FileOperations.refreshToc(addon);
         addon.setStatus(Addon.Status.UP_TO_DATE);
         return true;
     }

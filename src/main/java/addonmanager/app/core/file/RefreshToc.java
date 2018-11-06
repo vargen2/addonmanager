@@ -9,8 +9,8 @@ import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.util.List;
 
-public class RefreshToc {
-    public static boolean refresh(Addon addon){
+class RefreshToc {
+    static boolean refresh(Addon addon){
 
         var tocFile = new File(addon.getAbsolutePath()).listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
         if (tocFile == null || tocFile[0] == null)

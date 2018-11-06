@@ -12,7 +12,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class ReplaceAddon {
+class ReplaceAddon {
 
     private Addon addon;
     private File zipFile;
@@ -20,39 +20,16 @@ public class ReplaceAddon {
     private File addonDir;
     private File[] addonFolders;
 
-    public ReplaceAddon(Addon addon, File zipFile) {
+    ReplaceAddon(Addon addon, File zipFile) {
         this.addon = addon;
         this.zipFile = zipFile;
         tempWorkingDir = new File("temp" + File.separator + addon.getFolderName());
         addonDir = new File(addon.getAbsolutePath().replace(addon.getFolderName(), ""));
     }
 
-    public static boolean directoriesExists() {
-        boolean returnValue = true;
-        if (!Files.isDirectory(Paths.get("temp"))) {
-            try {
-                FileUtils.forceMkdir(new File("temp"));
-            } catch (IOException e) {
-                e.printStackTrace();
-                returnValue = false;
-            }
-        }
-        if (!Files.isDirectory(Paths.get("backup"))) {
-            try {
-                FileUtils.forceMkdir(new File("backup"));
-            } catch (IOException e) {
-                e.printStackTrace();
-                returnValue = false;
-            }
-        }
-        return returnValue;
-    }
-
-    public boolean replace() {
-        return replace(0, 1);
-    }
-
-    public boolean replace(double from, double to) {
+    boolean replace(double from, double to) {
+        if (!FileOperations.directoriesExists())
+            return false;
         Updateable updateable = addon.getUpdateable();
         updateable.updateMessage("unzipping...");
         updateable.updateProgress(from + (to - from) * 0.0, to);

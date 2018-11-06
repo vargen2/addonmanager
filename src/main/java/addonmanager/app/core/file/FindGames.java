@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class FindGames {
+class FindGames {
     private final boolean mustHaveExe;
     private final AtomicInteger max = new AtomicInteger();
     private final AtomicInteger current = new AtomicInteger();
@@ -18,13 +18,13 @@ public class FindGames {
     private final Consumer<Game> consumer;
     private final List<Game> games = Collections.synchronizedList(new ArrayList<>());
 
-    public FindGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
+    FindGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
         this.updateable = updateable;
         this.consumer = consumer;
         this.mustHaveExe = mustHaveExe;
     }
 
-    public List<Game> find() {
+    List<Game> find() {
         var drives = File.listRoots();
         max.set(1);
         current.set(0);

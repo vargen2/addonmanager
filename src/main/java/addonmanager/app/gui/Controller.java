@@ -278,6 +278,7 @@ public class Controller {
 
     }
 
+
     public static void tempRefreshFromNet(Game game) {
         Thread t = new Thread(new Task<>() {
             @Override

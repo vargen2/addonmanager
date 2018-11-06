@@ -10,26 +10,30 @@ import addonmanager.app.core.net.FindProject;
 import addonmanager.app.core.net.version.DownloadVersions;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 public class App {
 
-    public static void setReleaseTypeSelectedGame(Game game, Addon.ReleaseType releaseType) {
+    public static void setReleaseType(Addon addon, Addon.ReleaseType releaseType) {
+        if (addon == null)
+            return;
+        addon.setReleaseType(releaseType);
+    }
+
+    public static void setReleaseType(Game game, Addon.ReleaseType releaseType) {
         if (game == null)
             return;
         game.addons.forEach(x -> x.setReleaseType(releaseType));
     }
 
-    public static List<Game> findGames(Updateable updateable, Consumer<File> consumer, boolean mustHaveExe) {
+    public static List<Game> findGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
         FindGames findGames = new FindGames(updateable, consumer, mustHaveExe);
         return findGames.find();
     }
 
     public static List<Game> findGames(boolean mustHaveExe) {
-        return findGames(Updateable.EMPTY_UPDATEABLE, file -> {
+        return findGames(Updateable.EMPTY_UPDATEABLE, game -> {
         }, mustHaveExe);
     }
 

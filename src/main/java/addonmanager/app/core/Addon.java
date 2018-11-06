@@ -90,7 +90,7 @@ public class Addon {
         return status;
     }
 
-    public void setStatus(Status status) {
+    void setStatus(Status status) {
         statusProperty().set(status);
     }
 
@@ -153,7 +153,7 @@ public class Addon {
         return latestDownload;
     }
 
-    public void updateLatestDownload() {
+    private void updateLatestDownload() {
         if (downloads.isEmpty()) {
             setLatestDownload(null);
             setStatus(Status.NONE);
@@ -194,7 +194,7 @@ public class Addon {
         return releaseTypeProperty().get();
     }
 
-    public void setReleaseType(ReleaseType releaseType) {
+    void setReleaseType(ReleaseType releaseType) {
         releaseTypeProperty().setValue(releaseType);
         updateLatestDownload();
         updateReleaseLatest();
@@ -247,44 +247,6 @@ public class Addon {
         return absolutePath;
     }
 
-    //todo move this method to file.RefreshToc(Addon addon)
-//    public void refreshToc() {
-//        File d = new File(absolutePath);
-//        var tocFile = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".toc"));
-//        if (tocFile == null || tocFile[0] == null)
-//            return;
-//        List<String> lines = null;
-//
-//        try {
-//            lines = Files.readAllLines(tocFile[0].toPath());
-//        } catch (MalformedInputException e) {
-//
-//
-//            try {
-//                lines = Files.readAllLines(tocFile[0].toPath(), Charset.forName("ISO-8859-1"));
-//            } catch (IOException e1) {
-//
-//                e1.printStackTrace();
-//            }
-//
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        if (lines == null)
-//            return;
-//
-//        for (var line : lines) {
-//            if (line.contains("Interface:")) {
-//                setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim());
-//            } else if (line.contains("Version:")) {
-//                setVersion(line.substring(line.indexOf("Version:") + 8).trim());
-//            } else if (line.contains("Title:")) {
-//
-//                setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim());
-//            }
-//        }
-//    }
 
     public String getProjectUrl() {
         return projectUrl;

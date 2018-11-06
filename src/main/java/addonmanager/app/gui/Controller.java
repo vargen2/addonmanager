@@ -60,8 +60,8 @@ public class Controller {
         }, "Add Directory manually...");
         gameChoiceBox.getItems().add(manual);
         ChoiceBoxItem scan = new ChoiceBoxItem(o -> {
-            Consumer<File> consumer = file -> {
-                Thread t = new Thread(new FoundGameTask(file, model, gameChoiceBox));
+            Consumer<Game> consumer = game -> {
+                Thread t = new Thread(new FoundGameTask(game, model, gameChoiceBox));
                 t.setDaemon(true);
                 t.start();
             };

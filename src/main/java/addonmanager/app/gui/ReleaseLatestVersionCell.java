@@ -1,6 +1,7 @@
 package addonmanager.app.gui;
 
 import addonmanager.app.core.Addon;
+import addonmanager.app.core.App;
 import addonmanager.app.core.Download;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -16,7 +17,7 @@ import java.time.Period;
 
 public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
 
-    private static final Tooltip releaseButtonToolTip=new Tooltip("Set this preferred release type");
+    private static final Tooltip releaseButtonToolTip = new Tooltip("Set this preferred release type");
     private PopOver popOver;
 
     public ReleaseLatestVersionCell() {
@@ -106,7 +107,7 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
                 if (oldValue == null)
                     return;
                 if (newValue != null && newValue.getUserData() instanceof Addon.ReleaseType) {
-                    addon.setReleaseType((Addon.ReleaseType) newValue.getUserData());
+                    App.setReleaseType(addon, (Addon.ReleaseType) newValue.getUserData());
                     popOver.hide();
 
                 }

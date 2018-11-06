@@ -16,10 +16,10 @@ public class FoundGameTask extends Task<Void> {
     private static final Object lock = new Object();
     private Model model;
     private ChoiceBox choiceBox;
-    private File file;
+    private Game game;
 
-    public FoundGameTask(File file, Model model, ChoiceBox choiceBox) {
-        this.file = file;
+    public FoundGameTask(Game game, Model model, ChoiceBox choiceBox) {
+        this.game = game;
         this.model = model;
         this.choiceBox = choiceBox;
     }
@@ -29,11 +29,10 @@ public class FoundGameTask extends Task<Void> {
 
         synchronized (lock) {
             for (var g : model.games) {
-                if (g.getDirectory().equals(file.getPath()))
+                if (g.getDirectory().equals(g.getDirectory()))
                     return null;
             }
         }
-        Game game = new Game(file.getName(), file.getPath(), File.separator + "Interface" + File.separator + "AddOns");
         Platform.runLater(() -> {
             Task<Void> refreshTask;
             ChoiceBoxItem cbi = new ChoiceBoxItem(game);

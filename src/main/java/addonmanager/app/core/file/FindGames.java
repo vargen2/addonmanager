@@ -11,14 +11,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class FindGames {
-    private boolean mustHaveExe = true;
+    private final boolean mustHaveExe;
     private final AtomicInteger max = new AtomicInteger();
     private final AtomicInteger current = new AtomicInteger();
-    private Updateable updateable;
-    private Consumer<File> consumer;
-    private List<Game> games = Collections.synchronizedList(new ArrayList<>());
+    private final Updateable updateable;
+    private final Consumer<Game> consumer;
+    private final List<Game> games = Collections.synchronizedList(new ArrayList<>());
 
-    public FindGames(Updateable updateable, Consumer<File> consumer, boolean mustHaveExe) {
+    public FindGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
         this.updateable = updateable;
         this.consumer = consumer;
         this.mustHaveExe = mustHaveExe;
@@ -26,14 +26,10 @@ public class FindGames {
 
     public List<Game> find() {
         var drives = File.listRoots();
-
         max.set(1);
-        //progress.setValue(0);
-        updateable.updateProgress(0, 1);
         current.set(0);
+        updateable.updateProgress(0, 1);
 
-        //System.out.println(progress.get());
-        //Queue<File> results = new ConcurrentLinkedQueue<>();
         Queue<File> directorys = new ConcurrentLinkedQueue<>();
         Arrays.stream(drives).parallel().forEach(drive -> {
             var first = new File(drive.getPath()).listFiles(directoryAndNotHidden);
@@ -125,16 +121,17 @@ public class FindGames {
 
                 var exes = parent.listFiles(exeFilter);
                 if (exes != null && exes.length > 0) {
-                    //fileObservableList.add(parent);
-                    consumer.accept(parent);
-                    games.add(new Game(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns"));
+                    Game game = new Game(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
+                    consumer.accept(game);
+                    games.add(game);
                     return true;
                 }
             } else {
                 //laptop /stationär
                 //if (dir.getPath().contains("World of Warcraft Beta")){
-                consumer.accept(parent);
-                games.add(new Game(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns"));
+                Game game = new Game(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
+                consumer.accept(game);
+                games.add(game);
                 //}
                 return true;
             }

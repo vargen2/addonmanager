@@ -1,4 +1,4 @@
-package addonmanager.core;
+package addonmanager.app.core;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;

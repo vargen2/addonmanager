@@ -1,8 +1,8 @@
-package addonmanager.app;
+package addonmanager.app.gui;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Addon.Status;
-import addonmanager.app.task.ReplaceAddonTask;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Addon.Status;
+import addonmanager.app.gui.task.UpdateAddonTask;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -99,8 +99,8 @@ public class StatusCell extends TableCell<Addon, Status> {
                     progressBar.progressProperty().unbind();
                     button.setText("update");
                     button.setOnAction(event -> {
-                        ReplaceAddonTask replaceAddonTask = new ReplaceAddonTask(addon);
-                        Thread t = new Thread(replaceAddonTask);
+                        UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon);
+                        Thread t = new Thread(updateAddonTask);
                         t.setDaemon(true);
                         t.start();
 
@@ -113,9 +113,12 @@ public class StatusCell extends TableCell<Addon, Status> {
                 }
                 if (tempStatus != null && tempStatus == Status.UPDATING && addon != null) {
 
-                    progressBar.progressProperty().bind(addon.getReplaceAddonTask().progressProperty());
+                    //addon.progressProperty().addListener((observable, oldValue, newValue) -> progressBar.setProgress((double)newValue));
+                    //progressBar.progressProperty().bind(addon.progressProperty());
+                    progressBar.progressProperty().bind(addon.getUpdateable().progressProperty());
                     progressBar.setVisible(true);
-                    label.textProperty().bind(addon.getReplaceAddonTask().messageProperty());
+                    // addon.messageProperty().addListener((observable, oldValue, newValue) -> label.setText(newValue));
+                    label.textProperty().bind(addon.getUpdateable().messageProperty());
                     label.setVisible(true);
                     button.setVisible(false);
                     button.setText("");

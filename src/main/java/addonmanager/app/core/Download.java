@@ -1,4 +1,4 @@
-package addonmanager.core;
+package addonmanager.app.core;
 
 import java.time.LocalDateTime;
 

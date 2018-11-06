@@ -1,8 +1,8 @@
-package addonmanager.net.version;
+package addonmanager.app.core.net.version;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
-import addonmanager.net.Util;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
+import addonmanager.app.core.net.Util;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;

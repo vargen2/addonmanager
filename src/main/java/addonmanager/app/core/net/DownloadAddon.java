@@ -1,8 +1,8 @@
-package addonmanager.net;
+package addonmanager.app.core.net;
 
 import addonmanager.Updateable;
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -11,20 +11,15 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class DownloadAddon {
 
     public static File downLoadFile(Addon addon) {
-        return downLoadFile(addon, Updateable.EMPTY_UPDATEABLE);
+        return downLoadFile(addon, 0, 1);
     }
 
-    public static File downLoadFile(Addon addon, Updateable updateable) {
-        return downLoadFile(addon, 1, updateable);
-    }
-
-    public static File downLoadFile(Addon addon, double barMax, Updateable updateable) {
+    public static File downLoadFile(Addon addon, double from, double to) {
+        Updateable updateable = addon.getUpdateable();
         updateable.updateMessage("downloading...");
         String addonName = addon.getFolderName();
         Download download = addon.getLatestDownload();
@@ -49,7 +44,9 @@ public class DownloadAddon {
                 for (int length; (length = input.read(buffer)) > 0; ) {
                     output.write(buffer, 0, length);
                     downloaded += length;
-                    updateable.updateProgress(barMax * (downloaded / fileSize), 1.0);
+                    //updateable.updateProgress(from+(to-from)barMax * (downloaded / fileSize), 1.0);
+                    updateable.updateProgress(from + (to - from) * (downloaded / fileSize), 1.0);
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();

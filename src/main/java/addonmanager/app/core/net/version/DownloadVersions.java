@@ -1,7 +1,7 @@
-package addonmanager.net.version;
+package addonmanager.app.core.net.version;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
 
 import java.util.List;
 import java.util.function.BiConsumer;

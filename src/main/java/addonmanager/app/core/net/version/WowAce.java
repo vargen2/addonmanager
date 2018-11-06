@@ -1,8 +1,8 @@
-package addonmanager.net.version;
+package addonmanager.app.core.net.version;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
-import addonmanager.net.Util;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
+import addonmanager.app.core.net.Util;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
@@ -18,9 +18,9 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WowCurseForge extends DownloadVersions {
+public class WowAce extends DownloadVersions {
 
-    public WowCurseForge(Addon addon, Consumer<String> updateMessage, BiConsumer<Double, Double> updateProgress) {
+    public WowAce(Addon addon, Consumer<String> updateMessage, BiConsumer<Double, Double> updateProgress) {
         super(addon, updateMessage, updateProgress);
     }
 
@@ -28,7 +28,9 @@ public class WowCurseForge extends DownloadVersions {
     public List<Download> getDownloads() {
         List<Download> downloads = new ArrayList<>();
 
-
+        String filePage = "";
+        if (page != 0)
+            filePage = "?page=" + page;
         //updateProgress(0, 1);
         String retrying = "retrying";
         String input = "";
@@ -36,7 +38,7 @@ public class WowCurseForge extends DownloadVersions {
         HttpClient httpClient = HttpClient.newHttpClient();
         URI uri;
         try {
-            uri = URI.create(addon.getProjectUrl() + "/files");
+            uri = URI.create(addon.getProjectUrl() + "/files"+filePage);
 
         } catch (IllegalArgumentException e) {
             return downloads;
@@ -88,7 +90,8 @@ public class WowCurseForge extends DownloadVersions {
             String a = Util.parse(subString, "data-epoch=\"", "\"");
             download.fileDateUploaded = LocalDateTime.ofEpochSecond(Integer.parseInt(a), 0, OffsetDateTime.now().getOffset());
             download.gameVersion = Util.parse(subString, "<span class=\"version-label\">", "</span>");
-            download.downloads = Long.valueOf(Util.parse(subString, "<td class=\"project-file-downloads\">", "</td>").replaceAll(",", "").trim());
+            String tempDL = Util.parse(subString, "<td class=\"project-file-downloads\">", "</td>").replaceAll(",", "").trim();
+            download.downloads = Long.valueOf(tempDL);
             download.downloadLink = Util.parse(subString, " href=\"", "\"");
             downloads.add(download);
         }

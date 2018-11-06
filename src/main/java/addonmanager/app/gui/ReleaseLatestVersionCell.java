@@ -1,7 +1,7 @@
-package addonmanager.app;
+package addonmanager.app.gui;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;

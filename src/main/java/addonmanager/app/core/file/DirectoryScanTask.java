@@ -1,8 +1,8 @@
-package addonmanager.file;
+package addonmanager.app.core.file;
 
-import addonmanager.app.ChoiceBoxItem;
-import addonmanager.core.Game;
-import addonmanager.core.Model;
+import addonmanager.app.gui.ChoiceBoxItem;
+import addonmanager.app.core.Game;
+import addonmanager.app.core.Model;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;

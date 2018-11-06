@@ -1,9 +1,9 @@
-package addonmanager.app;
+package addonmanager.app.gui;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Game;
-import addonmanager.core.Model;
-import addonmanager.file.DirectoryScanTask;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Game;
+import addonmanager.app.core.Model;
+import addonmanager.app.core.file.DirectoryScanTask;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -109,7 +109,7 @@ public class Controller {
         });
 
 //        experimentButton.setOnAction(event -> {
-        //addonmanager.net.Experi exp = new addonmanager.net.Experi();
+        //addonmanager.app.core.net.Experi exp = new addonmanager.app.core.net.Experi();
         //exp.experimentRedirect("omni-cc");
 
 
@@ -193,7 +193,7 @@ public class Controller {
 //        });
 
 //        scanButton.setOnAction(event -> {
-//            addonmanager.file.DirectoryScanner2 ds = new addonmanager.file.DirectoryScanner2(model, gameChoiceBox, taskProgressView);
+//            addonmanager.app.core.file.DirectoryScanner2 ds = new addonmanager.app.core.file.DirectoryScanner2(model, gameChoiceBox, taskProgressView);
 //            Platform.runLater(() -> taskProgressView.getTasks().add(ds));
 //
 //            Thread t = new Thread(ds);

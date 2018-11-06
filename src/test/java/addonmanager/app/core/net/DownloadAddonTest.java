@@ -1,7 +1,7 @@
-package addonmanager.net;
+package addonmanager.app.core.net;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

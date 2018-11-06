@@ -1,17 +1,12 @@
-package addonmanager.net;
+package addonmanager.app.core.net;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
+import addonmanager.app.core.Addon;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FindProject {
 

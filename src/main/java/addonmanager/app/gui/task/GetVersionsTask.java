@@ -1,9 +1,9 @@
-package addonmanager.app.task;
+package addonmanager.app.gui.task;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Download;
-import addonmanager.net.FindProject;
-import addonmanager.net.version.DownloadVersions;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Download;
+import addonmanager.app.core.net.FindProject;
+import addonmanager.app.core.net.version.DownloadVersions;
 import javafx.concurrent.Task;
 
 import java.util.ArrayList;

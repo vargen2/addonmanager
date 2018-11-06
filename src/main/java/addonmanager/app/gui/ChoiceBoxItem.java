@@ -1,6 +1,6 @@
-package addonmanager.app;
+package addonmanager.app.gui;
 
-import addonmanager.core.Game;
+import addonmanager.app.core.Game;
 
 import java.util.function.Consumer;
 

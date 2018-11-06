@@ -1,4 +1,4 @@
-package addonmanager.net;
+package addonmanager.app.core.net;
 
 public class Util {
 

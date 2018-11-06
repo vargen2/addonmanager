@@ -1,6 +1,6 @@
-package addonmanager.core;
+package addonmanager.app.core;
 
-import addonmanager.app.task.GetVersionsTask;
+import addonmanager.app.gui.task.GetVersionsTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;

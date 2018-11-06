@@ -1,4 +1,4 @@
-package addonmanager.net;
+package addonmanager.app.core.net;
 
 import org.apache.http.ProtocolException;
 import org.apache.http.client.utils.URIBuilder;

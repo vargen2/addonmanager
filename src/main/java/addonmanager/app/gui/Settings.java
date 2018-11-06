@@ -1,7 +1,7 @@
-package addonmanager.app;
+package addonmanager.app.gui;
 
-import addonmanager.core.Addon;
-import addonmanager.core.Model;
+import addonmanager.app.core.Addon;
+import addonmanager.app.core.Model;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

@@ -1,11 +1,8 @@
-package addonmanager.core;
+package addonmanager.app.core;
 
-import addonmanager.app.task.ReplaceAddonTask;
-import addonmanager.app.task.GetVersionsTask;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import addonmanager.Updateable;
+import addonmanager.app.gui.task.GetVersionsTask;
+import javafx.beans.property.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +40,10 @@ public class Addon {
 
     private List<Download> downloads = new ArrayList<>();
     private GetVersionsTask getVersionsTask;
-    private ReplaceAddonTask replaceAddonTask;
+    //private ReplaceAddonTask replaceAddonTask;
+//    private StringProperty message;
+//    private DoubleProperty progress;
+    private Updateable updateable=Updateable.EMPTY_UPDATEABLE;
     private String folderName;
     private String absolutePath;
     private String projectUrl;
@@ -76,6 +76,45 @@ public class Addon {
         setStatus(Status.NONE);
     }
 
+
+//    public String getMessage() {
+//        return messageProperty().get();
+//    }
+//
+//    public StringProperty messageProperty() {
+//        if(message==null)
+//            message=new SimpleStringProperty(this,"message");
+//        return message;
+//    }
+//
+//    public void setMessage(String message) {
+//        messageProperty().setValue(message);
+//    }
+
+
+
+//    public double getProgress() {
+//        return progressProperty().get();
+//    }
+//
+//    public DoubleProperty progressProperty() {
+//        if(progress==null)
+//            progress=new SimpleDoubleProperty(this,"progress");
+//        return progress;
+//    }
+//
+//    public void setProgress(double progress) {
+//        progressProperty().setValue(progress);
+//    }
+
+
+    public Updateable getUpdateable() {
+        return updateable;
+    }
+
+    public void setUpdateable(Updateable updateable) {
+        this.updateable = updateable;
+    }
 
     public Status getStatus() {
         return statusProperty().get();
@@ -247,14 +286,14 @@ public class Addon {
         setStatus(Status.GETTING_VERSIONS);
     }
 
-    public ReplaceAddonTask getReplaceAddonTask() {
-        return replaceAddonTask;
-    }
-
-    public void setReplaceAddonTask(ReplaceAddonTask replaceAddonTask) {
-        this.replaceAddonTask = replaceAddonTask;
-        setStatus(Status.UPDATING);
-    }
+//    public ReplaceAddonTask getReplaceAddonTask() {
+//        return replaceAddonTask;
+//    }
+//
+//    public void setReplaceAddonTask(ReplaceAddonTask replaceAddonTask) {
+//        this.replaceAddonTask = replaceAddonTask;
+//        setStatus(Status.UPDATING);
+//    }
 
     public String getAbsolutePath() {
         return absolutePath;

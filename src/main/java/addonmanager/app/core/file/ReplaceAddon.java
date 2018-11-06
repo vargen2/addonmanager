@@ -1,7 +1,7 @@
-package addonmanager.file;
+package addonmanager.app.core.file;
 
 import addonmanager.Updateable;
-import addonmanager.core.Addon;
+import addonmanager.app.core.Addon;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -14,12 +14,14 @@ import java.nio.file.Paths;
 
 public class ReplaceAddon {
 
+    private Addon addon;
     private File zipFile;
     private File tempWorkingDir;
     private File addonDir;
     private File[] addonFolders;
 
     public ReplaceAddon(Addon addon, File zipFile) {
+        this.addon = addon;
         this.zipFile = zipFile;
         tempWorkingDir = new File("temp" + File.separator + addon.getFolderName());
         addonDir = new File(addon.getAbsolutePath().replace(addon.getFolderName(), ""));
@@ -47,24 +49,28 @@ public class ReplaceAddon {
     }
 
     public boolean replace() {
-        return replace(Updateable.EMPTY_UPDATEABLE);
+        return replace(0, 1);
     }
 
-    public boolean replace(Updateable updateable) {
+    public boolean replace(double from, double to) {
+        Updateable updateable = addon.getUpdateable();
         updateable.updateMessage("unzipping...");
-        updateable.updateProgress(0.8, 1.0);
+        updateable.updateProgress(from + (to - from) * 0.0, to);
         if (!unpack())
             return false;
+
         updateable.updateMessage("removing old...");
-        updateable.updateProgress(0.85, 1.0);
+        updateable.updateProgress(from + (to - from) * 0.25, to);
         if (!moveOldToBackup())
             return false;
+
         updateable.updateMessage("moving new...");
-        updateable.updateProgress(0.9, 1.0);
+        updateable.updateProgress(from + (to - from) * 0.5, to);
         if (!moveTempToAddOns())
             return false;
+
         updateable.updateMessage("clean...");
-        updateable.updateProgress(0.95, 1.0);
+        updateable.updateProgress(from + (to - from) * 0.75, to);
         return clean();
     }
 

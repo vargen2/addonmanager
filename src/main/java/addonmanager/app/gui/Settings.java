@@ -29,9 +29,9 @@ public class Settings {
         Button b1 = new Button("release");
         Button b2 = new Button("beta");
         Button b3 = new Button("alpha");
-        b1.setOnAction(event -> App.setReleaseType(model.selectedGame.getValue(), Addon.ReleaseType.RELEASE));
-        b2.setOnAction(event -> App.setReleaseType(model.selectedGame.getValue(), Addon.ReleaseType.BETA));
-        b3.setOnAction(event -> App.setReleaseType(model.selectedGame.getValue(), Addon.ReleaseType.ALPHA));
+        b1.setOnAction(event -> App.setReleaseType(model.getSelectedGame(), Addon.ReleaseType.RELEASE));
+        b2.setOnAction(event -> App.setReleaseType(model.getSelectedGame(), Addon.ReleaseType.BETA));
+        b3.setOnAction(event -> App.setReleaseType(model.getSelectedGame(), Addon.ReleaseType.ALPHA));
         HBox releaseTypeHBox = new HBox(0, b1, b2, b3);
         releaseTypeVBox = new VBox(0, releaseTypeLabel, releaseTypeHBox);
         rootVBox = new VBox(0, releaseTypeVBox);
@@ -42,7 +42,7 @@ public class Settings {
     }
 
     private void refresh() {
-        if (model.selectedGame.getValue() == null) {
+        if (model.getSelectedGame() == null) {
             rootVBox.getChildren().remove(releaseTypeVBox);
         } else {
             if (!rootVBox.getChildren().contains(releaseTypeVBox))

@@ -37,7 +37,7 @@ public class FoundGameTask extends Task<Void> {
         Platform.runLater(() -> {
             Task<Void> refreshTask;
             ChoiceBoxItem cbi = new ChoiceBoxItem(game);
-            if (model.selectedGame.getValue() == null) {
+            if (model.getSelectedGame() == null) {
                 choiceBox.setValue(cbi);
                 refreshTask = new Task<Void>() {
                     @Override

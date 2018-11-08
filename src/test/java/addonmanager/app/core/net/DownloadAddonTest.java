@@ -1,6 +1,7 @@
 package addonmanager.app.core.net;
 
 import addonmanager.app.core.Addon;
+import addonmanager.app.core.App;
 import addonmanager.app.core.Download;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class DownloadAddonTest {
 
     @Test
     void downLoadFile() {
-        Addon addon=new Addon("Details","");
+        Addon addon= App.getFactory().createAddon("Details","");
         addon.setProjectUrl("https://wow.curseforge.com/projects/details");
         Download download=new Download();
         download.fileSize="4.15 MB";

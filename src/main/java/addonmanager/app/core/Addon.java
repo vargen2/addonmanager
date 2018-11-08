@@ -38,7 +38,7 @@ public class Addon {
     enum UpdateMode {AUTO, MANUAL}
 
     private List<Download> downloads = new ArrayList<>();
-    private Updateable updateable=Updateable.EMPTY_UPDATEABLE;
+    private Updateable updateable = Updateable.EMPTY_UPDATEABLE;
     private String folderName;
     private String absolutePath;
     private String projectUrl;
@@ -58,19 +58,16 @@ public class Addon {
 
     private final ObjectProperty<Status> status;
 
-
-    public Addon(String folderName, String absolutePath) {
+   protected Addon(String folderName, String absolutePath) {
         this.folderName = folderName;
         this.absolutePath = absolutePath;
-          this.status = new SimpleObjectProperty<>(this, "status");
+        this.status = new SimpleObjectProperty<>(this, "status");
         this.latestDownload = new SimpleObjectProperty<Download>(this, "latestDownload");
         setLatestDownload(null);
         setReleaseType(ReleaseType.RELEASE);
         updateLatestDownload();
         setStatus(Status.NONE);
     }
-
-
 
 
     public Updateable getUpdateable() {
@@ -170,7 +167,7 @@ public class Addon {
             } else {
                 setStatus(Status.UP_TO_DATE);
             }
-        }else if(getLatestDownload() !=null && getVersion()==null){
+        } else if (getLatestDownload() != null && getVersion() == null) {
             setStatus(Status.CAN_UPDATE);
         }
 

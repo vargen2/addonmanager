@@ -5,6 +5,8 @@ import addonmanager.app.core.Addon;
 import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
 import addonmanager.app.core.Model;
+import addonmanager.app.gui.fxapp.FXFactory;
+import addonmanager.app.gui.fxapp.FXModel;
 import addonmanager.app.gui.task.FindGamesTask;
 import addonmanager.app.gui.task.FoundGameTask;
 import addonmanager.app.gui.task.RefreshGameTask;
@@ -40,7 +42,8 @@ public class Controller {
 
     @FXML
     private void initialize() {
-        Model model = new Model();
+        App.setFactory(new FXFactory());
+        Model model = App.getFactory().createModel();
         Settings settings = new Settings(model);
 
         gameChoiceBox.getItems().add(new Separator());
@@ -81,7 +84,7 @@ public class Controller {
                 //System.out.println("triggred");
                 if (((ChoiceBoxItem) newValue).getGame() != null) {
                     gameChoiceBox.getItems().remove(add);
-                    model.selectedGame.setValue(((ChoiceBoxItem) newValue).getGame());
+                    model.setSelectedGame(((ChoiceBoxItem) newValue).getGame());
                 }
                 if (newValue == manual || newValue == scan) {
                     ((ChoiceBoxItem) newValue).getConsumer().accept(0);
@@ -104,12 +107,14 @@ public class Controller {
             }
         });
 
-
-        model.selectedGame.addListener((observable, oldValue, newValue) -> {
-            tableView.setItems(newValue.addons);
-            refreshButton.setDisable(newValue == null);
-        });
-
+        if (model instanceof FXModel) {
+            ((FXModel) model).selectedGameProperty.addListener((observable, oldValue, newValue) -> {
+                tableView.setItems(newValue.addons);
+                refreshButton.setDisable(newValue == null);
+            });
+        }else {
+            System.err.println("model not FXModel");
+        }
 
         TableColumn<Addon, String> titleVersionCol = new TableColumn<>("Title");
         titleVersionCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
@@ -158,7 +163,7 @@ public class Controller {
 
 
         refreshButton.setOnAction(event -> {
-            Game game = model.selectedGame.getValue();
+            Game game = model.getSelectedGame();
             if (game == null)
                 return;
 

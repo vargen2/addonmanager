@@ -1,6 +1,7 @@
 package addonmanager.app.core.file;
 
 import addonmanager.app.core.Addon;
+import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
 
 import java.io.File;
@@ -16,7 +17,7 @@ class RefreshGameDirectory {
             if (game.addons.parallelStream().anyMatch(x -> (x.getFolderName().equals(d.getName()))))
                 continue;
 
-            Addon addon = new Addon(d.getName(), d.getPath());
+            Addon addon = App.getFactory().createAddon(d.getName(), d.getPath());
             if (RefreshToc.refresh(addon))
                 game.addons.add(addon);
         }

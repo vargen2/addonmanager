@@ -10,6 +10,32 @@ import java.util.List;
 
 public class App {
 
+    public static final Factory DEFAULT_FACTORY = new Factory() {
+        @Override
+        public Game createGame(String name, String directory, String addonDirectory) {
+            return new Game(name, directory, addonDirectory);
+        }
+
+        @Override
+        public Addon createAddon(String folderName, String absolutePath) {
+            return new Addon(folderName, absolutePath);
+        }
+
+        @Override
+        public Model createModel() {
+            return new Model();
+        }
+    };
+    private static Factory factory = DEFAULT_FACTORY;
+
+    public static void setFactory(Factory factory) {
+        App.factory = factory;
+    }
+
+    public static Factory getFactory() {
+        return App.factory;
+    }
+
     public static void setReleaseType(Addon addon, Addon.ReleaseType releaseType) {
         if (addon == null)
             return;

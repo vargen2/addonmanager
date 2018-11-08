@@ -10,7 +10,7 @@ public class Game {
     private String addonDirectory;
     public final ObservableList<Addon> addons = FXCollections.observableArrayList();
 
-    public Game(String name, String directory, String addonDirectory) {
+    protected Game(String name, String directory, String addonDirectory) {
         this.name = name;
         this.directory = directory;
         this.addonDirectory = addonDirectory;

@@ -1,6 +1,7 @@
 package addonmanager.app.core.file;
 
 import addonmanager.Updateable;
+import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
 
 import java.io.File;
@@ -121,7 +122,7 @@ class FindGames {
 
                 var exes = parent.listFiles(exeFilter);
                 if (exes != null && exes.length > 0) {
-                    Game game = new Game(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
+                    Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
                     consumer.accept(game);
                     games.add(game);
                     return true;
@@ -129,7 +130,7 @@ class FindGames {
             } else {
                 //laptop /stationär
                 //if (dir.getPath().contains("World of Warcraft Beta")){
-                Game game = new Game(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
+                Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
                 consumer.accept(game);
                 games.add(game);
                 //}

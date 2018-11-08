@@ -8,6 +8,8 @@ import addonmanager.app.Model;
 import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;
+import addonmanager.gui.tableview.ReleaseLatestVersionCell;
+import addonmanager.gui.tableview.StatusCell;
 import addonmanager.gui.task.FindGamesTask;
 import addonmanager.gui.task.FoundGameTask;
 import addonmanager.gui.task.RefreshGameTask;

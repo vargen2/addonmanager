@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+//todo separate to FXAddon
 public class Addon {
 
     public enum Status {NONE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}

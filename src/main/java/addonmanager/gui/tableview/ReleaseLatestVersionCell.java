@@ -1,4 +1,4 @@
-package addonmanager.gui;
+package addonmanager.gui.tableview;
 
 import addonmanager.app.Addon;
 import addonmanager.app.App;

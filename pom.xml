@@ -70,7 +70,7 @@
                 <version>8.8.3</version>
                 <configuration>
                     <vendor>YourCompany</vendor>
-                    <mainClass>Main</mainClass>
+                    <mainClass>addonmanager.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>

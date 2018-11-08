@@ -1,3 +1,5 @@
+package addonmanager;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -14,7 +16,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../gui.fxml"));
         //primaryStage.getIcons().add(new Image("icon.png"));
         primaryStage.setTitle("Addon Manager");
         primaryStage.setScene(new Scene(root, 960, 540));

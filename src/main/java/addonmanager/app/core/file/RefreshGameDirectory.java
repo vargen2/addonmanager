@@ -14,12 +14,12 @@ class RefreshGameDirectory {
             return;
 
         for (var d : directories) {
-            if (game.addons.parallelStream().anyMatch(x -> (x.getFolderName().equals(d.getName()))))
+            if (game.getAddons().parallelStream().anyMatch(x -> (x.getFolderName().equals(d.getName()))))
                 continue;
 
             Addon addon = App.getFactory().createAddon(d.getName(), d.getPath());
             if (RefreshToc.refresh(addon))
-                game.addons.add(addon);
+                game.addAddon(addon);
         }
     }
 }

@@ -9,6 +9,9 @@ public class FXModel extends Model {
 
     public final Property<Game> selectedGameProperty = new SimpleObjectProperty<Game>();
 
+    FXModel() {
+        super();
+    }
 
     @Override
     public void setSelectedGame(Game selectedGame) {

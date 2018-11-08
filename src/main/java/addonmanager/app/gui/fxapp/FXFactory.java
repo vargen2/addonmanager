@@ -5,7 +5,7 @@ import addonmanager.app.core.*;
 public class FXFactory implements Factory {
     @Override
     public Game createGame(String name, String directory, String addonDirectory) {
-        return App.DEFAULT_FACTORY.createGame(name, directory, addonDirectory);
+        return new FXGame(name, directory, addonDirectory);
     }
 
     @Override

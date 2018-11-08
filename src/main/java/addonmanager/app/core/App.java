@@ -45,7 +45,7 @@ public class App {
     public static void setReleaseType(Game game, Addon.ReleaseType releaseType) {
         if (game == null)
             return;
-        game.addons.forEach(x -> x.setReleaseType(releaseType));
+        game.getAddons().forEach(x -> x.setReleaseType(releaseType));
     }
 
 

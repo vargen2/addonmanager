@@ -3,12 +3,16 @@ package addonmanager.app.core;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Game {
 
-    private String name;
-    private String directory;
-    private String addonDirectory;
-    public final ObservableList<Addon> addons = FXCollections.observableArrayList();
+    private final String name;
+    private final String directory;
+    private final String addonDirectory;
+    protected final List<Addon> addons = new ArrayList<>();
 
     protected Game(String name, String directory, String addonDirectory) {
         this.name = name;
@@ -22,6 +26,18 @@ public class Game {
 
     public String getAddonDirectory() {
         return addonDirectory;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Addon> getAddons() {
+        return Collections.unmodifiableList(addons);
+    }
+
+    public void addAddon(Addon addon) {
+        addons.add(addon);
     }
 
     @Override

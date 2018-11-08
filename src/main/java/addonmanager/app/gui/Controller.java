@@ -6,6 +6,7 @@ import addonmanager.app.core.App;
 import addonmanager.app.core.Game;
 import addonmanager.app.core.Model;
 import addonmanager.app.gui.fxapp.FXFactory;
+import addonmanager.app.gui.fxapp.FXGame;
 import addonmanager.app.gui.fxapp.FXModel;
 import addonmanager.app.gui.task.FindGamesTask;
 import addonmanager.app.gui.task.FoundGameTask;
@@ -109,10 +110,13 @@ public class Controller {
 
         if (model instanceof FXModel) {
             ((FXModel) model).selectedGameProperty.addListener((observable, oldValue, newValue) -> {
-                tableView.setItems(newValue.addons);
+                if (newValue instanceof FXGame) {
+                    tableView.setItems(((FXGame) newValue).addonObservableList);
+                } else
+                    System.err.println("game not FXGame");
                 refreshButton.setDisable(newValue == null);
             });
-        }else {
+        } else {
             System.err.println("model not FXModel");
         }
 
@@ -185,7 +189,7 @@ public class Controller {
 
     public static void refreshFromNet(Game game) {
 
-        game.addons.forEach(addon -> {
+        game.getAddons().forEach(addon -> {
             Thread thread = new Thread(new Task() {
                 @Override
                 protected Object call() throws Exception {

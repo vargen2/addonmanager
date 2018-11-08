@@ -27,14 +27,15 @@ public class FoundGameTask extends Task<Void> {
 
     @Override
     protected Void call() {
-
-        synchronized (lock) {
-            for (var g : model.games) {
-                if (g.getDirectory().equals(g.getDirectory()))
-                    return null;
-            }
+        for (var g : model.getGames()) {
+            if (g.getDirectory().equals(game.getDirectory()))
+                return null;
         }
+
         Platform.runLater(() -> {
+            if(!model.addGame(game))
+                return;
+
             Task<Void> refreshTask;
             ChoiceBoxItem cbi = new ChoiceBoxItem(game);
             if (model.getSelectedGame() == null) {
@@ -56,12 +57,8 @@ public class FoundGameTask extends Task<Void> {
                     }
                 };
             }
+
             choiceBox.getItems().add(0, cbi);
-
-            synchronized (lock) {
-                model.games.add(game);
-            }
-
             Thread t = new Thread(refreshTask);
             t.setDaemon(true);
             t.start();

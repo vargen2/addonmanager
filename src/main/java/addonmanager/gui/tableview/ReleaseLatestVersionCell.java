@@ -71,8 +71,8 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
                                 setText(null);
                                 setGraphic(null);
                             } else {
-                                var hour = item.fileDateUploaded.getHour() - LocalDateTime.now().getHour();
-                                var period = Period.between(item.fileDateUploaded.toLocalDate(), LocalDateTime.now().toLocalDate()).normalized();
+                                var hour = item.getFileDateUploaded().getHour() - LocalDateTime.now().getHour();
+                                var period = Period.between(item.getFileDateUploaded().toLocalDate(), LocalDateTime.now().toLocalDate()).normalized();
 
                                 String periodFrom = "";
                                 if (period.getYears() != 0)
@@ -85,9 +85,9 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
                                     periodFrom += hour + "h ";
                                 periodFrom += "ago";
 
-                                Label release = new Label(item.release);
+                                Label release = new Label(item.getRelease());
                                 release.setPrefWidth(60);
-                                Label version = new Label(item.title);
+                                Label version = new Label(item.getTitle());
                                 version.setPrefWidth(90);
                                 Label time = new Label(periodFrom);
                                 time.setPrefWidth(90);

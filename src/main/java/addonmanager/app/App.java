@@ -63,7 +63,7 @@ public class App {
             return false;
         }
         int page = 2;
-        while (downloads.stream().noneMatch(x -> x.release.equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
+        while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
             DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon);
             moreDownloadversions.setPage(page);
             downloads.addAll(moreDownloadversions.getDownloads());

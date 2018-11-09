@@ -151,12 +151,12 @@ public class Addon {
             setStatus(Status.NONE);
             return;
         }
-        downloads.stream().filter(x -> x.release.equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
+        downloads.stream().filter(x -> x.getRelease().equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
         Collator collator = Collator.getInstance(new Locale("sv", "SE"));
         collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
         if (getLatestDownload() != null && getVersion() != null) {
 
-            if (collator.compare(getLatestDownload().title, getVersion()) > 0) {
+            if (collator.compare(getLatestDownload().getTitle(), getVersion()) > 0) {
                 setStatus(Status.CAN_UPDATE);
 
             } else {

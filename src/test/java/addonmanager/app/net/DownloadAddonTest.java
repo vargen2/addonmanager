@@ -19,11 +19,11 @@ class DownloadAddonTest {
     void downLoadFile() {
         Addon addon= App.getFactory().createAddon("Details","");
         addon.setProjectUrl("https://wow.curseforge.com/projects/details");
-        Download download=new Download();
-        download.fileSize="4.15 MB";
-        download.downloadLink="https://wow.curseforge.com/projects/details/files/2629656/download";
-        download.title="v8.0.1.6600.135";
-        download.release="release";
+        Download download=new Download("release","v8.0.1.6600.135","4.15 MB",null,null,null,"https://wow.curseforge.com/projects/details/files/2629656/download");
+//        download.fileSize="4.15 MB";
+//        download.downloadLink="https://wow.curseforge.com/projects/details/files/2629656/download";
+//        download.title="v8.0.1.6600.135";
+//        download.release="release";
         List<Download> downloads=new ArrayList<>();
         downloads.add(download);
         addon.setDownloads(downloads);

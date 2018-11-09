@@ -79,17 +79,19 @@ public class WowCurseForge extends DownloadVersions {
 
 
         while (matcher.find()) {
-            Download download = new Download();
+
             String subString = data.substring(matcher.start());
             String temp = Util.parse(subString, "<td class=\"project-file-release-type\">", "</td>");
-            download.release = Util.parse(temp, "title=\"", "\"></div>");
-            download.title = Util.parse(subString, "data-name=\"", "\">");
-            download.fileSize = Util.parse(subString, "<td class=\"project-file-size\">", "</td>").trim();
+            String release = Util.parse(temp, "title=\"", "\"></div>");
+            String title = Util.parse(subString, "data-name=\"", "\">");
+            String fileSize = Util.parse(subString, "<td class=\"project-file-size\">", "</td>").trim();
             String a = Util.parse(subString, "data-epoch=\"", "\"");
-            download.fileDateUploaded = LocalDateTime.ofEpochSecond(Integer.parseInt(a), 0, OffsetDateTime.now().getOffset());
-            download.gameVersion = Util.parse(subString, "<span class=\"version-label\">", "</span>");
-            download.downloads = Long.valueOf(Util.parse(subString, "<td class=\"project-file-downloads\">", "</td>").replaceAll(",", "").trim());
-            download.downloadLink = Util.parse(subString, " href=\"", "\"");
+            LocalDateTime fileDateUploaded = LocalDateTime.ofEpochSecond(Integer.parseInt(a), 0, OffsetDateTime.now().getOffset());
+            String gameVersion = Util.parse(subString, "<span class=\"version-label\">", "</span>");
+            long dls = Long.valueOf(Util.parse(subString, "<td class=\"project-file-downloads\">", "</td>").replaceAll(",", "").trim());
+            String downloadLink = Util.parse(subString, " href=\"", "\"");
+            Download download = new Download(release, title, fileSize, fileDateUploaded, gameVersion, dls, downloadLink);
+
             downloads.add(download);
         }
         updateable.updateProgress(1.0, 1.0);

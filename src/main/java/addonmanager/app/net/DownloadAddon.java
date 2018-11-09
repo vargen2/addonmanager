@@ -27,14 +27,14 @@ public class DownloadAddon {
         String addonName = addon.getFolderName();
         Download download = addon.getLatestDownload();
         double multiplier = 0;
-        if (download.fileSize.contains("MB")) {
+        if (download.getFileSize().contains("MB")) {
             multiplier = 1000000;
-        } else if (download.fileSize.contains("KB")) {
+        } else if (download.getFileSize().contains("KB")) {
             multiplier = 1000;
         }
-        String temp = download.fileSize.replaceAll("\\p{IsAlphabetic}", "").trim();
+        String temp = download.getFileSize().replaceAll("\\p{IsAlphabetic}", "").trim();
         double fileSize = Double.parseDouble(temp.replace(",", ".")) * multiplier;
-        String firstUrl = addon.getProjectUrl() + download.downloadLink.substring(download.downloadLink.indexOf("/files"));
+        String firstUrl = addon.getProjectUrl() + download.getDownloadLink().substring(download.getDownloadLink().indexOf("/files"));
         ///String firstUrl = "https://www.curseforge.com"+download.downloadlink+ "/file";
         CloseableHttpClient client = HttpClients.custom().disableCookieManagement().setRedirectStrategy(new RedirectStrategy()).build();
         HttpContext httpContext = new BasicHttpContext();
@@ -42,7 +42,7 @@ public class DownloadAddon {
         try (CloseableHttpResponse response = client.execute(get, httpContext)) {
             byte[] buffer = new byte[16384];
             try (InputStream input = response.getEntity().getContent();
-                 OutputStream output = new FileOutputStream("temp" + File.separator + addonName + "-" + download.title + ".zip")) {
+                 OutputStream output = new FileOutputStream("temp" + File.separator + addonName + "-" + download.getTitle() + ".zip")) {
                 double downloaded = 0;
                 for (int length; (length = input.read(buffer)) > 0; ) {
                     output.write(buffer, 0, length);
@@ -58,7 +58,7 @@ public class DownloadAddon {
             e.printStackTrace();
         }
 
-        return new File("temp" + File.separator + addonName + "-" + download.title + ".zip");
+        return new File("temp" + File.separator + addonName + "-" + download.getTitle() + ".zip");
 
     }
 

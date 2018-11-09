@@ -2,13 +2,13 @@ package addonmanager.app;
 
 import java.time.LocalDateTime;
 
-public class Download {
+public final class Download {
     private final String release;
     private final String title;
     private final String fileSize;
     private final LocalDateTime fileDateUploaded;
     private final String gameVersion;
-    private final Long downloads;
+    private final long downloads;
     private final String downloadLink;
 
     public Download(String release, String title, String fileSize, LocalDateTime fileDateUploaded, String gameVersion, Long downloads, String downloadLink) {
@@ -21,40 +21,40 @@ public class Download {
         this.downloadLink = downloadLink;
     }
 
-    public String getRelease() {
+    public final String getRelease() {
         return release;
     }
 
-    public String getTitle() {
+    public final String getTitle() {
         return title;
     }
 
-    public String getFileSize() {
+    public final String getFileSize() {
         return fileSize;
     }
 
-    public LocalDateTime getFileDateUploaded() {
+    public final LocalDateTime getFileDateUploaded() {
         return fileDateUploaded;
     }
 
-    public String getGameVersion() {
+    public final String getGameVersion() {
         return gameVersion;
     }
 
-    public Long getDownloads() {
+    public final long getDownloads() {
         return downloads;
     }
 
-    public String getDownloadLink() {
+    public final String getDownloadLink() {
         return downloadLink;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return title;
     }
 
-    public String toDetailedString() {
+    public final String toDetailedString() {
         return "release='" + release + '\'' +
                 ", title='" + title + '\'' +
                 ", fileSize='" + fileSize + '\'' +

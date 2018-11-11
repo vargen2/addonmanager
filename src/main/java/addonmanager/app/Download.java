@@ -11,7 +11,7 @@ public final class Download {
     private final long downloads;
     private final String downloadLink;
 
-    public Download(String release, String title, String fileSize, LocalDateTime fileDateUploaded, String gameVersion, Long downloads, String downloadLink) {
+    public Download(String release, String title, String fileSize, LocalDateTime fileDateUploaded, String gameVersion, long downloads, String downloadLink) {
         this.release = release;
         this.title = title;
         this.fileSize = fileSize;

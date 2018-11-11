@@ -13,19 +13,20 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.*;
 
+//todo net.NetOperations
 public class DownloadAddon {
 
-    public static File downLoadFile(Addon addon) {
-        return downLoadFile(addon, 0, 1);
+    public static File downLoadFile(Addon addon, Download download) {
+        return downLoadFile(addon, download, 0, 1);
     }
 
-    public static File downLoadFile(Addon addon, double from, double to) {
+    public static File downLoadFile(Addon addon, Download download, double from, double to) {
         if (!FileOperations.directoriesExists())
             return null;
         Updateable updateable = addon.getUpdateable();
         updateable.updateMessage("downloading...");
         String addonName = addon.getFolderName();
-        Download download = addon.getLatestDownload();
+        //Download download = addon.getLatestDownload();
         double multiplier = 0;
         if (download.getFileSize().contains("MB")) {
             multiplier = 1000000;
@@ -61,6 +62,14 @@ public class DownloadAddon {
         return new File("temp" + File.separator + addonName + "-" + download.getTitle() + ".zip");
 
     }
+
+//    public static File downLoadFile(Addon addon) {
+//        return downLoadFile(addon, 0, 1);
+//    }
+//
+//    public static File downLoadFile(Addon addon, double from, double to) {
+//        return downLoadFile(addon, addon.getLatestDownload(), from, to);
+//    }
 
 
 }

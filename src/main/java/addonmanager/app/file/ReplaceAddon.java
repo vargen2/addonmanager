@@ -1,5 +1,6 @@
 package addonmanager.app.file;
 
+import addonmanager.app.Download;
 import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -14,13 +15,15 @@ import java.nio.file.Files;
 class ReplaceAddon {
 
     private Addon addon;
+    private Download download;
     private File zipFile;
     private File tempWorkingDir;
     private File addonDir;
     private File[] addonFolders;
 
-    ReplaceAddon(Addon addon, File zipFile) {
+    ReplaceAddon(Addon addon, Download download, File zipFile) {
         this.addon = addon;
+        this.download=download;
         this.zipFile = zipFile;
         tempWorkingDir = new File("temp" + File.separator + addon.getFolderName());
         addonDir = new File(addon.getAbsolutePath().replace(addon.getFolderName(), ""));
@@ -50,7 +53,7 @@ class ReplaceAddon {
         if(!clean())
             return false;
 
-        addon.setLatestUpdate(addon.getLatestDownload());
+        addon.setLatestUpdate(download);
         return true;
     }
 

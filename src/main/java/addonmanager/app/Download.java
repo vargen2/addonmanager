@@ -54,7 +54,7 @@ public final class Download {
         return title;
     }
 
-    public final String toDetailedString() {
+    public final String toDetailedStringOneLine() {
         return "release='" + release + '\'' +
                 ", title='" + title + '\'' +
                 ", fileSize='" + fileSize + '\'' +
@@ -62,5 +62,15 @@ public final class Download {
                 ", gameVersion='" + gameVersion + '\'' +
                 ", downloads=" + downloads +
                 ", downloadLink='" + downloadLink + '\'';
+    }
+
+    public final String toDetailedStringLines() {
+        return "release=" + release + "\n" +
+                "title=" + title + "\n" +
+                "fileSize=" + fileSize + "\n" +
+                "fileDateUploaded=" + fileDateUploaded + "\n" +
+                "gameVersion=" + gameVersion + "\n" +
+                "downloads=" + downloads + "\n" +
+                "downloadLink=" + downloadLink;
     }
 }

@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.PopOver;
 
+//todo ändra till propertysheet i popovern
 public class Settings {
 
 

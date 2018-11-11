@@ -3,12 +3,18 @@ package addonmanager.gui.tableview;
 import addonmanager.app.Addon;
 import addonmanager.app.App;
 import addonmanager.app.Download;
+import addonmanager.gui.task.UpdateAddonTask;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.SegmentedButton;
 
@@ -19,9 +25,11 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
 
     private static final Tooltip releaseButtonToolTip = new Tooltip("Set this preferred release type");
     private PopOver popOver;
+    private final CheckBox cbUseBlocking = new CheckBox();
 
     public ReleaseLatestVersionCell() {
         super();
+        cbUseBlocking.setSelected(true);
         setPrefHeight(40.0);
         setOnMouseClicked(event -> {
 
@@ -63,7 +71,7 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
             listView.setCellFactory(new Callback<ListView<Download>, ListCell<Download>>() {
                 @Override
                 public ListCell<Download> call(ListView<Download> param) {
-                    return new ListCell<Download>() {
+                    ListCell<Download> downloadListCell = new ListCell<Download>() {
                         @Override
                         protected void updateItem(Download item, boolean empty) {
                             super.updateItem(item, empty);
@@ -92,13 +100,42 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
                                 Label time = new Label(periodFrom);
                                 time.setPrefWidth(90);
                                 HBox hBox = new HBox(0, release, version, time);
-                                this.setTooltip(new Tooltip(item.toDetailedString()));
+                                this.setTooltip(new Tooltip("Right click to change to this version.\n"+item.toDetailedStringLines()));
+                                this.getTooltip().setShowDelay(Duration.millis(0));
+                                this.getTooltip().setShowDuration(Duration.INDEFINITE);
                                 setText(null);
                                 setGraphic(hBox);
                             }
 
                         }
                     };
+                    downloadListCell.setOnMouseClicked(event1 -> {
+                        if (event1.getButton() != MouseButton.SECONDARY)
+                            return;
+                        Download dl = downloadListCell.getItem();
+                        if (dl == null)
+                            return;
+
+                        Window owner = getScene().getWindow();
+                        Alert dlg = new Alert(Alert.AlertType.CONFIRMATION, "");
+                        dlg.initModality(Modality.APPLICATION_MODAL);
+                        dlg.initOwner(owner);
+                        dlg.setTitle("Confirm");
+                        dlg.getDialogPane().setGraphic(null);
+                        dlg.getDialogPane().setHeaderText(null);
+                        dlg.getDialogPane().setContentText("Do you want to change to " + dl.getRelease() + " " + dl.getTitle() + "?");
+                        dlg.initStyle(StageStyle.DECORATED);
+                        dlg.showAndWait().ifPresent(result -> {
+                            if (result == ButtonType.OK) {
+                                UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon, dl);
+                                Thread t = new Thread(updateAddonTask);
+                                t.setDaemon(true);
+                                t.start();
+                            }
+                        });
+                        popOver.hide();
+                    });
+                    return downloadListCell;
                 }
             });
 
@@ -142,5 +179,14 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
     public static Callback<TableColumn<Addon, String>, TableCell<Addon, String>> cellFactory() {
         return param -> new ReleaseLatestVersionCell();
     }
+
+    private Alert createAlert(Alert.AlertType type) {
+        Window owner = getScene().getWindow();
+        Alert dlg = new Alert(type, "");
+        dlg.initModality(Modality.APPLICATION_MODAL);
+        dlg.initOwner(owner);
+        return dlg;
+    }
+
 
 }

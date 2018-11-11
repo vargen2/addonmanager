@@ -74,15 +74,17 @@ public class App {
     }
 
 
-    public static boolean updateAddon(Addon addon) {
+    public static boolean updateAddon(Addon addon, Download download) {
+        if (addon == null || download == null)
+            return false;
         addon.setStatus(Addon.Status.UPDATING);
-        File zipFile = DownloadAddon.downLoadFile(addon, 0, 0.7);
-        if (!FileOperations.replaceAddon(addon, zipFile, 0.8, 1.0)) {
+        File zipFile = DownloadAddon.downLoadFile(addon, download, 0, 0.7);
+        if (!FileOperations.replaceAddon(addon, download, zipFile, 0.8, 1.0)) {
             addon.setStatus(Addon.Status.NONE);
             return false;
         }
         FileOperations.refreshToc(addon);
-        addon.setStatus(Addon.Status.UP_TO_DATE);
+        //addon.setStatus(Addon.Status.UP_TO_DATE);
         return true;
     }
 

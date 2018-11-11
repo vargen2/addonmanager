@@ -131,10 +131,11 @@ class FindGames {
                 //System.out.println(parent.getPath());
                 //laptop /stationär
                 //if (dir.getPath().contains("World of Warcraft Beta")){
-                Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
-                consumer.accept(game);
-                games.add(game);
-                //}
+                if (dir.getPath().contains("Wow")) {
+                    Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
+                    consumer.accept(game);
+                    games.add(game);
+                }
                 return true;
             }
         }

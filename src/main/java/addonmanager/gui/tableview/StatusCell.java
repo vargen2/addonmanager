@@ -79,7 +79,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     button.setText("update");
                     button.setVisible(true);
                     button.setOnAction(event -> {
-                        UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon);
+                        UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon,addon.getLatestDownload());
                         Thread t = new Thread(updateAddonTask);
                         t.setDaemon(true);
                         t.start();

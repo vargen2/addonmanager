@@ -22,8 +22,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import org.apache.commons.io.IOUtils;
 import org.controlsfx.control.TaskProgressView;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFont;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 public class Controller {
@@ -176,6 +190,19 @@ public class Controller {
             thread.setDaemon(true);
             thread.start();
         });
+
+        try {
+
+            Path p = Paths.get(getClass().getResource("../../fa-solid-900.ttf").toURI());
+            FontAwesome fontAwesome = new FontAwesome(Files.newInputStream(p));
+            settingsButton.setGraphic(fontAwesome.create(FontAwesome.Glyph.COG).size(20));
+            settingsButton.setText("");
+            settingsButton.setPrefHeight(25);
+            settingsButton.setMinHeight(25);
+            settingsButton.setMaxHeight(25);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         settingsButton.setOnAction(event -> {
             if (!settings.isShowing())

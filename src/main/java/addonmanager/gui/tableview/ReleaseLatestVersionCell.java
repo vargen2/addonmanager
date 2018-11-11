@@ -180,13 +180,4 @@ public class ReleaseLatestVersionCell extends TableCell<Addon, String> {
         return param -> new ReleaseLatestVersionCell();
     }
 
-    private Alert createAlert(Alert.AlertType type) {
-        Window owner = getScene().getWindow();
-        Alert dlg = new Alert(type, "");
-        dlg.initModality(Modality.APPLICATION_MODAL);
-        dlg.initOwner(owner);
-        return dlg;
-    }
-
-
 }

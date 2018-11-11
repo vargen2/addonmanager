@@ -3,7 +3,10 @@ package addonmanager.gui;
 import addonmanager.app.Addon;
 import addonmanager.app.App;
 import addonmanager.app.Model;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,7 +33,7 @@ public class Settings {
     private VBox rootVBox;
     private PopOver popOver;
     private Model model;
-    PropertySheet propertySheet;
+    private PropertySheet propertySheet;
 
     public Settings(Model model) {
         this.model = model;
@@ -41,7 +44,15 @@ public class Settings {
         propertySheet = new PropertySheet();
         propertySheet.setModeSwitcherVisible(false);
         propertySheet.setSearchBoxVisible(false);
-        for (String key : customDataMap.keySet()) propertySheet.getItems().add(new CustomPropertyItem(key));
+        for (String key : customDataMap.keySet()) {
+            CustomPropertyItem customPropertyItem=new CustomPropertyItem(key);
+            customPropertyItem.setValue(Addon.ReleaseType.RELEASE);
+            customPropertyItem.getObservableValue().get().addListener((observable, oldValue, newValue) -> {
+               App.setReleaseType(model.getSelectedGame(),(Addon.ReleaseType) newValue);
+            });
+            propertySheet.getItems().add(customPropertyItem);
+        }
+
 
 //        Label releaseTypeLabel = new Label("Set all");
 //        Button b1 = new Button("release");
@@ -52,7 +63,8 @@ public class Settings {
 //        b3.setOnAction(event -> App.setReleaseType(model.getSelectedGame(), Addon.ReleaseType.ALPHA));
 //        HBox releaseTypeHBox = new HBox(0, b1, b2, b3);
 //        releaseTypeVBox = new VBox(0, releaseTypeLabel, releaseTypeHBox);
-        rootVBox = new VBox(0,propertySheet);
+        rootVBox = new VBox(0, propertySheet);
+        rootVBox.setPadding(new Insets(2, 2, 2, 2));
         popOver = new PopOver(rootVBox);
         popOver.setAnimated(true);
         popOver.setDetachable(false);
@@ -102,24 +114,26 @@ public class Settings {
     }
 
     public static Map<String, Object> customDataMap = new LinkedHashMap<>();
+
     static {
         //customDataMap.put("basic.My Text", "Same text"); // Creates a TextField in property sheet
         //customDataMap.put("basic.My Date", LocalDate.of(2016, Month.JANUARY, 1)); // Creates a DatePicker
         customDataMap.put("current.Set All", Addon.ReleaseType.RELEASE); // Creates a ChoiceBox
         //customDataMap.put("current.Set All", Addon.ReleaseType.RELEASE); // Creates a ChoiceBox
         //customDataMap.put("misc.My Boolean", false); // Creates a CheckBox
-       // customDataMap.put("misc.My Number", 500); // Creates a NumericField
-       // customDataMap.put("misc.My Color", Color.ALICEBLUE); // Creates a ColorPicker
+        // customDataMap.put("misc.My Number", 500); // Creates a NumericField
+        // customDataMap.put("misc.My Color", Color.ALICEBLUE); // Creates a ColorPicker
     }
+
     class CustomPropertyItem implements PropertySheet.Item {
 
 
         private String key;
         private String category, name;
+        private ObjectProperty objectProperty=new SimpleObjectProperty();
         //private boolean editable;
 
-        public CustomPropertyItem(String key)
-        {
+        public CustomPropertyItem(String key) {
             this.key = key;
             String[] skey = key.split("\\.", 2);
             category = skey[0];
@@ -164,11 +178,12 @@ public class Settings {
         @Override
         public void setValue(Object value) {
             customDataMap.put(key, value);
+            objectProperty.setValue(value);
         }
 
         @Override
         public Optional<ObservableValue<? extends Object>> getObservableValue() {
-            return Optional.empty();
+            return Optional.of(objectProperty);
         }
 
         @Override
@@ -181,15 +196,14 @@ public class Settings {
             return Optional.empty();
         }
     }
+
     class NumberSliderEditor extends AbstractPropertyEditor<Number, Slider> {
 
-        public NumberSliderEditor(PropertySheet.Item property, Slider control)
-        {
+        public NumberSliderEditor(PropertySheet.Item property, Slider control) {
             super(property, control);
         }
 
-        public NumberSliderEditor(PropertySheet.Item item)
-        {
+        public NumberSliderEditor(PropertySheet.Item item) {
             this(item, new Slider());
         }
 

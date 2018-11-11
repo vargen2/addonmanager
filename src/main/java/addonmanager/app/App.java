@@ -54,9 +54,7 @@ public class App {
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
             addon.setProjectUrl(FindProject.find(addon));
-        System.out.println("hit1");
         DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
-        System.out.println("hit2");
         List<Download> downloads = downloadVersions.getDownloads();
         if (downloads.isEmpty()) {
             addon.setDownloads(downloads);

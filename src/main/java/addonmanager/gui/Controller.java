@@ -26,6 +26,7 @@ import javafx.scene.paint.Color;
 import org.apache.commons.io.IOUtils;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
@@ -191,17 +192,15 @@ public class Controller {
             thread.start();
         });
 
-        try {
 
-            Path p = Paths.get(getClass().getResource("../../fa-solid-900.ttf").toURI());
-            FontAwesome fontAwesome = new FontAwesome(Files.newInputStream(p));
-            settingsButton.setGraphic(fontAwesome.create(FontAwesome.Glyph.COG).size(20));
+        Glyph glyph = Icon.create(FontAwesome.Glyph.COG);
+        if (glyph != null) {
+
+            settingsButton.setGraphic(glyph.size(20));
             settingsButton.setText("");
             settingsButton.setPrefHeight(25);
             settingsButton.setMinHeight(25);
             settingsButton.setMaxHeight(25);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
         }
 
         settingsButton.setOnAction(event -> {

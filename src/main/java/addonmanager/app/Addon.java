@@ -51,9 +51,11 @@ public class Addon {
     private final ObjectProperty<Download> latestDownload;
     private StringProperty releaseLatest;
 
+    private Download latestUpdate;
+
     private final ObjectProperty<Status> status;
 
-   protected Addon(String folderName, String absolutePath) {
+    protected Addon(String folderName, String absolutePath) {
         this.folderName = folderName;
         this.absolutePath = absolutePath;
         this.status = new SimpleObjectProperty<>(this, "status");
@@ -88,7 +90,12 @@ public class Addon {
 
 
     private void updateTitleVersion() {
-        titleVersionProperty().setValue(titleProperty().get() + ((versionProperty().get() != null) ? "\n" + versionProperty().get() : ""));
+        String v = "";
+        if (getLatestUpdate() != null)
+            v = getLatestUpdate().getRelease() + " " + getLatestUpdate().getTitle();
+        else if (versionProperty().get() != null)
+            v = versionProperty().get();
+        titleVersionProperty().setValue(titleProperty().get() + "\n" + v);
     }
 
     public String getTitleVersion() {
@@ -152,20 +159,30 @@ public class Addon {
             return;
         }
         downloads.stream().filter(x -> x.getRelease().equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
-        Collator collator = Collator.getInstance(new Locale("sv", "SE"));
-        collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
-        if (getLatestDownload() != null && getVersion() != null) {
-
-            if (collator.compare(getLatestDownload().getTitle(), getVersion()) > 0) {
+        if (getLatestUpdate() != null && getLatestDownload() != null) {
+            System.out.println(getLatestUpdate().getFileDateUploaded().compareTo(getLatestDownload().getFileDateUploaded()));
+            System.out.println("this: " + getLatestUpdate().getFileDateUploaded());
+            System.out.println("dl: " + getLatestDownload().getFileDateUploaded());
+            if (getLatestUpdate().getFileDateUploaded().compareTo(getLatestDownload().getFileDateUploaded()) < 0)
                 setStatus(Status.CAN_UPDATE);
-
-            } else {
+            else
                 setStatus(Status.UP_TO_DATE);
-            }
-        } else if (getLatestDownload() != null && getVersion() == null) {
-            setStatus(Status.CAN_UPDATE);
-        }
+        } else {
 
+            Collator collator = Collator.getInstance(new Locale("sv", "SE"));
+            collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
+            if (getLatestDownload() != null && getVersion() != null) {
+
+                if (collator.compare(getLatestDownload().getTitle(), getVersion()) > 0) {
+                    setStatus(Status.CAN_UPDATE);
+
+                } else {
+                    setStatus(Status.UP_TO_DATE);
+                }
+            } else if (getLatestDownload() != null && getVersion() == null) {
+                setStatus(Status.CAN_UPDATE);
+            }
+        }
     }
 
     public String getGameVersion() {
@@ -246,5 +263,15 @@ public class Addon {
 
     public void setProjectUrl(String projectUrl) {
         this.projectUrl = projectUrl;
+    }
+
+    public Download getLatestUpdate() {
+        return latestUpdate;
+    }
+
+    public void setLatestUpdate(Download latestUpdate) {
+        this.latestUpdate = latestUpdate;
+        updateLatestDownload();
+        updateTitleVersion();
     }
 }

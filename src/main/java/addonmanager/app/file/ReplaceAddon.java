@@ -47,7 +47,11 @@ class ReplaceAddon {
 
         updateable.updateMessage("clean...");
         updateable.updateProgress(from + (to - from) * 0.75, to);
-        return clean();
+        if(!clean())
+            return false;
+
+        addon.setLatestUpdate(addon.getLatestDownload());
+        return true;
     }
 
     private boolean unpack() {

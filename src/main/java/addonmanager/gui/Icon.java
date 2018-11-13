@@ -1,5 +1,7 @@
 package addonmanager.gui;
 
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 
@@ -21,5 +23,16 @@ public class Icon {
         }
         return null;
 
+    }
+
+    public static void setIcon(Button button, FontAwesome.Glyph fGlyph, Color color){
+        Glyph glyph=Icon.create(fGlyph);
+        if(glyph==null)
+            return;
+        button.setGraphic(glyph.size(20).color(color));
+        button.setText("");
+        button.setPrefHeight(25);
+        button.setMinHeight(25);
+        button.setMaxHeight(25);
     }
 }

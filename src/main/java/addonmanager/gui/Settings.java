@@ -3,30 +3,26 @@ package addonmanager.gui;
 import addonmanager.app.Addon;
 import addonmanager.app.App;
 import addonmanager.app.Model;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableMapValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PropertySheet;
-import org.controlsfx.property.editor.AbstractPropertyEditor;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.property.editor.PropertyEditor;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class Settings {
@@ -39,17 +35,22 @@ public class Settings {
         this.model = model;
         observableMap = FXCollections.observableMap(new LinkedHashMap<>());
         observableMap.put("current.Set All", Addon.ReleaseType.RELEASE);
+        observableMap.put("global.Refresh Delay", 250);
     }
 
     private void init() {
+
+
         PropertySheet propertySheet = new PropertySheet();
+        propertySheet.setMode(PropertySheet.Mode.NAME);
         propertySheet.setModeSwitcherVisible(false);
         propertySheet.setSearchBoxVisible(false);
         for (String key : observableMap.keySet()) {
             propertySheet.getItems().add(new CustomPropertyItem(key, observableMap));
         }
 
-        VBox rootVBox = new VBox(0, propertySheet);
+        VBox rootVBox = new VBox(2, propertySheet);
+        rootVBox.setAlignment(Pos.CENTER);
         rootVBox.setPadding(new Insets(2, 2, 2, 2));
         popOver = new PopOver(rootVBox);
         popOver.setAnimated(true);
@@ -62,6 +63,9 @@ public class Settings {
             if (change.getKey().equals("current.Set All")) {
                 if (change.getValueAdded() instanceof Addon.ReleaseType)
                     App.setReleaseType(model.getSelectedGame(), (Addon.ReleaseType) change.getValueAdded());
+            } else if (change.getKey().equals("global.Refresh Delay")) {
+                if (change.getValueAdded() instanceof Number)
+                    System.out.println(((Number) change.getValueAdded()).intValue());
             }
         });
     }
@@ -135,36 +139,17 @@ public class Settings {
             return Optional.empty();
         }
 
-//        @Override
-//        public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-//            // for an item of type number, specify the type of editor to use
-//            if (Number.class.isAssignableFrom(getType())) return Optional.of(NumberSliderEditor.class);
-//
-//            // ... return other editors for other types
-//
-//            return Optional.empty();
-//        }
+        @Override
+        public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
+            // for an item of type number, specify the type of editor to use
+            if (Number.class.isAssignableFrom(getType())) {
+
+                return Optional.of(NumberSliderEditor.class);
+            }
+            // ... return other editors for other types
+
+            return Optional.empty();
+        }
     }
 
-//    class NumberSliderEditor extends AbstractPropertyEditor<Number, Slider> {
-//
-//        public NumberSliderEditor(PropertySheet.Item property, Slider control) {
-//            super(property, control);
-//        }
-//
-//        public NumberSliderEditor(PropertySheet.Item item) {
-//            this(item, new Slider());
-//        }
-//
-//        @Override
-//        public void setValue(Number n) {
-//            this.getEditor().setValue(n.doubleValue());
-//        }
-//
-//        @Override
-//        protected ObservableValue<Number> getObservableValue() {
-//            return this.getEditor().valueProperty();
-//        }
-//
-//    }
 }

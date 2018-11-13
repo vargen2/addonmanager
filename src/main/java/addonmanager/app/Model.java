@@ -29,6 +29,11 @@ public class Model {
         }
     }
 
+    public boolean removeGame(Game game){
+        synchronized (lock){
+            return games.remove(game);
+        }
+    }
     //    public final ObservableList<Game> games = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
 
     public Game getSelectedGame() {

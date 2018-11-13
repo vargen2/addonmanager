@@ -39,6 +39,6 @@ public class Game {
 
     @Override
     public String toString() {
-        return name + " " + directory;
+        return directory;
     }
 }

@@ -40,6 +40,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class Controller {
@@ -47,6 +48,8 @@ public class Controller {
 
     @FXML
     private Button refreshButton;
+    @FXML
+    private Button removeButton;
     @FXML
     private Button settingsButton;
     @FXML
@@ -106,9 +109,9 @@ public class Controller {
                 }
                 if (newValue == manual || newValue == scan) {
                     ((ChoiceBoxItem) newValue).getConsumer().accept(0);
-                    gameChoiceBox.setValue(oldValue);
+                    if (gameChoiceBox.getItems().contains(oldValue)&&!(oldValue==manual || oldValue==scan))
+                        gameChoiceBox.setValue(oldValue);
                 }
-
             }
         });
 
@@ -129,9 +132,12 @@ public class Controller {
             ((FXModel) model).selectedGameProperty.addListener((observable, oldValue, newValue) -> {
                 if (newValue instanceof FXGame) {
                     tableView.setItems(((FXGame) newValue).addonObservableList);
-                } else
-                    System.err.println("game not FXGame");
+                } else {
+                    tableView.setItems(null);
+                    //System.err.println("game not FXGame");
+                }
                 refreshButton.setDisable(newValue == null);
+                removeButton.setDisable(newValue == null);
             });
         } else {
             System.err.println("model not FXModel");
@@ -182,7 +188,8 @@ public class Controller {
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
 
-
+        Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
+        refreshButton.setTooltip(new Tooltip("Refresh all addons."));
         refreshButton.setOnAction(event -> {
             Game game = model.getSelectedGame();
             if (game == null)
@@ -193,17 +200,24 @@ public class Controller {
             thread.start();
         });
 
+        Icon.setIcon(removeButton, FontAwesome.Glyph.REMOVE, Color.INDIANRED);
+        removeButton.setTooltip(new Tooltip("Remove game from this application."));
+        removeButton.setOnAction(event -> {
+            if (model.getSelectedGame() == null)
+                return;
+            Game game = model.getSelectedGame();
+            model.removeGame(game);
+            model.setSelectedGame(null);
+            Optional<ChoiceBoxItem> gameChoiceBoxItem = gameChoiceBox.getItems().stream().filter(ChoiceBoxItem.class::isInstance).map(ChoiceBoxItem.class::cast).filter(x -> ((ChoiceBoxItem) x).getGame() == game).findFirst();
+            gameChoiceBoxItem.ifPresent(gameChoiceBox.getItems()::remove);
+            if(model.getGames().isEmpty()){
+                gameChoiceBox.getItems().add(0,add);
+                gameChoiceBox.setValue(add);
+            }
 
-        Glyph glyph = Icon.create(FontAwesome.Glyph.COG);
-        if (glyph != null) {
+        });
 
-            settingsButton.setGraphic(glyph.size(20));
-            settingsButton.setText("");
-            settingsButton.setPrefHeight(25);
-            settingsButton.setMinHeight(25);
-            settingsButton.setMaxHeight(25);
-        }
-
+        Icon.setIcon(settingsButton, FontAwesome.Glyph.COG, Color.DARKSLATEGRAY);
         settingsButton.setOnAction(event -> {
             if (!settings.isShowing())
                 settings.show(settingsButton);

@@ -5,6 +5,7 @@ import addonmanager.app.Addon;
 import addonmanager.app.App;
 import addonmanager.app.Game;
 import addonmanager.app.Model;
+import addonmanager.gui.fxapp.FXAddon;
 import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;

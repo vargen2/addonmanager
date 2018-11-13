@@ -10,7 +10,7 @@ public class FXFactory implements Factory {
 
     @Override
     public Addon createAddon(String folderName, String absolutePath) {
-        return App.DEFAULT_FACTORY.createAddon(folderName, absolutePath);
+        return new FXAddon(folderName, absolutePath);
     }
 
     @Override

@@ -25,6 +25,7 @@ class FindGames {
         this.mustHaveExe = mustHaveExe;
     }
 
+    //todo tror den söker igenom allt 2ggr
     List<Game> find() {
         var drives = File.listRoots();
         max.set(1);

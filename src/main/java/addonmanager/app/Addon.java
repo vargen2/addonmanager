@@ -1,14 +1,11 @@
 package addonmanager.app;
 
-import javafx.beans.property.*;
-
 import java.text.Collator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-//todo separate to FXAddon
 public class Addon {
 
     public enum Status {NONE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
@@ -39,31 +36,20 @@ public class Addon {
     private String projectUrl;
     private UpdateMode updateMode;
     private LocalDateTime dateLastModified;
-
-    private StringProperty title;
-    private StringProperty version;
-    private StringProperty titleVersion;
-
+    private String title;
+    private String version;
     private LocalDateTime dateUploaded;
-    private StringProperty gameVersion;
-
-    private ObjectProperty<ReleaseType> releaseType;
-    private final ObjectProperty<Download> latestDownload;
-    private StringProperty releaseLatest;
-
+    private String gameVersion;
+    private ReleaseType releaseType;
+    private Download latestDownload;
     private Download latestUpdate;
-
-    private final ObjectProperty<Status> status;
+    private Status status;
 
     protected Addon(String folderName, String absolutePath) {
         this.folderName = folderName;
         this.absolutePath = absolutePath;
-        this.status = new SimpleObjectProperty<>(this, "status");
-        this.latestDownload = new SimpleObjectProperty<Download>(this, "latestDownload");
-        setLatestDownload(null);
-        setReleaseType(ReleaseType.RELEASE);
-        updateLatestDownload();
-        setStatus(Status.NONE);
+        status = Status.NONE;
+        releaseType = ReleaseType.RELEASE;
     }
 
 
@@ -76,80 +62,37 @@ public class Addon {
     }
 
     public Status getStatus() {
-        return statusProperty().get();
-    }
-
-    public ObjectProperty<Status> statusProperty() {
-
         return status;
     }
 
-    void setStatus(Status status) {
-        statusProperty().set(status);
-    }
 
-
-    private void updateTitleVersion() {
-        String v = "";
-        if (getLatestUpdate() != null)
-            v = getLatestUpdate().getRelease() + " " + getLatestUpdate().getTitle();
-        else if (versionProperty().get() != null)
-            v = versionProperty().get();
-        titleVersionProperty().setValue(titleProperty().get() + "\n" + v);
-    }
-
-    public String getTitleVersion() {
-        return titleVersionProperty().get();
-    }
-
-    public StringProperty titleVersionProperty() {
-        if (titleVersion == null)
-            titleVersion = new SimpleStringProperty(this, "titleVersion");
-        return titleVersion;
+    protected void setStatus(Status status) {
+        this.status = status;
     }
 
     public void setTitle(String value) {
-        titleProperty().set(value);
-        updateTitleVersion();
+        this.title = value;
     }
 
     public String getTitle() {
-        return titleProperty().get();
-    }
-
-    public StringProperty titleProperty() {
-        if (title == null)
-            title = new SimpleStringProperty(this, "title");
         return title;
     }
 
     public String getVersion() {
-        return versionProperty().get();
-    }
-
-    public void setVersion(String version) {
-        this.versionProperty().set(version);
-        updateTitleVersion();
-    }
-
-    public StringProperty versionProperty() {
-        if (version == null)
-            version = new SimpleStringProperty(this, "version");
         return version;
     }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public Download getLatestDownload() {
-        return latestDownloadProperty().get();
-    }
-
-    private void setLatestDownload(Download version) {
-        this.latestDownloadProperty().set(version);
-
-
-    }
-
-    public ObjectProperty<Download> latestDownloadProperty() {
         return latestDownload;
+    }
+
+    protected void setLatestDownload(Download download) {
+        latestDownload = download;
+
     }
 
     private void updateLatestDownload() {
@@ -160,9 +103,9 @@ public class Addon {
         }
         downloads.stream().filter(x -> x.getRelease().equalsIgnoreCase(getReleaseType().name)).findFirst().ifPresent(this::setLatestDownload);
         if (getLatestUpdate() != null && getLatestDownload() != null) {
-            System.out.println(getLatestUpdate().getFileDateUploaded().compareTo(getLatestDownload().getFileDateUploaded()));
-            System.out.println("this: " + getLatestUpdate().getFileDateUploaded());
-            System.out.println("dl: " + getLatestDownload().getFileDateUploaded());
+//            System.out.println(getLatestUpdate().getFileDateUploaded().compareTo(getLatestDownload().getFileDateUploaded()));
+//            System.out.println("this: " + getLatestUpdate().getFileDateUploaded());
+//            System.out.println("dl: " + getLatestDownload().getFileDateUploaded());
             if (getLatestUpdate().getFileDateUploaded().compareTo(getLatestDownload().getFileDateUploaded()) < 0)
                 setStatus(Status.CAN_UPDATE);
             else
@@ -186,47 +129,20 @@ public class Addon {
     }
 
     public String getGameVersion() {
-        return gameVersionProperty().get();
-    }
-
-    public void setGameVersion(String gameVersion) {
-        this.gameVersionProperty().set(gameVersion);
-    }
-
-    public StringProperty gameVersionProperty() {
-        if (gameVersion == null)
-            gameVersion = new SimpleStringProperty(this, "gameVersion");
         return gameVersion;
     }
 
+    public void setGameVersion(String gameVersion) {
+        this.gameVersion = gameVersion;
+    }
+
     public ReleaseType getReleaseType() {
-        return releaseTypeProperty().get();
-    }
-
-    void setReleaseType(ReleaseType releaseType) {
-        releaseTypeProperty().setValue(releaseType);
-        updateLatestDownload();
-        updateReleaseLatest();
-    }
-
-    public ObjectProperty<ReleaseType> releaseTypeProperty() {
-        if (releaseType == null)
-            releaseType = new SimpleObjectProperty<>(this, "releaseType");
         return releaseType;
     }
 
-    private void updateReleaseLatest() {
-        releaseLatestProperty().setValue(getReleaseType().name + ((getLatestDownload() != null) ? "\n" + getLatestDownload() : ""));
-    }
-
-    public String getReleaseLatest() {
-        return releaseLatestProperty().get();
-    }
-
-    public StringProperty releaseLatestProperty() {
-        if (releaseLatest == null)
-            releaseLatest = new SimpleStringProperty(this, "releaseLatest");
-        return releaseLatest;
+    public void setReleaseType(ReleaseType releaseType) {
+        this.releaseType = releaseType;
+        updateLatestDownload();
     }
 
     public LocalDateTime getDateUploaded() {
@@ -248,14 +164,11 @@ public class Addon {
     public void setDownloads(List<Download> downloads) {
         this.downloads = downloads;
         updateLatestDownload();
-        updateReleaseLatest();
     }
-
 
     public String getAbsolutePath() {
         return absolutePath;
     }
-
 
     public String getProjectUrl() {
         return projectUrl;
@@ -272,6 +185,5 @@ public class Addon {
     public void setLatestUpdate(Download latestUpdate) {
         this.latestUpdate = latestUpdate;
         updateLatestDownload();
-        updateTitleVersion();
     }
 }

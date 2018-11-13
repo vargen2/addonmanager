@@ -5,6 +5,8 @@ import addonmanager.app.Game;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class FXGame extends Game {
 
     public final ObservableList<Addon> addonObservableList;

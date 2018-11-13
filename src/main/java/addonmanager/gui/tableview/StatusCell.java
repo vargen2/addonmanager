@@ -2,6 +2,7 @@ package addonmanager.gui.tableview;
 
 import addonmanager.app.Addon;
 import addonmanager.app.Addon.Status;
+import addonmanager.gui.fxapp.FXAddon;
 import addonmanager.gui.task.UpdateAddonTask;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;

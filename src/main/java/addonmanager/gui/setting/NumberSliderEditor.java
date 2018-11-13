@@ -1,4 +1,4 @@
-package addonmanager.gui;
+package addonmanager.gui.setting;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;

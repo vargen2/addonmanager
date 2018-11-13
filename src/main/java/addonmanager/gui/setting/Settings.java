@@ -1,4 +1,4 @@
-package addonmanager.gui;
+package addonmanager.gui.setting;
 
 import addonmanager.app.Addon;
 import addonmanager.app.App;
@@ -8,18 +8,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PropertySheet;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.property.editor.PropertyEditor;
 
 import java.util.LinkedHashMap;

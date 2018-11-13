@@ -16,7 +16,7 @@ class FindGames {
     private static final FileFilter EXE_FILTER = pathname -> pathname.isFile() && pathname.getName().contains(".exe");
     private static final String[] COMMON_DIRECTORY_NAMES = {"wow", "world", "warcraft"};
     private final boolean mustHaveExe;
-    private final AtomicInteger max = new AtomicInteger();
+    private int max;
     private final AtomicInteger current = new AtomicInteger();
     private final Updateable updateable;
     private final Consumer<Game> consumer;
@@ -30,7 +30,7 @@ class FindGames {
 
     List<Game> find() {
         var drives = File.listRoots();
-        max.set(1);
+        max = 1;
         current.set(0);
         updateable.updateProgress(0, 1);
 
@@ -61,8 +61,8 @@ class FindGames {
                 }
             }
         });
-        max.set(directories.size());
-        updateable.updateProgress(current.get(), max.get());
+        max = directories.size();
+        updateable.updateProgress(current.get(), max);
         directories.stream().parallel().forEach(this::searchDriveForWowDirectories);
         return games;
     }
@@ -71,13 +71,13 @@ class FindGames {
     private void searchDriveForWowDirectories(File parent) {
         var directories = new File(parent.getPath()).listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
         if (directories == null) {
-            current.addAndGet(1);
-            updateable.updateProgress(current.get(), max.get());
+            int c = current.addAndGet(1);
+            updateable.updateProgress(c, max);
             return;
         }
         Arrays.stream(directories).forEach(finder);
-        current.addAndGet(1);
-        updateable.updateProgress(current.get(), max.get());
+        int c = current.addAndGet(1);
+        updateable.updateProgress(c, max);
     }
 
     private void searchForWowDirectories(File parent) {
@@ -90,9 +90,7 @@ class FindGames {
     private Consumer<File> finder = (child) -> {
         if (child.getPath().contains("$"))
             return;
-        if (check(child)) {
-
-        } else {
+        if (!check(child)) {
             searchForWowDirectories(child);
         }
     };

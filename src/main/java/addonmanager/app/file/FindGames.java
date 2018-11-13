@@ -7,11 +7,14 @@ import addonmanager.app.Game;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 class FindGames {
+
+    private static final FileFilter DIRECTORY_AND_NOT_HIDDEN_FILTER = pathname -> !pathname.isFile() && !pathname.isHidden();
+    private static final FileFilter EXE_FILTER = pathname -> pathname.isFile() && pathname.getName().contains(".exe");
+    private static final String[] COMMON_DIRECTORY_NAMES = {"wow", "world", "warcraft"};
     private final boolean mustHaveExe;
     private final AtomicInteger max = new AtomicInteger();
     private final AtomicInteger current = new AtomicInteger();
@@ -25,76 +28,63 @@ class FindGames {
         this.mustHaveExe = mustHaveExe;
     }
 
-    //todo tror den söker igenom allt 2ggr
     List<Game> find() {
         var drives = File.listRoots();
         max.set(1);
         current.set(0);
         updateable.updateProgress(0, 1);
 
-        Queue<File> directorys = new ConcurrentLinkedQueue<>();
-        Arrays.stream(drives).parallel().forEach(drive -> {
-            var first = new File(drive.getPath()).listFiles(directoryAndNotHidden);
+        List<File> directories = new ArrayList<>();
+        Arrays.stream(drives).forEach(drive -> {
+            var first = new File(drive.getPath()).listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
             if (first == null)
                 return;
             for (var d : first) {
-                var second = new File(d.getPath()).listFiles(directoryAndNotHidden);
+                var second = new File(d.getPath()).listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
                 if (second == null)
                     continue;
                 if (d.getPath().contains("$") || d.getPath().contains("Windows"))
                     continue;
 
-                // if (d.getPath().contains("World of Warcraft")) {
-                if (check(d)) {
+                fastCheck(d);
+                check(d);
 
-                } else {
-                    directorys.add(d);
-                }
                 for (var s : second) {
-                    var third = new File(s.getPath()).listFiles(directoryAndNotHidden);
+                    var third = new File(s.getPath()).listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
                     if (third == null)
                         continue;
                     if (s.getPath().contains("$"))
                         continue;
 
-                    //if (s.getPath().contains("World of Warcraft")) {
-                    if (check(s)) {
-
-                    } else {
-                        directorys.add(s);
-                    }
+                    if (!(fastCheck(s) || check(s)))
+                        directories.add(s);
                 }
             }
         });
-        max.set(directorys.size());
-        //System.out.println(max.get());
-        //progress.setValue((double) current.get() / (double) max.get());
+        max.set(directories.size());
         updateable.updateProgress(current.get(), max.get());
-        directorys.stream().parallel().forEach(this::searchDriveForWowDirectorys);
-
+        directories.stream().parallel().forEach(this::searchDriveForWowDirectories);
         return games;
     }
 
 
-    private void searchDriveForWowDirectorys(File parent) {
-        var directories = new File(parent.getPath()).listFiles(directoryAndNotHidden);
+    private void searchDriveForWowDirectories(File parent) {
+        var directories = new File(parent.getPath()).listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
         if (directories == null) {
             current.addAndGet(1);
-            //progress.setValue((double) current.get() / (double) max.get());
             updateable.updateProgress(current.get(), max.get());
             return;
         }
-        Arrays.stream(directories).parallel().forEach(finder);
+        Arrays.stream(directories).forEach(finder);
         current.addAndGet(1);
-        //progress.setValue((double) current.get() / (double) max.get());
         updateable.updateProgress(current.get(), max.get());
     }
 
-    private void searchForWowDirectorys(File parent) {
-        var directories = new File(parent.getPath()).listFiles(directoryAndNotHidden);
+    private void searchForWowDirectories(File parent) {
+        var directories = new File(parent.getPath()).listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
         if (directories == null)
             return;
-        Arrays.stream(directories).parallel().forEach(finder);
+        Arrays.stream(directories).forEach(finder);
     }
 
     private Consumer<File> finder = (child) -> {
@@ -103,25 +93,23 @@ class FindGames {
         if (check(child)) {
 
         } else {
-            searchForWowDirectorys(child);
+            searchForWowDirectories(child);
         }
     };
 
     private boolean check(File dir) {
-        //if (dir.getPath().contains("Interface" + File.separator + "AddOns")) {
         if (dir.getName().equals("Interface")) {
-            var childs = dir.listFiles(directoryAndNotHidden);
-            if (childs == null)
+            var children = dir.listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
+            if (children == null)
                 return false;
 
-            if (Arrays.stream(childs).noneMatch(x -> x.getName().equals("AddOns")))
+            if (Arrays.stream(children).noneMatch(x -> x.getName().equals("AddOns")))
                 return false;
-
 
             var parent = dir.getParentFile();
             if (mustHaveExe) {
 
-                var exes = parent.listFiles(exeFilter);
+                var exes = parent.listFiles(EXE_FILTER);
                 if (exes != null && exes.length > 0) {
                     Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
                     consumer.accept(game);
@@ -143,27 +131,17 @@ class FindGames {
         return false;
     }
 
-    private class Filter implements FileFilter {
-
-        @Override
-        public boolean accept(File pathname) {
-            if (pathname.isFile() || pathname.isHidden())
-                return false;
-            return true;
+    private boolean fastCheck(File dir) {
+        for (var wowName : COMMON_DIRECTORY_NAMES) {
+            if (dir.getName().toLowerCase().contains(wowName)) {
+                var children = dir.listFiles(DIRECTORY_AND_NOT_HIDDEN_FILTER);
+                if (children == null)
+                    continue;
+                return Arrays.stream(children).anyMatch(this::check);
+            }
         }
+        return false;
     }
 
-    private final FileFilter directoryAndNotHidden = new Filter();
 
-    private static class ExeFilter implements FileFilter {
-
-        @Override
-        public boolean accept(File pathname) {
-            if (pathname.isFile() && pathname.getName().contains(".exe"))
-                return true;
-            return false;
-        }
-    }
-
-    private static final FileFilter exeFilter = new ExeFilter();
 }

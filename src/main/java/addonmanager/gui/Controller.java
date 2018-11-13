@@ -211,7 +211,7 @@ public class Controller {
                 settings.hide();
         });
 
-
+        //todo move stuff to 2nd thread that starts later and does some loading/init for faster startup
     }
 
 

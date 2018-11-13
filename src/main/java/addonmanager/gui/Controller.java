@@ -8,6 +8,7 @@ import addonmanager.app.Model;
 import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;
+import addonmanager.gui.setting.FXSettings;
 import addonmanager.gui.setting.Settings;
 import addonmanager.gui.tableview.ReleaseLatestVersionCell;
 import addonmanager.gui.tableview.StatusCell;
@@ -32,6 +33,7 @@ import java.util.function.Consumer;
 
 public class Controller {
 
+    public static FXSettings fxSettings;
 
     @FXML
     private Button refreshButton;
@@ -52,7 +54,8 @@ public class Controller {
     private void initialize() {
         App.setFactory(new FXFactory());
         Model model = App.getFactory().createModel();
-        Settings settings = new Settings(model);
+        Controller.fxSettings = new FXSettings();
+        Settings settings = new Settings(model, Controller.fxSettings);
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -96,7 +99,7 @@ public class Controller {
                 }
                 if (newValue == manual || newValue == scan) {
                     ((ChoiceBoxItem) newValue).getConsumer().accept(0);
-                    if (gameChoiceBox.getItems().contains(oldValue)&&!(oldValue==manual || oldValue==scan))
+                    if (gameChoiceBox.getItems().contains(oldValue) && !(oldValue == manual || oldValue == scan))
                         gameChoiceBox.setValue(oldValue);
                 }
             }
@@ -197,8 +200,8 @@ public class Controller {
             model.setSelectedGame(null);
             Optional<ChoiceBoxItem> gameChoiceBoxItem = gameChoiceBox.getItems().stream().filter(ChoiceBoxItem.class::isInstance).map(ChoiceBoxItem.class::cast).filter(x -> ((ChoiceBoxItem) x).getGame() == game).findFirst();
             gameChoiceBoxItem.ifPresent(gameChoiceBox.getItems()::remove);
-            if(model.getGames().isEmpty()){
-                gameChoiceBox.getItems().add(0,add);
+            if (model.getGames().isEmpty()) {
+                gameChoiceBox.getItems().add(0, add);
                 gameChoiceBox.setValue(add);
             }
 
@@ -236,7 +239,7 @@ public class Controller {
             thread.start();
             try {
                 //todo lägg till denna i settings
-                Thread.sleep(250);
+                Thread.sleep(fxSettings.getRefreshDelay());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

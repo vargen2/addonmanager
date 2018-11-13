@@ -23,13 +23,16 @@ public class Settings {
     private final ObservableMap<String, Object> observableMap;
     private PopOver popOver;
     private Model model;
+    private FXSettings fxSettings;
 
-    public Settings(Model model) {
+    public Settings(Model model, FXSettings fxSettings) {
         this.model = model;
+        this.fxSettings = fxSettings;
         observableMap = FXCollections.observableMap(new LinkedHashMap<>());
         observableMap.put("current.Set All", Addon.ReleaseType.RELEASE);
-        observableMap.put("global.Refresh Delay", 250);
+        observableMap.put("global.Refresh Delay", fxSettings.getRefreshDelay());
     }
+
 
     private void init() {
 
@@ -57,8 +60,11 @@ public class Settings {
                 if (change.getValueAdded() instanceof Addon.ReleaseType)
                     App.setReleaseType(model.getSelectedGame(), (Addon.ReleaseType) change.getValueAdded());
             } else if (change.getKey().equals("global.Refresh Delay")) {
-                if (change.getValueAdded() instanceof Number)
-                    System.out.println(((Number) change.getValueAdded()).intValue());
+                if (change.getValueAdded() instanceof Number) {
+                    int intVal = ((Number) change.getValueAdded()).intValue();
+                    if (intVal % 100 == 0)
+                        fxSettings.setRefreshDelay(intVal);
+                }
             }
         });
     }

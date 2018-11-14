@@ -55,7 +55,7 @@ public class WwwCurseForge extends DownloadVersions {
                 e.printStackTrace();
             }
             if (response.statusCode() != 200) {
-                System.out.println("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                System.err.println("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
                 retrying += ".";
                 updateable.updateMessage(retrying);
                 continue;

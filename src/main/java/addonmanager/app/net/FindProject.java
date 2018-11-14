@@ -7,15 +7,22 @@ import jdk.incubator.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.*;
 
 public class FindProject {
 
-    public static String find(Addon addon) {
-        String[] urlNames = new String[3];
+    public static Map<String, List<String>> addonProjectNames = new LinkedHashMap<>();
 
-        urlNames[0] = addon.getTitle().replaceAll(" ", "-");
-        urlNames[1] = addon.getFolderName();
-        urlNames[2] = addon.getTitle();
+    static {
+        addonProjectNames.put("bigwigs", new ArrayList<>(List.of("big-wigs")));
+    }
+
+    public static String find(Addon addon) {
+        List<String> urlNames = new LinkedList<>(List.of(addon.getTitle().replaceAll(" ", "-"), addon.getFolderName(), addon.getTitle()));
+        var projectNames = addonProjectNames.get(addon.getFolderName().toLowerCase());
+        if (projectNames != null)
+            urlNames.addAll(0, projectNames);
+
         String input = "";
         for (String anUrlName : urlNames) {
             HttpClient httpClient = HttpClient.newHttpClient();
@@ -36,7 +43,7 @@ public class FindProject {
                 e.printStackTrace();
             }
             if (response.statusCode() != 200) {
-                System.out.println("project find fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                System.err.println("project find fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
 
                 continue;
 
@@ -47,17 +54,15 @@ public class FindProject {
 
         }
         if (input.length() == 0) {
-
+            System.err.println("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
             return "https://www.curseforge.com/wow/addons/";
         }
-
-
 
 
         int index1 = input.indexOf("<p class=\"infobox__cta\"");
         int index2 = input.substring(index1).indexOf("</p>");
         String data = input.substring(index1, index1 + index2);
-        String result=Util.parse(data,"<a href=\"","\">");
+        String result = Util.parse(data, "<a href=\"", "\">");
 
 
         return result;

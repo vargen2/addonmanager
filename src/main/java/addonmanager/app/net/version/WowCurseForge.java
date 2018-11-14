@@ -52,7 +52,7 @@ public class WowCurseForge extends DownloadVersions {
             e.printStackTrace();
         }
         if (response.statusCode() != 200) {
-            System.out.println("DL fail " + addon.getProjectUrl());
+            System.err.println("DL fail " + addon.getProjectUrl());
 
             updateable.updateMessage("DL fail " + addon.getProjectUrl());
             return downloads;

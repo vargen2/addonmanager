@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public class Addon {
 
-    public enum Status {NONE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
+    public enum Status {NONE,IGNORE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
 
     public enum ReleaseType {
         ALPHA("alpha"),

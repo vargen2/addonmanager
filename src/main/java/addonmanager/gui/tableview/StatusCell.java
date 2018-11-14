@@ -106,6 +106,16 @@ public class StatusCell extends TableCell<Addon, Status> {
                     button.setVisible(false);
                 }
 
+                if (tempStatus != null && tempStatus == Status.IGNORE && addon != null) {
+                    label.textProperty().unbind();
+                    label.setVisible(true);
+                    label.setText("Ignored");
+                    progressBar.setVisible(false);
+                    progressBar.progressProperty().unbind();
+                    button.setText("");
+                    button.setVisible(false);
+                }
+
             } else if (item != null) {
                 System.out.println("item !=null");
 //                if (item.getNewVersionsTask() != null) {

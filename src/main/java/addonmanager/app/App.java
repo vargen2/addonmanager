@@ -51,6 +51,8 @@ public class App {
 
     //todo movto net.NetOperations net.NetActions??
     public static boolean downLoadVersions(Addon addon) {
+        if(addon.getStatus()== Addon.Status.IGNORE)
+            return false;
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
             addon.setProjectUrl(FindProject.find(addon));
@@ -84,6 +86,19 @@ public class App {
         FileOperations.refreshToc(addon);
         //addon.setStatus(Addon.Status.UP_TO_DATE);
         return true;
+    }
+
+    public static void Ignore(Addon addon){
+        if (addon==null)
+            return;
+        addon.setStatus(Addon.Status.IGNORE);
+    }
+
+    public static boolean unIgnore(Addon addon){
+        if (addon==null)
+            return false;
+        addon.setStatus(Addon.Status.NONE);
+        return App.downLoadVersions(addon);
     }
 
 }

@@ -1,7 +1,9 @@
 package addonmanager.gui;
 
 import addonmanager.app.Addon;
+import addonmanager.app.App;
 import addonmanager.app.Download;
+import addonmanager.app.Updateable;
 import addonmanager.gui.task.UpdateAddonTask;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
@@ -27,16 +29,35 @@ public class AddonContextMenu extends ContextMenu {
     public AddonContextMenu() {
         super();
 
-        MenuItem ignore = new MenuItem("Ignore");
+        CheckMenuItem ignore = new CheckMenuItem("Ignore");
         ignore.setOnAction(event1 -> {
-            System.out.println("ignore " + addon.getFolderName());
+            if (addon.getStatus() != Addon.Status.IGNORE)
+                App.Ignore(addon);
+            else {
+                Thread thread = new Thread(new Task() {
+                    @Override
+                    protected Object call() throws Exception {
+                        Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
+                        addon.setUpdateable(updateable);
+
+                        if (!App.unIgnore(addon)) {
+                            cancel();
+                            return null;
+                        }
+                        return null;
+                    }
+                });
+                thread.setDaemon(true);
+                thread.start();
+            }
         });
 
         CheckMenuItem alphaMenuItem = new CheckMenuItem("Alpha");
         CheckMenuItem betaMenuItem = new CheckMenuItem("Beta");
-        betaMenuItem.setSelected(true);
         CheckMenuItem releaseMenuItem = new CheckMenuItem("Release");
-
+        alphaMenuItem.setOnAction(event -> App.setReleaseType(addon, Addon.ReleaseType.ALPHA));
+        betaMenuItem.setOnAction(event -> App.setReleaseType(addon, Addon.ReleaseType.BETA));
+        releaseMenuItem.setOnAction(event -> App.setReleaseType(addon, Addon.ReleaseType.RELEASE));
 
         ////////////////////////////////////////
 
@@ -109,6 +130,7 @@ public class AddonContextMenu extends ContextMenu {
                     });
                     //popOver.hide();
                 });
+
                 return downloadListCell;
             }
         });
@@ -117,9 +139,9 @@ public class AddonContextMenu extends ContextMenu {
         Menu versionsMenu = new Menu("Versions");
         versionsMenu.setOnShowing(event -> {
 
-            if(versionsListViewBuildingTask==null)
+            if (versionsListViewBuildingTask == null)
                 return;
-            if(versionsListViewBuildingTask.isDone())
+            if (versionsListViewBuildingTask.isDone())
                 return;
 
             try {
@@ -143,15 +165,21 @@ public class AddonContextMenu extends ContextMenu {
 
         getItems().addAll(ignore, alphaMenuItem, betaMenuItem, releaseMenuItem, versionsMenu, infoMenu);
         setOnShowing(event -> {
+            ignore.setSelected(addon.getStatus() == Addon.Status.IGNORE);
+            alphaMenuItem.setSelected(addon.getReleaseType() == Addon.ReleaseType.ALPHA);
+            betaMenuItem.setSelected(addon.getReleaseType() == Addon.ReleaseType.BETA);
+            releaseMenuItem.setSelected(addon.getReleaseType() == Addon.ReleaseType.RELEASE);
             versionsMenu.setDisable(addon.getDownloads().isEmpty());
-            versionsListViewBuildingTask=new Task<Boolean>() {
+            versionsListViewBuildingTask = new Task<>() {
                 @Override
-                protected Boolean call() throws Exception {
+                protected Boolean call() {
                     listView.setItems(FXCollections.unmodifiableObservableList(FXCollections.observableList(addon.getDownloads())));
                     return true;
                 }
             };
-            Thread thread=new Thread(versionsListViewBuildingTask);
+
+
+            Thread thread = new Thread(versionsListViewBuildingTask);
             thread.setDaemon(true);
             thread.start();
 

@@ -5,8 +5,10 @@ import addonmanager.app.Addon.Status;
 import addonmanager.gui.fxapp.FXAddon;
 import addonmanager.gui.task.UpdateAddonTask;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 
@@ -33,11 +35,8 @@ public class StatusCell extends TableCell<Addon, Status> {
         label.setPrefHeight(20);
         progressBar.setPrefHeight(20);
         pane = new StackPane(progressBar, button, label);
-        setOnMouseClicked(event -> {
-            var addon = getTableRow().getItem();
-            if (addon != null && addon.getProjectUrl() != null)
-                System.out.println(addon.getProjectUrl());
-        });
+       // button.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
+
     }
 
 
@@ -80,7 +79,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     button.setText("update");
                     button.setVisible(true);
                     button.setOnAction(event -> {
-                        UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon,addon.getLatestDownload());
+                        UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon, addon.getLatestDownload());
                         Thread t = new Thread(updateAddonTask);
                         t.setDaemon(true);
                         t.start();

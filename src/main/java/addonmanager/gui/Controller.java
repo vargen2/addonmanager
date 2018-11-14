@@ -23,6 +23,8 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.TaskProgressView;
@@ -56,6 +58,8 @@ public class Controller {
         Model model = App.getFactory().createModel();
         Controller.fxSettings = new FXSettings();
         Settings settings = new Settings(model, Controller.fxSettings);
+        //todo lägg denna i 2nd loading thread
+        AddonContextMenu addonContextMenu = new AddonContextMenu();
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -177,7 +181,30 @@ public class Controller {
         gameVersionCol.setPrefWidth(100);
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
+        tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() != MouseButton.SECONDARY) {
+                addonContextMenu.hide();
+                return;
+            }
 
+            var pickResult = event.getPickResult().getIntersectedNode();
+            if (pickResult == null || pickResult instanceof Button)
+                return;
+            while (pickResult != null && !(pickResult instanceof TableCell)) {
+                pickResult = pickResult.getParent();
+            }
+
+            if (pickResult == null)
+                return;
+
+            TableCell tableCell = (TableCell) pickResult;
+            var addon = tableCell.getTableRow().getItem();
+            if (addon instanceof Addon) {
+                addonContextMenu.show((Addon) addon, tableCell, event.getScreenX(), event.getScreenY());
+            }
+
+
+        });
         Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
         refreshButton.setTooltip(new Tooltip("Refresh all addons."));
         refreshButton.setOnAction(event -> {

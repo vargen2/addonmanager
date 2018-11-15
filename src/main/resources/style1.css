@@ -1,14 +1,42 @@
 
-.root {
+/*.root {
 
 -fx-focus-color: transparent;
 -fx-faint-focus-color: transparent;
 
 }
-
+*/
 /*.root {
     -fx-base: rgb(50, 50, 50);
     -fx-background: rgb(50, 50, 50);
     -fx-control-inner-background:  rgb(50, 50, 50);
 
 }*/
+
+
+#hyperlinkmenu {
+    -fx-background-color: white;
+}
+
+#hyperlinkmenu:hover {
+    -fx-background-color: white;
+}
+
+.hyperlink{
+    /*-fx-text-fill: #0000EE;*/
+}
+.hyperlink:pressed{
+    -fx-text-fill: black;
+    -fx-underline: true;
+}
+.hyperlink:hover{
+    -fx-underline: true;
+}
+.hyperlink:visited{
+   -fx-text-fill: #551A8B;
+   -fx-underline: false;
+}
+.hyperlink:visited:hover{
+   -fx-text-fill: #551A8B;
+   -fx-underline: true;
+}

@@ -7,6 +7,8 @@ import addonmanager.app.Updateable;
 import addonmanager.gui.task.UpdateAddonTask;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -16,15 +18,20 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import org.controlsfx.control.HyperlinkLabel;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class AddonContextMenu extends ContextMenu {
 
     private Addon addon;
-    private Task<Boolean> versionsListViewBuildingTask;
+    private CompletableFuture versionsListViewBuildingTask;
 
     public AddonContextMenu() {
         super();
@@ -34,21 +41,16 @@ public class AddonContextMenu extends ContextMenu {
             if (addon.getStatus() != Addon.Status.IGNORE)
                 App.Ignore(addon);
             else {
-                Thread thread = new Thread(new Task() {
+                CompletableFuture.runAsync(new Task() {
                     @Override
-                    protected Object call() throws Exception {
+                    protected Object call() {
                         Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
                         addon.setUpdateable(updateable);
-
-                        if (!App.unIgnore(addon)) {
+                        if (!App.unIgnore(addon))
                             cancel();
-                            return null;
-                        }
                         return null;
                     }
                 });
-                thread.setDaemon(true);
-                thread.start();
             }
         });
 
@@ -75,18 +77,13 @@ public class AddonContextMenu extends ContextMenu {
                             setText(null);
                             setGraphic(null);
                         } else {
-                            var hour = item.getFileDateUploaded().getHour() - LocalDateTime.now().getHour();
+                            var hour = LocalDateTime.now().getHour() - item.getFileDateUploaded().getHour();
                             var period = Period.between(item.getFileDateUploaded().toLocalDate(), LocalDateTime.now().toLocalDate()).normalized();
 
-                            String periodFrom = "";
-                            if (period.getYears() != 0)
-                                periodFrom += period.getYears() + "y ";
-                            if (period.getMonths() != 0)
-                                periodFrom += period.getMonths() + "m ";
-                            if (period.getDays() != 0 && period.getYears() == 0)
-                                periodFrom += period.getDays() + "d ";
-                            if (hour != 0 && period.getYears() == 0 && period.getMonths() == 0)
-                                periodFrom += hour + "h ";
+                            String periodFrom = period.getYears() != 0 ? period.getYears() + "y " : "";
+                            periodFrom += period.getMonths() != 0 ? period.getMonths() + "m " : "";
+                            periodFrom += period.getDays() != 0 && period.getYears() == 0 ? (hour < 0 ? period.getDays() - 1 : period.getDays()) + "d " : "";
+                            periodFrom += period.getDays() == 0 && hour != 0 && period.getYears() == 0 && period.getMonths() == 0 ? (hour < 0 ? 24 + hour : hour) + "h " : "";
                             periodFrom += "ago";
 
                             Label release = new Label(item.getRelease());
@@ -138,30 +135,33 @@ public class AddonContextMenu extends ContextMenu {
 
         Menu versionsMenu = new Menu("Versions");
         versionsMenu.setOnShowing(event -> {
-
-            if (versionsListViewBuildingTask == null)
-                return;
-            if (versionsListViewBuildingTask.isDone())
+            if (versionsListViewBuildingTask == null || versionsListViewBuildingTask.isDone())
                 return;
 
             try {
                 versionsListViewBuildingTask.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-
         });
         versionsMenu.getItems().add(versionsMenuItem);
 
 
-        MenuItem infoMenuItem = new MenuItem("Info");
+        HyperlinkLabel projectLink = new HyperlinkLabel();
+        projectLink.setOnAction(event -> {
+            Hyperlink link = (Hyperlink) event.getSource();
+            if (link == null)
+                return;
+            openWebpage(URI.create(link.getText()));
+        });
+        CustomMenuItem projectURL = new CustomMenuItem(projectLink);
+        projectURL.setId("hyperlinkmenu");
+
         Menu infoMenu = new Menu("Info");
         infoMenu.setOnShowing(event -> {
-            infoMenuItem.setText(addon.getFolderName() + "\n" + addon.getProjectUrl() + "\n" + addon.getVersion());
+            projectLink.setText("[" + addon.getProjectUrl() + "]");
         });
-        infoMenu.getItems().add(infoMenuItem);
+        infoMenu.getItems().addAll(projectURL);
 
         getItems().addAll(ignore, alphaMenuItem, betaMenuItem, releaseMenuItem, versionsMenu, infoMenu);
         setOnShowing(event -> {
@@ -170,19 +170,7 @@ public class AddonContextMenu extends ContextMenu {
             betaMenuItem.setSelected(addon.getReleaseType() == Addon.ReleaseType.BETA);
             releaseMenuItem.setSelected(addon.getReleaseType() == Addon.ReleaseType.RELEASE);
             versionsMenu.setDisable(addon.getDownloads().isEmpty());
-            versionsListViewBuildingTask = new Task<>() {
-                @Override
-                protected Boolean call() {
-                    listView.setItems(FXCollections.unmodifiableObservableList(FXCollections.observableList(addon.getDownloads())));
-                    return true;
-                }
-            };
-
-
-            Thread thread = new Thread(versionsListViewBuildingTask);
-            thread.setDaemon(true);
-            thread.start();
-
+            versionsListViewBuildingTask = CompletableFuture.runAsync(() -> listView.setItems(FXCollections.unmodifiableObservableList(FXCollections.observableList(addon.getDownloads()))));
         });
     }
 
@@ -191,4 +179,18 @@ public class AddonContextMenu extends ContextMenu {
         this.addon = addon;
         super.show(anchor, screenX, screenY);
     }
+
+    public static boolean openWebpage(URI uri) {
+        java.awt.Desktop desktop = java.awt.Desktop.isDesktopSupported() ? java.awt.Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 }

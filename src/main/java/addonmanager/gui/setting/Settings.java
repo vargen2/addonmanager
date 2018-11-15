@@ -10,11 +10,16 @@ import javafx.collections.ObservableMap;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.skin.ScrollPaneSkin;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.PropertyEditor;
 
+import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -31,12 +36,6 @@ public class Settings {
         observableMap = FXCollections.observableMap(new LinkedHashMap<>());
         observableMap.put("current.Set All", Addon.ReleaseType.RELEASE);
         observableMap.put("global.Refresh Delay", fxSettings.getRefreshDelay());
-    }
-
-
-    private void init() {
-
-
         PropertySheet propertySheet = new PropertySheet();
         propertySheet.setMode(PropertySheet.Mode.NAME);
         propertySheet.setModeSwitcherVisible(false);
@@ -45,13 +44,14 @@ public class Settings {
             propertySheet.getItems().add(new CustomPropertyItem(key, observableMap));
         }
 
-        VBox rootVBox = new VBox(2, propertySheet);
-        rootVBox.setAlignment(Pos.CENTER);
-        rootVBox.setPadding(new Insets(2, 2, 2, 2));
-        popOver = new PopOver(rootVBox);
-        popOver.setAnimated(true);
+        Pane pane = new Pane(propertySheet);
+        pane.setPadding(new Insets(2, 2, 2, 2));
+        popOver = new PopOver(pane);
+        popOver.setAnimated(false);
         popOver.setDetachable(false);
-        popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+        popOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+        popOver.setArrowSize(0);
+        popOver.setCornerRadius(0);
 
         observableMap.addListener((MapChangeListener<? super String, ? super Object>) change -> {
             if (change == null || change.getKey() == null)
@@ -69,26 +69,20 @@ public class Settings {
         });
     }
 
+
     public void show(Node node) {
-        if (popOver == null)
-            init();
         popOver.show(node);
     }
 
     public void hide() {
-        if (popOver == null)
-            return;
         popOver.hide();
     }
 
     public boolean isShowing() {
-        if (popOver == null)
-            return false;
         return popOver.isShowing();
     }
 
     class CustomPropertyItem implements PropertySheet.Item {
-
 
         private String key;
         private String category, name;

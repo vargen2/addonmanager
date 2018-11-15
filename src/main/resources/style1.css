@@ -12,7 +12,11 @@
     -fx-control-inner-background:  rgb(50, 50, 50);
 
 }*/
-
+/*.scroll-pane {
+    -fx-background-color: -fx-box-border,-fx-background;
+    -fx-background-insets: 0, 0;
+    -fx-padding: 0.0;
+}*/
 
 #hyperlinkmenu {
     -fx-background-color: white;

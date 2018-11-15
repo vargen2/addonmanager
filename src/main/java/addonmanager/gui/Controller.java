@@ -31,7 +31,11 @@ import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.glyphfont.FontAwesome;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Controller {
 
@@ -52,14 +56,19 @@ public class Controller {
     @FXML
     private TaskProgressView<Task<Void>> taskProgressView;
 
+
+    private AddonContextMenu addonContextMenu;
+    private Settings settings;
+
     @FXML
     private void initialize() {
+
+
         App.setFactory(new FXFactory());
         Model model = App.getFactory().createModel();
         Controller.fxSettings = new FXSettings();
-        Settings settings = new Settings(model, Controller.fxSettings);
-        //todo lägg denna i 2nd loading thread
-        AddonContextMenu addonContextMenu = new AddonContextMenu();
+
+
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -182,7 +191,12 @@ public class Controller {
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (addonContextMenu == null) {
+                addonContextMenu = new AddonContextMenu();
+                System.err.println("addoncontextmenu not async loaded");
+            }
             if (event.getButton() != MouseButton.SECONDARY) {
+
                 addonContextMenu.hide();
                 return;
             }
@@ -242,7 +256,8 @@ public class Controller {
                 settings.hide();
         });
 
-        //todo move stuff to 2nd thread that starts later and does some loading/init for faster startup
+        CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
+        CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
     }
 
 

@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-class FindGames {
+class GameFinder {
 
     private static final FileFilter DIRECTORY_AND_NOT_HIDDEN_FILTER = pathname -> !pathname.isFile() && !pathname.isHidden();
     private static final FileFilter EXE_FILTER = pathname -> pathname.isFile() && pathname.getName().contains(".exe");
@@ -22,7 +22,7 @@ class FindGames {
     private final Consumer<Game> consumer;
     private final List<Game> games = Collections.synchronizedList(new ArrayList<>());
 
-    FindGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
+    GameFinder(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
         this.updateable = updateable;
         this.consumer = consumer;
         this.mustHaveExe = mustHaveExe;

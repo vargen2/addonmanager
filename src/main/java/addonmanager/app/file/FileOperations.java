@@ -16,8 +16,8 @@ import java.util.function.Consumer;
 public class FileOperations {
 
     public static List<Game> findGames(Updateable updateable, Consumer<Game> consumer, boolean mustHaveExe) {
-        FindGames findGames = new FindGames(updateable, consumer, mustHaveExe);
-        return findGames.find();
+        GameFinder gameFinder = new GameFinder(updateable, consumer, mustHaveExe);
+        return gameFinder.find();
     }
 
 

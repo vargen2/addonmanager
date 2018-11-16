@@ -261,6 +261,7 @@ public class Controller {
         });
         thread.setDaemon(true);
         thread.start();
+
         // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
         // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
     }

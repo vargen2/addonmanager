@@ -83,6 +83,7 @@
                 </executions>
                 <configuration>
                     <mainClass>addonmanager.Main</mainClass>
+                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
                 </configuration>
             </plugin>
 

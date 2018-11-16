@@ -32,7 +32,7 @@ public class FileOperations {
     }
 
     public static boolean refreshToc(Addon addon) {
-        return RefreshToc.refresh(addon);
+        return new TocRefresher(addon).refresh();
     }
 
     public static boolean replaceAddon(Addon addon, Download download, File zipFile) {

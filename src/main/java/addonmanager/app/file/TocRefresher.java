@@ -14,7 +14,7 @@ class TocRefresher {
     private static final List<Charset> CHARSETS = List.of(Charset.defaultCharset(), Charset.forName("ISO-8859-1"));
     private Addon addon;
 
-    public TocRefresher(Addon addon) {
+    TocRefresher(Addon addon) {
         this.addon = addon;
     }
 

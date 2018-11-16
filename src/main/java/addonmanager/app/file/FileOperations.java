@@ -28,7 +28,7 @@ public class FileOperations {
 
 
     public static void refreshGameDirectory(Game game) {
-        RefreshGameDirectory.refresh(game);
+        new GameDirectoryRefresher(game).refresh();
     }
 
     public static boolean refreshToc(Addon addon) {

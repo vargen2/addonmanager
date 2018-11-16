@@ -4,9 +4,9 @@ import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
 import addonmanager.app.Download;
 import addonmanager.app.net.Util;
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
@@ -45,7 +45,7 @@ public class WowCurseForge extends DownloadVersions {
         HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
         HttpResponse<String> response = null;
         try {
-            response = httpClient.send(request, HttpResponse.BodyHandler.asString());
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

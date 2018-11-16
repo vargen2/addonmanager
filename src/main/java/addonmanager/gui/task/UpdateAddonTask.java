@@ -6,6 +6,7 @@ import addonmanager.app.Addon;
 import addonmanager.app.App;
 import javafx.concurrent.Task;
 
+
 public class UpdateAddonTask extends Task<Void> {
 
     private Addon addon;

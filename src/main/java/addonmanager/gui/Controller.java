@@ -69,7 +69,6 @@ public class Controller {
         Controller.fxSettings = new FXSettings();
 
 
-
         gameChoiceBox.getItems().add(new Separator());
 
         ChoiceBoxItem add = new ChoiceBoxItem(new Consumer() {
@@ -256,8 +255,14 @@ public class Controller {
                 settings.hide();
         });
 
-        CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
-        CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
+        Thread thread = new Thread(() -> {
+            addonContextMenu = new AddonContextMenu();
+            settings = new Settings(model, Controller.fxSettings);
+        });
+        thread.setDaemon(true);
+        thread.start();
+        // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
+        // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
     }
 
 

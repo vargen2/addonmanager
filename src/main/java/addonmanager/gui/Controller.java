@@ -270,19 +270,22 @@ public class Controller {
     public static void refreshFromNet(Game game) {
 
         game.getAddons().forEach(addon -> {
-            Thread thread = new Thread(new Task() {
-                @Override
-                protected Object call() throws Exception {
-                    Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
-                    addon.setUpdateable(updateable);
+            Thread thread = new Thread(
+                    new Task<Void>() {
+                        @Override
+                        protected Void call() {
 
-                    if (!App.downLoadVersions(addon)) {
-                        cancel();
-                        return null;
+                            Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
+                            addon.setUpdateable(updateable);
+
+                            if (!App.downLoadVersions(addon)) {
+                                cancel();
+                                return null;
+                            }
+                            return null;
+                        }
                     }
-                    return null;
-                }
-            });
+            );
             thread.setDaemon(true);
             thread.start();
             try {

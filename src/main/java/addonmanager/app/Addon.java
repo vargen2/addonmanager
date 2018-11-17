@@ -1,5 +1,6 @@
 package addonmanager.app;
 
+import java.io.File;
 import java.text.Collator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class Addon {
     private Download latestDownload;
     private Download latestUpdate;
     private Status status;
+    private List<File> extraFolders;
 
     protected Addon(String folderName, String absolutePath) {
         this.folderName = folderName;
@@ -185,5 +187,14 @@ public class Addon {
     public void setLatestUpdate(Download latestUpdate) {
         this.latestUpdate = latestUpdate;
         updateLatestDownload();
+    }
+
+    public List<File> getExtraFolders() {
+        return extraFolders;
+    }
+
+    public void setExtraFolders(List<File> extraFolders) {
+        this.extraFolders = extraFolders;
+        extraFolders.forEach(x->System.out.println(x.getName()));
     }
 }

@@ -42,8 +42,8 @@ public class FileOperations {
     public static boolean replaceAddon(Addon addon,Download download, File zipFile, double from, double to) {
         if (addon == null||download==null || zipFile == null || !zipFile.exists())
             return false;
-        ReplaceAddon replaceAddon = new ReplaceAddon(addon,download, zipFile);
-        return replaceAddon.replace(from, to);
+        AddonReplacer addonReplacer = new AddonReplacer(addon,download, zipFile);
+        return addonReplacer.replace(from, to);
     }
 
 

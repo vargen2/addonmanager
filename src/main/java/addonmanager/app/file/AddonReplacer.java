@@ -11,8 +11,10 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-class ReplaceAddon {
+class AddonReplacer {
 
     private Addon addon;
     private Download download;
@@ -21,9 +23,9 @@ class ReplaceAddon {
     private File addonDir;
     private File[] addonFolders;
 
-    ReplaceAddon(Addon addon, Download download, File zipFile) {
+    AddonReplacer(Addon addon, Download download, File zipFile) {
         this.addon = addon;
-        this.download=download;
+        this.download = download;
         this.zipFile = zipFile;
         tempWorkingDir = new File("temp" + File.separator + addon.getFolderName());
         addonDir = new File(addon.getAbsolutePath().replace(addon.getFolderName(), ""));
@@ -50,7 +52,7 @@ class ReplaceAddon {
 
         updateable.updateMessage("clean...");
         updateable.updateProgress(from + (to - from) * 0.75, to);
-        if(!clean())
+        if (!clean())
             return false;
 
         addon.setLatestUpdate(download);
@@ -87,6 +89,7 @@ class ReplaceAddon {
             return false;
         }
         addonFolders = tempWorkingDir.listFiles(File::isDirectory);
+        addon.setExtraFolders(Arrays.stream(addonFolders).filter(x -> !x.getName().equals(addon.getFolderName())).collect(Collectors.toList()));
         return true;
     }
 

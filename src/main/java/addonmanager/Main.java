@@ -1,5 +1,6 @@
 package addonmanager;
 
+import addonmanager.app.log.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -28,6 +29,7 @@ public class Main extends Application {
             Platform.exit();
 
         });
+        Logger.setLogToFile(true);
     }
 
     public static void main(String[] args) {

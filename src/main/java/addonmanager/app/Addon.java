@@ -6,10 +6,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Addon {
 
-    public enum Status {NONE,IGNORE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
+    public enum Status {NONE, IGNORE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
 
     public enum ReleaseType {
         ALPHA("alpha"),
@@ -195,6 +199,8 @@ public class Addon {
 
     public void setExtraFolders(List<File> extraFolders) {
         this.extraFolders = extraFolders;
-        extraFolders.forEach(x->System.out.println(x.getName()));
+
+        extraFolders.forEach(x -> Logger.getGlobal().info(x.getName()));
+        Logger.getGlobal().severe("severe");
     }
 }

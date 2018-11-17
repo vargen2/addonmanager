@@ -89,11 +89,14 @@ class AddonReplacer {
             return false;
         }
         addonFolders = tempWorkingDir.listFiles(File::isDirectory);
-        addon.setExtraFolders(Arrays.stream(addonFolders).filter(x -> !x.getName().equals(addon.getFolderName())).collect(Collectors.toList()));
+        if (addonFolders != null)
+            addon.setExtraFolders(Arrays.stream(addonFolders).filter(x -> !x.getName().equals(addon.getFolderName())).collect(Collectors.toList()));
         return true;
     }
 
     private boolean moveOldToBackup() {
+        if(addonFolders==null)
+            return false;
         for (File addonFolder : addonFolders) {
             File dir = new File(addonDir + File.separator + addonFolder.getName());
             if (!dir.exists())
@@ -111,6 +114,8 @@ class AddonReplacer {
     }
 
     private boolean moveTempToAddOns() {
+        if(addonFolders==null)
+            return false;
         for (File addonFolder : addonFolders) {
             File tempAddon = new File(tempWorkingDir.getPath() + File.separator + addonFolder.getName());
             try {

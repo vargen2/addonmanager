@@ -15,13 +15,17 @@ import javafx.scene.control.skin.ScrollPaneSkin;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PropertySheet;
+import org.controlsfx.property.editor.DefaultPropertyEditorFactory;
+import org.controlsfx.property.editor.Editors;
 import org.controlsfx.property.editor.PropertyEditor;
 
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.logging.Level;
 
 public class Settings {
 
@@ -36,7 +40,25 @@ public class Settings {
         observableMap = FXCollections.observableMap(new LinkedHashMap<>());
         observableMap.put("current.Set All", Addon.ReleaseType.RELEASE);
         observableMap.put("global.Refresh Delay", fxSettings.getRefreshDelay());
+        observableMap.put("global.Console Log", App.getConsoleLoggingLevel());
+        observableMap.put("global.File Log", App.getFileLoggingLevel());
+        var defaultPropertyEditorFactory = new DefaultPropertyEditorFactory();
         PropertySheet propertySheet = new PropertySheet();
+        propertySheet.setPropertyEditorFactory(new Callback<PropertySheet.Item, PropertyEditor<?>>() {
+            @Override
+            public PropertyEditor<?> call(PropertySheet.Item param) {
+                if(param.getValue() instanceof Number) {
+                    return new NumberSliderEditor(param);
+                }
+
+                if(param.getValue() instanceof Level) {
+                    return Editors.createChoiceEditor(param, App.levels);
+                }
+
+                return defaultPropertyEditorFactory.call(param);
+            }
+        });
+
         propertySheet.setMode(PropertySheet.Mode.NAME);
         propertySheet.setModeSwitcherVisible(false);
         propertySheet.setSearchBoxVisible(false);
@@ -132,17 +154,21 @@ public class Settings {
             return Optional.empty();
         }
 
-        @Override
-        public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-            // for an item of type number, specify the type of editor to use
-            if (Number.class.isAssignableFrom(getType())) {
-
-                return Optional.of(NumberSliderEditor.class);
-            }
-            // ... return other editors for other types
-
-            return Optional.empty();
-        }
+//        @Override
+//        public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
+//            // for an item of type number, specify the type of editor to use
+//            if (Number.class.isAssignableFrom(getType())) {
+//
+//                return Optional.of(NumberSliderEditor.class);
+//            }
+////            if(Level.class.isAssignableFrom(getType())){
+////                System.out.println("hit bbb");
+////                return Optional.of();
+////            }
+////            // ... return other editors for other types
+//
+//            return Optional.empty();
+//        }
     }
 
 }

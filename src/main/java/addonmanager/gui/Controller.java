@@ -30,12 +30,18 @@ import javafx.scene.paint.Color;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.glyphfont.FontAwesome;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+
+import static addonmanager.app.App.LOGGER;
 
 public class Controller {
 
@@ -261,7 +267,6 @@ public class Controller {
         });
         thread.setDaemon(true);
         thread.start();
-
         // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
         // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
     }

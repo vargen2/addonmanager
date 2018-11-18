@@ -200,7 +200,7 @@ public class Addon {
     public void setExtraFolders(List<File> extraFolders) {
         this.extraFolders = extraFolders;
 
-        extraFolders.forEach(x -> Logger.getGlobal().info(x.getName()));
-        Logger.getGlobal().severe("severe");
+        extraFolders.forEach(x -> App.LOGGER.info(x.getName()));
+        App.LOGGER.severe("severe");
     }
 }

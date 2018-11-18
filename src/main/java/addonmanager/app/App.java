@@ -6,9 +6,29 @@ import addonmanager.app.net.FindProject;
 import addonmanager.app.net.version.DownloadVersions;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.*;
 
 public class App {
+
+    //public enum LogLevel {OFF,INFO,SEVERE}
+    public static List<Level> levels= List.of(Level.OFF,Level.INFO,Level.SEVERE);
+    public static final Logger LOGGER = Logger.getGlobal();
+    private static Handler fileHandler;
+    private static Handler consoleHandler = new ConsoleHandler();
+
+    static {
+        LogManager.getLogManager().reset();
+        try {
+            fileHandler = new FileHandler("log.txt");
+            fileHandler.setFormatter(new SimpleFormatter());
+            LOGGER.addHandler(fileHandler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        LOGGER.addHandler(consoleHandler);
+    }
 
     public static final Factory DEFAULT_FACTORY = new Factory() {
         @Override
@@ -27,6 +47,22 @@ public class App {
         }
     };
     private static Factory factory = DEFAULT_FACTORY;
+
+    public static void setFileLoggingLevel(Level level) {
+        if (fileHandler != null) fileHandler.setLevel(level);
+    }
+
+    public static void setConsoleLoggingLevel(Level level) {
+        consoleHandler.setLevel(level);
+    }
+
+    public static Level getFileLoggingLevel() {
+        return (fileHandler != null) ? fileHandler.getLevel() : Level.OFF;
+    }
+
+    public static Level getConsoleLoggingLevel() {
+        return consoleHandler.getLevel();
+    }
 
     public static void setFactory(Factory factory) {
         App.factory = factory;
@@ -51,7 +87,7 @@ public class App {
 
     //todo movto net.NetOperations net.NetActions??
     public static boolean downLoadVersions(Addon addon) {
-        if(addon.getStatus()== Addon.Status.IGNORE)
+        if (addon.getStatus() == Addon.Status.IGNORE)
             return false;
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
@@ -88,14 +124,14 @@ public class App {
         return true;
     }
 
-    public static void Ignore(Addon addon){
-        if (addon==null)
+    public static void Ignore(Addon addon) {
+        if (addon == null)
             return;
         addon.setStatus(Addon.Status.IGNORE);
     }
 
-    public static boolean unIgnore(Addon addon){
-        if (addon==null)
+    public static boolean unIgnore(Addon addon) {
+        if (addon == null)
             return false;
         addon.setStatus(Addon.Status.NONE);
         return App.downLoadVersions(addon);

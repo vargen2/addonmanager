@@ -1,15 +1,19 @@
 package addonmanager;
 
-import addonmanager.app.log.Logger;
+import addonmanager.app.App;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
+
+import java.util.Arrays;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+
+import static addonmanager.app.App.LOGGER;
 
 public class Main extends Application {
 
@@ -29,7 +33,10 @@ public class Main extends Application {
             Platform.exit();
 
         });
-        Logger.setLogToFile(true);
+
+        App.setFileLoggingLevel(Level.INFO);
+        App.setConsoleLoggingLevel(Level.INFO);
+
     }
 
     public static void main(String[] args) {

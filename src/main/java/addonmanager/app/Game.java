@@ -37,6 +37,11 @@ public class Game {
         addons.add(addon);
     }
 
+    public void removeAddon(Addon addon) {
+        addons.remove(addon);
+    }
+
+
     @Override
     public String toString() {
         return directory;

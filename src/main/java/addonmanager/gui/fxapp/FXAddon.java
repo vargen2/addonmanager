@@ -2,6 +2,7 @@ package addonmanager.gui.fxapp;
 
 import addonmanager.app.Addon;
 import addonmanager.app.Download;
+import addonmanager.app.Game;
 import javafx.beans.property.*;
 
 import java.util.List;
@@ -15,8 +16,8 @@ public class FXAddon extends Addon {
     private final StringProperty releaseLatestProperty;
     private final ObjectProperty<Status> statusProperty;
 
-    FXAddon(String folderName, String absolutePath) {
-        super(folderName, absolutePath);
+    FXAddon(Game game, String folderName, String absolutePath) {
+        super(game, folderName, absolutePath);
         titleVersionProperty = new SimpleStringProperty(this, "titleVersion");
         gameVersionProperty = new SimpleStringProperty(this, "gameVersion");
         releaseTypeProperty = new SimpleObjectProperty<>(this, "releaseType");
@@ -95,7 +96,7 @@ public class FXAddon extends Addon {
         updateReleaseLatest();
     }
 
-    public ReadOnlyObjectProperty<Status> statusProperty(){
+    public ReadOnlyObjectProperty<Status> statusProperty() {
         return statusProperty;
     }
 

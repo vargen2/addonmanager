@@ -1,8 +1,8 @@
 package addonmanager.app.file;
 
+import addonmanager.app.Addon;
 import addonmanager.app.App;
 import addonmanager.app.Game;
-import addonmanager.app.Addon;
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ class GameDirectoryRefresher {
             if (game.getAddons().parallelStream().anyMatch(x -> (x.getFolderName().equals(d.getName()))))
                 continue;
 
-            Addon addon = App.getFactory().createAddon(d.getName(), d.getPath());
+            Addon addon = App.getFactory().createAddon(game, d.getName(), d.getPath());
             if (new TocRefresher(addon).refresh())
                 game.addAddon(addon);
         }

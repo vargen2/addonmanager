@@ -6,10 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Addon {
 
@@ -34,6 +30,8 @@ public class Addon {
 
     enum UpdateMode {AUTO, MANUAL}
 
+
+    private Game game;
     private List<Download> downloads = new ArrayList<>();
     private Updateable updateable = Updateable.EMPTY_UPDATEABLE;
     private String folderName;
@@ -51,7 +49,8 @@ public class Addon {
     private Status status;
     private List<File> extraFolders;
 
-    protected Addon(String folderName, String absolutePath) {
+    protected Addon(Game game, String folderName, String absolutePath) {
+        this.game = game;
         this.folderName = folderName;
         this.absolutePath = absolutePath;
         status = Status.NONE;
@@ -200,7 +199,11 @@ public class Addon {
     public void setExtraFolders(List<File> extraFolders) {
         this.extraFolders = extraFolders;
 
-        extraFolders.forEach(x -> App.LOGGER.info(x.getName()));
-        App.LOGGER.severe("severe");
+        extraFolders.forEach(x -> App.LOG.info(x.getName()));
+        App.LOG.severe("severe");
+    }
+
+    public Game getGame() {
+        return game;
     }
 }

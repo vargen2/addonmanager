@@ -1,10 +1,6 @@
 package addonmanager.gui;
 
-import addonmanager.app.Updateable;
-import addonmanager.app.Addon;
-import addonmanager.app.App;
-import addonmanager.app.Game;
-import addonmanager.app.Model;
+import addonmanager.app.*;
 import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;
@@ -30,18 +26,8 @@ import javafx.scene.paint.Color;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.glyphfont.FontAwesome;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-
-import static addonmanager.app.App.LOGGER;
 
 public class Controller {
 

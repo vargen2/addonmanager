@@ -1,9 +1,9 @@
 package addonmanager.gui.task;
 
-import addonmanager.app.Download;
-import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
 import addonmanager.app.App;
+import addonmanager.app.Download;
+import addonmanager.app.Updateable;
 import javafx.concurrent.Task;
 
 
@@ -28,6 +28,7 @@ public class UpdateAddonTask extends Task<Void> {
             cancel();
             return null;
         }
+
         updateMessage("done");
         updateProgress(1, 1);
         return null;

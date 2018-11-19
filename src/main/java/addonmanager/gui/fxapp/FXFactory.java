@@ -1,6 +1,9 @@
 package addonmanager.gui.fxapp;
 
-import addonmanager.app.*;
+import addonmanager.app.Addon;
+import addonmanager.app.Factory;
+import addonmanager.app.Game;
+import addonmanager.app.Model;
 
 public class FXFactory implements Factory {
     @Override
@@ -9,8 +12,8 @@ public class FXFactory implements Factory {
     }
 
     @Override
-    public Addon createAddon(String folderName, String absolutePath) {
-        return new FXAddon(folderName, absolutePath);
+    public Addon createAddon(Game game, String folderName, String absolutePath) {
+        return new FXAddon(game, folderName, absolutePath);
     }
 
     @Override

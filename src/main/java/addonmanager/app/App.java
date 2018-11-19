@@ -9,25 +9,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.*;
+import java.util.stream.Collectors;
 
 public class App {
 
-    //public enum LogLevel {OFF,INFO,SEVERE}
-    public static List<Level> levels= List.of(Level.OFF,Level.INFO,Level.SEVERE);
-    public static final Logger LOGGER = Logger.getGlobal();
+    public static final List<Level> levels = List.of(Level.OFF, Level.INFO, Level.SEVERE);
+    public static final Logger LOG = Logger.getGlobal();
     private static Handler fileHandler;
-    private static Handler consoleHandler = new ConsoleHandler();
+    private static final Handler consoleHandler = new ConsoleHandler();
 
     static {
         LogManager.getLogManager().reset();
         try {
             fileHandler = new FileHandler("log.txt");
             fileHandler.setFormatter(new SimpleFormatter());
-            LOGGER.addHandler(fileHandler);
+            LOG.addHandler(fileHandler);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LOGGER.addHandler(consoleHandler);
+        LOG.addHandler(consoleHandler);
     }
 
     public static final Factory DEFAULT_FACTORY = new Factory() {
@@ -37,8 +37,8 @@ public class App {
         }
 
         @Override
-        public Addon createAddon(String folderName, String absolutePath) {
-            return new Addon(folderName, absolutePath);
+        public Addon createAddon(Game game, String folderName, String absolutePath) {
+            return new Addon(game, folderName, absolutePath);
         }
 
         @Override
@@ -137,4 +137,14 @@ public class App {
         return App.downLoadVersions(addon);
     }
 
+    public static void removeSubFoldersFromGame(Addon addon) {
+        if (addon == null || addon.getExtraFolders() == null)
+            return;
+        var game = addon.getGame();
+        var addonsToBeRemoved = game.getAddons().stream()
+                .filter(x -> addon.getExtraFolders().stream().
+                        anyMatch(y -> y.getName().equals(x.getFolderName())))
+                .collect(Collectors.toList());
+        addonsToBeRemoved.forEach(game::removeAddon);
+    }
 }

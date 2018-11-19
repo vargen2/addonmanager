@@ -7,11 +7,8 @@ import addonmanager.app.Updateable;
 import addonmanager.gui.task.UpdateAddonTask;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
@@ -21,8 +18,6 @@ import javafx.util.Duration;
 import org.controlsfx.control.HyperlinkLabel;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.concurrent.CompletableFuture;
@@ -120,6 +115,7 @@ public class AddonContextMenu extends ContextMenu {
                     dlg.showAndWait().ifPresent(result -> {
                         if (result == ButtonType.OK) {
                             UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon, dl);
+                            updateAddonTask.setOnSucceeded(workerStateEvent -> CompletableFuture.runAsync(() -> App.removeSubFoldersFromGame(addon)));
                             Thread t = new Thread(updateAddonTask);
                             t.setDaemon(true);
                             t.start();

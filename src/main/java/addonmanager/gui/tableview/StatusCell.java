@@ -2,15 +2,15 @@ package addonmanager.gui.tableview;
 
 import addonmanager.app.Addon;
 import addonmanager.app.Addon.Status;
-import addonmanager.gui.fxapp.FXAddon;
+import addonmanager.app.App;
 import addonmanager.gui.task.UpdateAddonTask;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
+
+import java.util.concurrent.CompletableFuture;
 
 public class StatusCell extends TableCell<Addon, Status> {
 
@@ -80,6 +80,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     button.setVisible(true);
                     button.setOnAction(event -> {
                         UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon, addon.getLatestDownload());
+                        updateAddonTask.setOnSucceeded(workerStateEvent -> CompletableFuture.runAsync(() -> App.removeSubFoldersFromGame(addon)));
                         Thread t = new Thread(updateAddonTask);
                         t.setDaemon(true);
                         t.start();

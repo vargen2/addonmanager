@@ -8,12 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-
-import static addonmanager.app.App.LOGGER;
 
 public class Main extends Application {
 
@@ -29,9 +24,7 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setOnCloseRequest(t -> {
             t.consume();
-
             Platform.exit();
-
         });
 
         App.setFileLoggingLevel(Level.INFO);

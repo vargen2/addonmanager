@@ -8,21 +8,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.skin.ScrollPaneSkin;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.DefaultPropertyEditorFactory;
 import org.controlsfx.property.editor.Editors;
-import org.controlsfx.property.editor.PropertyEditor;
 
-import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -44,19 +36,16 @@ public class Settings {
         observableMap.put("global.File Log", App.getFileLoggingLevel());
         var defaultPropertyEditorFactory = new DefaultPropertyEditorFactory();
         PropertySheet propertySheet = new PropertySheet();
-        propertySheet.setPropertyEditorFactory(new Callback<PropertySheet.Item, PropertyEditor<?>>() {
-            @Override
-            public PropertyEditor<?> call(PropertySheet.Item param) {
-                if(param.getValue() instanceof Number) {
-                    return new NumberSliderEditor(param);
-                }
-
-                if(param.getValue() instanceof Level) {
-                    return Editors.createChoiceEditor(param, App.levels);
-                }
-
-                return defaultPropertyEditorFactory.call(param);
+        propertySheet.setPropertyEditorFactory(param -> {
+            if (param.getValue() instanceof Number) {
+                return new NumberSliderEditor(param);
             }
+
+            if (param.getValue() instanceof Level) {
+                return Editors.createChoiceEditor(param, App.levels);
+            }
+
+            return defaultPropertyEditorFactory.call(param);
         });
 
         propertySheet.setMode(PropertySheet.Mode.NAME);
@@ -78,14 +67,23 @@ public class Settings {
         observableMap.addListener((MapChangeListener<? super String, ? super Object>) change -> {
             if (change == null || change.getKey() == null)
                 return;
+            var addedValue = change.getValueAdded();
             if (change.getKey().equals("current.Set All")) {
-                if (change.getValueAdded() instanceof Addon.ReleaseType)
-                    App.setReleaseType(model.getSelectedGame(), (Addon.ReleaseType) change.getValueAdded());
+                if (addedValue instanceof Addon.ReleaseType)
+                    App.setReleaseType(model.getSelectedGame(), (Addon.ReleaseType) addedValue);
             } else if (change.getKey().equals("global.Refresh Delay")) {
-                if (change.getValueAdded() instanceof Number) {
-                    int intVal = ((Number) change.getValueAdded()).intValue();
+                if (addedValue instanceof Number) {
+                    int intVal = ((Number) addedValue).intValue();
                     if (intVal % 100 == 0)
                         fxSettings.setRefreshDelay(intVal);
+                }
+            } else if (change.getKey().equals("global.Console Log")) {
+                if (addedValue instanceof Level) {
+                    App.setConsoleLoggingLevel((Level) addedValue);
+                }
+            } else if (change.getKey().equals("global.File Log")) {
+                if (addedValue instanceof Level) {
+                    App.setFileLoggingLevel((Level) addedValue);
                 }
             }
         });

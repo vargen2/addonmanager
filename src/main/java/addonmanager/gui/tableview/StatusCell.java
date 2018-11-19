@@ -118,7 +118,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                 }
 
             } else if (item != null) {
-                System.out.println("item !=null");
+                App.LOG.info("item !=null");
 //                if (item.getNewVersionsTask() != null) {
 //                    progressBar.setProgress(item.getNewVersionsTask().getProgress());
 //                    progressBar.setVisible(true);

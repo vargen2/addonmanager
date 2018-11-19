@@ -1,14 +1,11 @@
 package addonmanager;
 
-import addonmanager.app.App;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.util.logging.Level;
 
 public class Main extends Application {
 
@@ -19,7 +16,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("../gui.fxml"));
         //primaryStage.getIcons().add(new Image("icon.png"));
         primaryStage.setTitle("Addon Manager");
-        primaryStage.setScene(new Scene(root, 960, 540));
+        primaryStage.setScene(new Scene(root, 960, 300));
         primaryStage.setY(0);
         primaryStage.show();
         primaryStage.setOnCloseRequest(t -> {
@@ -27,8 +24,8 @@ public class Main extends Application {
             Platform.exit();
         });
 
-        App.setFileLoggingLevel(Level.INFO);
-        App.setConsoleLoggingLevel(Level.INFO);
+        //App.setFileLoggingLevel(Level.OFF);
+        //App.setConsoleLoggingLevel(Level.INFO);
 
     }
 

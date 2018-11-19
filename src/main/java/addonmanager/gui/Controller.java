@@ -134,7 +134,7 @@ public class Controller {
                 removeButton.setDisable(newValue == null);
             });
         } else {
-            System.err.println("model not FXModel");
+            App.LOG.info("model not FXModel");
         }
 
         TableColumn<Addon, String> titleVersionCol = new TableColumn<>("Title");
@@ -184,7 +184,7 @@ public class Controller {
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (addonContextMenu == null) {
                 addonContextMenu = new AddonContextMenu();
-                System.err.println("addoncontextmenu not async loaded");
+                App.LOG.info("addoncontextmenu not async loaded");
             }
             if (event.getButton() != MouseButton.SECONDARY) {
 

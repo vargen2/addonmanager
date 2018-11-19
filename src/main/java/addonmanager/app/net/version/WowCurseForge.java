@@ -1,15 +1,16 @@
 package addonmanager.app.net.version;
 
-import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
+import addonmanager.app.App;
 import addonmanager.app.Download;
+import addonmanager.app.Updateable;
 import addonmanager.app.net.Util;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -28,7 +29,9 @@ public class WowCurseForge extends DownloadVersions {
         Updateable updateable = addon.getUpdateable();
         List<Download> downloads = new ArrayList<>();
 
-
+        String filePage = "";
+        if (page != 0)
+            filePage = "?page=" + page;
         //updateProgress(0, 1);
         String retrying = "retrying";
         String input = "";
@@ -36,7 +39,7 @@ public class WowCurseForge extends DownloadVersions {
         HttpClient httpClient = HttpClient.newHttpClient();
         URI uri;
         try {
-            uri = URI.create(addon.getProjectUrl() + "/files");
+            uri = URI.create(addon.getProjectUrl() + "/files" + filePage);
 
         } catch (IllegalArgumentException e) {
             return downloads;
@@ -52,7 +55,7 @@ public class WowCurseForge extends DownloadVersions {
             e.printStackTrace();
         }
         if (response.statusCode() != 200) {
-            System.err.println("DL fail " + addon.getProjectUrl());
+            App.LOG.info("DL fail " + addon.getProjectUrl());
 
             updateable.updateMessage("DL fail " + addon.getProjectUrl());
             return downloads;

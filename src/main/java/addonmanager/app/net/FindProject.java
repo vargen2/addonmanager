@@ -1,6 +1,8 @@
 package addonmanager.app.net;
 
 import addonmanager.app.Addon;
+import addonmanager.app.App;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,6 +16,8 @@ public class FindProject {
 
     static {
         addonProjectNames.put("bigwigs", new ArrayList<>(List.of("big-wigs")));
+        addonProjectNames.put("dbm-core", new ArrayList<>(List.of("deadly-boss-mods")));
+        addonProjectNames.put("omnicc", new ArrayList<>(List.of("omni-cc")));
     }
 
     public static String find(Addon addon) {
@@ -42,7 +46,7 @@ public class FindProject {
                 e.printStackTrace();
             }
             if (response.statusCode() != 200) {
-                System.err.println("project find fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                App.LOG.info("project find fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
 
                 continue;
 
@@ -53,7 +57,7 @@ public class FindProject {
 
         }
         if (input.length() == 0) {
-            System.err.println("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
+            App.LOG.info("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
             return "https://www.curseforge.com/wow/addons/";
         }
 

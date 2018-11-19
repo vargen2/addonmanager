@@ -1,15 +1,16 @@
 package addonmanager.app.net.version;
 
-import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
+import addonmanager.app.App;
 import addonmanager.app.Download;
+import addonmanager.app.Updateable;
 import addonmanager.app.net.Util;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -55,14 +56,14 @@ public class WwwCurseForge extends DownloadVersions {
                 e.printStackTrace();
             }
             if (response.statusCode() != 200) {
-                System.err.println("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                App.LOG.info("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
                 retrying += ".";
                 updateable.updateMessage(retrying);
                 continue;
 
             } else {
                 input = response.body();
-                System.out.println("FOUND "+addon.getProjectUrl() +" "+ input.length());
+                App.LOG.info("FOUND " + addon.getProjectUrl() + " " + input.length());
                 break;
             }
 

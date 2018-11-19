@@ -198,9 +198,6 @@ public class Addon {
 
     public void setExtraFolders(List<File> extraFolders) {
         this.extraFolders = extraFolders;
-
-        extraFolders.forEach(x -> App.LOG.info(x.getName()));
-        App.LOG.severe("severe");
     }
 
     public Game getGame() {

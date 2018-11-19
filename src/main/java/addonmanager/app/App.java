@@ -1,6 +1,7 @@
 package addonmanager.app;
 
 import addonmanager.app.file.FileOperations;
+import addonmanager.app.logging.SingleLineFormatter;
 import addonmanager.app.net.DownloadAddon;
 import addonmanager.app.net.FindProject;
 import addonmanager.app.net.version.DownloadVersions;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class App {
 
-    public static final List<Level> levels = List.of(Level.OFF, Level.INFO, Level.SEVERE);
+    public static final List<Level> levels = List.of(Level.OFF, Level.SEVERE, Level.INFO, Level.FINE);
     public static final Logger LOG = Logger.getGlobal();
     private static Handler fileHandler;
     private static final Handler consoleHandler = new ConsoleHandler();
@@ -23,11 +24,15 @@ public class App {
         try {
             fileHandler = new FileHandler("log.txt");
             fileHandler.setFormatter(new SimpleFormatter());
+            fileHandler.setLevel(Level.OFF);
             LOG.addHandler(fileHandler);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        consoleHandler.setFormatter(new SingleLineFormatter());
+
         LOG.addHandler(consoleHandler);
+        LOG.setLevel(Level.FINE);
     }
 
     public static final Factory DEFAULT_FACTORY = new Factory() {
@@ -69,7 +74,7 @@ public class App {
     }
 
     public static Factory getFactory() {
-        return App.factory;
+        return factory;
     }
 
     public static void setReleaseType(Addon addon, Addon.ReleaseType releaseType) {
@@ -92,6 +97,7 @@ public class App {
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
             addon.setProjectUrl(FindProject.find(addon));
+        LOG.info(addon.getProjectUrl());
         DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
         List<Download> downloads = downloadVersions.getDownloads();
         if (downloads.isEmpty()) {
@@ -100,6 +106,8 @@ public class App {
         }
         int page = 2;
         while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
+            LOG.info(page + " hit " + addon.getFolderName() + " " + addon.getProjectUrl());
+
             DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon);
             moreDownloadversions.setPage(page);
             downloads.addAll(moreDownloadversions.getDownloads());
@@ -134,7 +142,7 @@ public class App {
         if (addon == null)
             return false;
         addon.setStatus(Addon.Status.NONE);
-        return App.downLoadVersions(addon);
+        return downLoadVersions(addon);
     }
 
     public static void removeSubFoldersFromGame(Addon addon) {
@@ -145,6 +153,7 @@ public class App {
                 .filter(x -> addon.getExtraFolders().stream().
                         anyMatch(y -> y.getName().equals(x.getFolderName())))
                 .collect(Collectors.toList());
+        addonsToBeRemoved.forEach(x -> LOG.info("Sub folders to be removed " + x.getFolderName()));
         addonsToBeRemoved.forEach(game::removeAddon);
     }
 }

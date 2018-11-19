@@ -1,6 +1,7 @@
 package addonmanager.app.file;
 
 import addonmanager.app.Addon;
+import addonmanager.app.App;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +30,13 @@ class TocRefresher {
                 lines.stream().filter(line -> line.contains("Interface:")).findAny().ifPresent(line -> addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim()));
                 lines.stream().filter(line -> line.contains("Version:")).findAny().ifPresent(line -> addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim()));
                 lines.stream().filter(line -> line.contains("Title:")).findAny().ifPresent(line -> addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim()));
+                if (addon.getFolderName().equalsIgnoreCase("dbm-core"))
+                    return true;
                 return !lines.stream().anyMatch(line -> line.contains("Dependencies") || line.contains("RequiredDeps"));
             } catch (MalformedInputException e) {
-                System.err.println(addon.getFolderName() + " " + e.getMessage());
+                App.LOG.info(addon.getFolderName() + " " + e.getMessage());
             } catch (IOException e) {
-                System.err.println(addon.getFolderName() + " " + e.getMessage());
+                App.LOG.info(addon.getFolderName() + " " + e.getMessage());
                 return false;
             }
         }

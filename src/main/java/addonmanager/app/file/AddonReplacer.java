@@ -1,8 +1,9 @@
 package addonmanager.app.file;
 
+import addonmanager.app.Addon;
+import addonmanager.app.App;
 import addonmanager.app.Download;
 import addonmanager.app.Updateable;
-import addonmanager.app.Addon;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -101,7 +102,7 @@ class AddonReplacer {
             File dir = new File(addonDir + File.separator + addonFolder.getName());
             if (!dir.exists())
                 continue;
-            System.out.println(dir.getPath());
+            App.LOG.fine(dir.getPath());
             File destDir = new File("backup");
             try {
                 FileUtils.moveDirectoryToDirectory(dir, destDir, !destDir.exists());

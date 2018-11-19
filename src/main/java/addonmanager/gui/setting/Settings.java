@@ -67,6 +67,7 @@ public class Settings {
         observableMap.addListener((MapChangeListener<? super String, ? super Object>) change -> {
             if (change == null || change.getKey() == null)
                 return;
+
             var addedValue = change.getValueAdded();
             if (change.getKey().equals("current.Set All")) {
                 if (addedValue instanceof Addon.ReleaseType)

@@ -26,6 +26,7 @@ class GameDirectoryRefresher {
             Addon addon = App.getFactory().createAddon(game, d.getName(), d.getPath());
             if (new TocRefresher(addon).refresh())
                 game.addAddon(addon);
+
         }
     }
 }

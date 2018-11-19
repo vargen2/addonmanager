@@ -1,6 +1,7 @@
 package addonmanager.app.net.version;
 
 import addonmanager.app.Addon;
+import addonmanager.app.App;
 import addonmanager.app.Download;
 import addonmanager.app.Updateable;
 import addonmanager.app.net.Util;
@@ -54,7 +55,7 @@ public class WowAce extends DownloadVersions {
             e.printStackTrace();
         }
         if (response.statusCode() != 200) {
-            System.err.println("DL fail " + addon.getProjectUrl());
+            App.LOG.info("DL fail " + addon.getProjectUrl());
 
             updateable.updateMessage("DL fail " + addon.getProjectUrl());
             return downloads;

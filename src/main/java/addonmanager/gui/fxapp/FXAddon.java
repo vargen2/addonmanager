@@ -26,6 +26,22 @@ public class FXAddon extends Addon {
         statusProperty = new SimpleObjectProperty<>(this, "status");
     }
 
+    FXAddon(Game game, Addon addon) {
+        super(game, addon);
+        titleVersionProperty = new SimpleStringProperty(this, "titleVersion");
+        gameVersionProperty = new SimpleStringProperty(this, "gameVersion");
+        releaseTypeProperty = new SimpleObjectProperty<>(this, "releaseType");
+        latestDownloadProperty = new SimpleObjectProperty<>(this, "latestDownload");
+        releaseLatestProperty = new SimpleStringProperty(this, "releaseLatest");
+        statusProperty = new SimpleObjectProperty<>(this, "status");
+        setTitle(super.getTitle());
+        setVersion(super.getVersion());
+        setGameVersion(super.getGameVersion());
+        setLatestDownload(super.getLatestDownload());
+        setStatus(super.getStatus());
+        setReleaseType(super.getReleaseType());
+    }
+
     public ReadOnlyStringProperty titleVersionProperty() {
         return titleVersionProperty;
     }

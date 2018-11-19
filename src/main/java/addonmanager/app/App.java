@@ -8,16 +8,18 @@ import addonmanager.app.net.version.DownloadVersions;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.logging.*;
 import java.util.stream.Collectors;
 
-public class App {
+public class App implements Serializable {
 
     public static final List<Level> levels = List.of(Level.OFF, Level.SEVERE, Level.INFO, Level.FINE);
     public static final Logger LOG = Logger.getGlobal();
     private static Handler fileHandler;
     private static final Handler consoleHandler = new ConsoleHandler();
+    public static Model model;
 
     static {
         LogManager.getLogManager().reset();
@@ -97,7 +99,7 @@ public class App {
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         if (addon.getProjectUrl() == null)
             addon.setProjectUrl(FindProject.find(addon));
-        LOG.info(addon.getProjectUrl());
+        LOG.fine("App.downloadversions found: " + addon.getProjectUrl());
         DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
         List<Download> downloads = downloadVersions.getDownloads();
         if (downloads.isEmpty()) {
@@ -106,6 +108,7 @@ public class App {
         }
         int page = 2;
         while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
+            addon.getUpdateable().updateProgress(0.2, 1);
             LOG.info(page + " hit " + addon.getFolderName() + " " + addon.getProjectUrl());
 
             DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon);
@@ -113,6 +116,7 @@ public class App {
             downloads.addAll(moreDownloadversions.getDownloads());
             page++;
         }
+        addon.getUpdateable().updateProgress(1, 1);
         addon.setDownloads(downloads);
         return true;
     }

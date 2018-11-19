@@ -32,7 +32,7 @@ public class WowAce extends DownloadVersions {
         String filePage = "";
         if (page != 0)
             filePage = "?page=" + page;
-        //updateProgress(0, 1);
+        //updateable.updateProgress(0.1,1);
         String retrying = "retrying";
         String input = "";
 
@@ -104,7 +104,7 @@ public class WowAce extends DownloadVersions {
             Download download = new Download(release, title, fileSize, fileDateUploaded, gameVersion, dls, downloadLink);
             downloads.add(download);
         }
-        updateable.updateProgress(1.0, 1.0);
+        updateable.updateProgress(0.9, 1.0);
         updateable.updateMessage("done");
         return downloads;
     }

@@ -14,6 +14,11 @@ public class FXGame extends Game {
         addonObservableList = FXCollections.observableList(addons);
     }
 
+    FXGame(Game game) {
+        this(game.getName(), game.getDirectory(), game.getAddonDirectory());
+        game.getAddons().forEach(x -> addAddon(new FXAddon(this, x)));
+    }
+
     @Override
     public void addAddon(Addon addon) {
         addonObservableList.add(addon);

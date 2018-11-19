@@ -1,6 +1,7 @@
 package addonmanager.gui;
 
 import addonmanager.app.*;
+import addonmanager.app.file.Saver;
 import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;
@@ -54,10 +55,12 @@ public class Controller {
 
     @FXML
     private void initialize() {
-
-
         App.setFactory(new FXFactory());
-        Model model = App.getFactory().createModel();
+        // Model loaded=null;
+        Model loaded = Saver.load(App.getFactory());
+        Model model = loaded != null ? loaded : App.getFactory().createModel();
+        //Model model=App.getFactory().createModel();
+        App.model = model;
         Controller.fxSettings = new FXSettings();
 
 
@@ -255,6 +258,23 @@ public class Controller {
         thread.start();
         // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
         // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
+        if (loaded != null) {
+            Game game = model.getSelectedGame();
+            if (game != null) {
+                model.getGames().stream().forEach(x -> {
+                    ChoiceBoxItem cbi = new ChoiceBoxItem(x);
+                    gameChoiceBox.getItems().add(0, cbi);
+                    if (x == game) {
+                        x.getAddons().forEach(y -> App.LOG.fine("loaded addons: " + y.getFolderName()));
+                        gameChoiceBox.setValue(cbi);
+                    }
+                });
+                if (game instanceof FXGame)
+                    tableView.setItems(((FXGame) model.getSelectedGame()).addonObservableList);
+                refreshButton.setDisable(model.getSelectedGame() == null);
+                removeButton.setDisable(model.getSelectedGame() == null);
+            }
+        }
     }
 
 

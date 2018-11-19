@@ -5,6 +5,7 @@ import addonmanager.app.App;
 import addonmanager.app.Game;
 
 import java.io.File;
+import java.util.stream.Collectors;
 
 class GameDirectoryRefresher {
 
@@ -19,8 +20,13 @@ class GameDirectoryRefresher {
         if (directories == null)
             return;
 
+        var subFolders = game.getAddons().stream().filter(x -> x.getExtraFolders() != null && !x.getExtraFolders().isEmpty()).flatMap(x -> x.getExtraFolders().stream()).collect(Collectors.toList());
+        subFolders.forEach(x -> App.LOG.fine("all subdirectory folders: " + x.getName()));
+
         for (var d : directories) {
             if (game.getAddons().parallelStream().anyMatch(x -> (x.getFolderName().equals(d.getName()))))
+                continue;
+            if (subFolders.stream().anyMatch(x -> x.getName().equals(d.getName())))
                 continue;
 
             Addon addon = App.getFactory().createAddon(game, d.getName(), d.getPath());
@@ -28,5 +34,6 @@ class GameDirectoryRefresher {
                 game.addAddon(addon);
 
         }
+        Saver.save();
     }
 }

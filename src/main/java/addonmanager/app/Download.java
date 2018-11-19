@@ -1,8 +1,9 @@
 package addonmanager.app;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public final class Download {
+public final class Download implements Serializable {
     private final String release;
     private final String title;
     private final String fileSize;

@@ -1,13 +1,14 @@
 package addonmanager.app;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.Collator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Addon {
+public class Addon implements Serializable {
 
     public enum Status {NONE, IGNORE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
 
@@ -33,7 +34,7 @@ public class Addon {
 
     private Game game;
     private List<Download> downloads = new ArrayList<>();
-    private Updateable updateable = Updateable.EMPTY_UPDATEABLE;
+    private transient Updateable updateable = Updateable.EMPTY_UPDATEABLE;
     private String folderName;
     private String absolutePath;
     private String projectUrl;
@@ -57,6 +58,23 @@ public class Addon {
         releaseType = ReleaseType.RELEASE;
     }
 
+    protected Addon(Game game, Addon addon) {
+        this.game = game;
+        this.folderName = addon.folderName;
+        this.absolutePath = addon.absolutePath;
+        this.status = addon.status;
+        this.releaseType = addon.releaseType;
+        this.projectUrl = addon.projectUrl;
+        this.title = addon.title;
+        this.version = addon.version;
+        this.dateUploaded = addon.dateUploaded;
+        this.gameVersion = addon.gameVersion;
+
+        this.latestDownload = addon.latestDownload;
+        this.latestUpdate = addon.latestUpdate;
+        this.extraFolders = addon.extraFolders;
+        this.downloads = addon.downloads;
+    }
 
     public Updateable getUpdateable() {
         return updateable;

@@ -13,6 +13,12 @@ public class FXModel extends Model {
         super();
     }
 
+    public FXModel(Model model) {
+        super();
+        model.getGames().forEach(x -> addGame(new FXGame(x)));
+        getGames().stream().filter(x -> model.getSelectedGame().getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
+    }
+
     @Override
     public void setSelectedGame(Game selectedGame) {
         super.setSelectedGame(selectedGame);

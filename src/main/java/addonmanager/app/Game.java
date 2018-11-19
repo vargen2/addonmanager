@@ -1,10 +1,11 @@
 package addonmanager.app;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Game {
+public class Game implements Serializable {
 
     private final String name;
     private final String directory;
@@ -15,6 +16,11 @@ public class Game {
         this.name = name;
         this.directory = directory;
         this.addonDirectory = addonDirectory;
+    }
+
+    Game(Game game) {
+        this(game.name, game.directory, game.addonDirectory);
+        game.getAddons().stream().forEach(x -> addons.add(new Addon(this, x)));
     }
 
     public String getDirectory() {

@@ -20,4 +20,8 @@ public class FXFactory implements Factory {
     public Model createModel() {
         return new FXModel();
     }
+
+    public Model copyModel(Model model) {
+        return new FXModel(model);
+    }
 }

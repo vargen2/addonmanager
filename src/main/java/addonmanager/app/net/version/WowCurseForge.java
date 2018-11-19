@@ -32,7 +32,7 @@ public class WowCurseForge extends DownloadVersions {
         String filePage = "";
         if (page != 0)
             filePage = "?page=" + page;
-        //updateProgress(0, 1);
+
         String retrying = "retrying";
         String input = "";
 
@@ -97,7 +97,7 @@ public class WowCurseForge extends DownloadVersions {
 
             downloads.add(download);
         }
-        updateable.updateProgress(1.0, 1.0);
+        updateable.updateProgress(0.9, 1.0);
         updateable.updateMessage("done");
         return downloads;
     }

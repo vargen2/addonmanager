@@ -1,9 +1,9 @@
 package addonmanager.app.file;
 
-import addonmanager.app.Download;
-import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
+import addonmanager.app.Download;
 import addonmanager.app.Game;
+import addonmanager.app.Updateable;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -36,13 +36,13 @@ public class FileOperations {
     }
 
     public static boolean replaceAddon(Addon addon, Download download, File zipFile) {
-        return replaceAddon(addon,download, zipFile, 0, 1);
+        return replaceAddon(addon, download, zipFile, 0, 1);
     }
 
-    public static boolean replaceAddon(Addon addon,Download download, File zipFile, double from, double to) {
-        if (addon == null||download==null || zipFile == null || !zipFile.exists())
+    public static boolean replaceAddon(Addon addon, Download download, File zipFile, double from, double to) {
+        if (addon == null || download == null || zipFile == null || !zipFile.exists())
             return false;
-        AddonReplacer addonReplacer = new AddonReplacer(addon,download, zipFile);
+        AddonReplacer addonReplacer = new AddonReplacer(addon, download, zipFile);
         return addonReplacer.replace(from, to);
     }
 

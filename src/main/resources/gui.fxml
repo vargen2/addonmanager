@@ -27,7 +27,8 @@
                         <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
 
                         </TableView>
-                        <TaskProgressView fx:id="taskProgressView" prefHeight="0" minHeight="0" maxHeight="-Infinity"
+                        <TaskProgressView visible="false" fx:id="taskProgressView" prefHeight="0" minHeight="0"
+                                          maxHeight="-Infinity"
                                           VBox.vgrow="NEVER" StackPane.alignment="BOTTOM_CENTER"/>
 
                     </StackPane>

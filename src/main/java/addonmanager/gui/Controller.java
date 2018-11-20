@@ -119,11 +119,14 @@ public class Controller {
             @Override
             public void onChanged(Change<? extends Task<Void>> c) {
                 c.next();
-                if (c.wasAdded())
-                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() + 70);
-                if (c.wasRemoved())
-                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() - 70);
-
+                if (c.wasAdded()) {
+                    taskProgressView.setVisible(true);
+                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() + 90);
+                }
+                if (c.wasRemoved()) {
+                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() - 90);
+                    taskProgressView.setVisible(false);
+                }
             }
         });
 

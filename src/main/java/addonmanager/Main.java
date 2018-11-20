@@ -1,5 +1,6 @@
 package addonmanager;
 
+import addonmanager.app.file.Saver;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +25,7 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.setOnCloseRequest(t -> {
+            Saver.exit();
             t.consume();
             Platform.exit();
         });

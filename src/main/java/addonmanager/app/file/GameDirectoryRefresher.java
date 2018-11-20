@@ -34,6 +34,6 @@ class GameDirectoryRefresher {
                 game.addAddon(addon);
 
         }
-        Saver.save();
+
     }
 }

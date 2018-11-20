@@ -1,6 +1,7 @@
 package addonmanager.app;
 
 import addonmanager.app.file.FileOperations;
+import addonmanager.app.file.Saver;
 import addonmanager.app.logging.SingleLineFormatter;
 import addonmanager.app.net.DownloadAddon;
 import addonmanager.app.net.FindProject;
@@ -83,12 +84,14 @@ public class App implements Serializable {
         if (addon == null)
             return;
         addon.setReleaseType(releaseType);
+        Saver.save();
     }
 
     public static void setReleaseType(Game game, Addon.ReleaseType releaseType) {
         if (game == null)
             return;
         game.getAddons().forEach(x -> x.setReleaseType(releaseType));
+        Saver.save();
     }
 
 
@@ -118,6 +121,7 @@ public class App implements Serializable {
         }
         addon.getUpdateable().updateProgress(1, 1);
         addon.setDownloads(downloads);
+        Saver.save();
         return true;
     }
 
@@ -133,6 +137,7 @@ public class App implements Serializable {
         }
         FileOperations.refreshToc(addon);
         //addon.setStatus(Addon.Status.UP_TO_DATE);
+        Saver.save();
         return true;
     }
 
@@ -140,6 +145,7 @@ public class App implements Serializable {
         if (addon == null)
             return;
         addon.setStatus(Addon.Status.IGNORE);
+        Saver.save();
     }
 
     public static boolean unIgnore(Addon addon) {

@@ -26,6 +26,8 @@ class TocRefresher {
 
         for (var charset : CHARSETS) {
             try {
+                var liness = Files.readString(tocFile[0].toPath());
+                //liness.lines()
                 var lines = Files.readAllLines(tocFile[0].toPath(), charset);
                 lines.stream().filter(line -> line.contains("Interface:")).findAny().ifPresent(line -> addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim()));
                 lines.stream().filter(line -> line.contains("Version:")).findAny().ifPresent(line -> addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim()));

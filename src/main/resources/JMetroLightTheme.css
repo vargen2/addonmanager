@@ -1535,6 +1535,11 @@
     -fx-background-insets: 0;
 }
 
+.table-row-cell:odd {
+    -fx-background-color: TABLE_VIEW_BORDER_COLOR;
+    -fx-background-insets: 0;
+}
+
 .table-cell {
     -fx-border-color: transparent transparent transparent transparent;
     -fx-font-family: "Segoe UI";

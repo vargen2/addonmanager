@@ -55,6 +55,7 @@ public class Controller {
 
     @FXML
     private void initialize() {
+
         App.setFactory(new FXFactory());
         // Model loaded=null;
         Model loaded = Saver.load(App.getFactory());
@@ -275,6 +276,8 @@ public class Controller {
                 removeButton.setDisable(model.getSelectedGame() == null);
             }
         }
+
+        System.out.println("CONTROLLER END");
     }
 
 

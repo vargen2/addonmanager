@@ -6,12 +6,12 @@
 
 }
 */
-/*.root {
-    -fx-base: rgb(50, 50, 50);
-    -fx-background: rgb(50, 50, 50);
-    -fx-control-inner-background:  rgb(50, 50, 50);
+.root {
+    -fx-base: rgb(112, 112, 112);
+    -fx-background: rgb(66, 66, 66);
+    -fx-control-inner-background: rgb(66, 66, 66);
 
-}*/
+}
 /*.scroll-pane {
     -fx-background-color: -fx-box-border,-fx-background;
     -fx-background-insets: 0, 0;

@@ -13,11 +13,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         Parent root = FXMLLoader.load(getClass().getResource("../gui.fxml"));
+
         //primaryStage.getIcons().add(new Image("icon.png"));
         primaryStage.setTitle("Addon Manager");
+        //new JMetro(JMetro.Style.LIGHT).applyTheme(root);
         primaryStage.setScene(new Scene(root, 960, 300));
         primaryStage.setY(0);
+
         primaryStage.show();
         primaryStage.setOnCloseRequest(t -> {
             t.consume();

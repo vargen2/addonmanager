@@ -50,8 +50,8 @@ public class Controller {
     private TaskProgressView<Task<Void>> taskProgressView;
 
 
-    private AddonContextMenu addonContextMenu;
-    private Settings settings;
+//    private AddonContextMenu addonContextMenu;
+//    private Settings settings;
 
     @FXML
     private void initialize() {
@@ -63,7 +63,8 @@ public class Controller {
         //Model model=App.getFactory().createModel();
         App.model = model;
         Controller.fxSettings = new FXSettings();
-
+        AddonContextMenu addonContextMenu = new AddonContextMenu();
+        Settings settings = new Settings(model, Controller.fxSettings);
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -186,10 +187,10 @@ public class Controller {
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (addonContextMenu == null) {
-                addonContextMenu = new AddonContextMenu();
-                App.LOG.info("addoncontextmenu not async loaded");
-            }
+            //if (addonContextMenu == null) {
+            //    addonContextMenu = new AddonContextMenu();
+            //    App.LOG.info("addoncontextmenu not async loaded");
+            //}
             if (event.getButton() != MouseButton.SECONDARY) {
 
                 addonContextMenu.hide();
@@ -251,12 +252,12 @@ public class Controller {
                 settings.hide();
         });
 
-        Thread thread = new Thread(() -> {
-            addonContextMenu = new AddonContextMenu();
-            settings = new Settings(model, Controller.fxSettings);
-        });
-        thread.setDaemon(true);
-        thread.start();
+//        Thread thread = new Thread(() -> {
+//            addonContextMenu = new AddonContextMenu();
+//            settings = new Settings(model, Controller.fxSettings);
+//        });
+//        thread.setDaemon(true);
+//        thread.start();
         // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
         // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
         if (loaded != null) {

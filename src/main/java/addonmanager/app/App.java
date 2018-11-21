@@ -182,4 +182,16 @@ public class App implements Serializable {
         App.model.setSelectedGame(game);
         Saver.save();
     }
+
+    public static boolean addGame(Game game) {
+        boolean added = App.model.addGame(game);
+        if (added) Saver.save();
+        return added;
+    }
+
+    public static boolean removeGame(Game game) {
+        boolean removed = App.model.removeGame(game);
+        if (removed) Saver.save();
+        return removed;
+    }
 }

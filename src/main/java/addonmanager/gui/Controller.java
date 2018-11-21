@@ -90,7 +90,7 @@ public class Controller {
         gameChoiceBox.getItems().add(manual);
         ChoiceBoxItem scan = new ChoiceBoxItem(o -> {
             Consumer<Game> consumer = game -> {
-                Thread t = new Thread(new FoundGameTask(game, model, gameChoiceBox));
+                Thread t = new Thread(new FoundGameTask(game, gameChoiceBox));
                 t.setDaemon(true);
                 t.start();
             };
@@ -245,7 +245,7 @@ public class Controller {
             if (model.getSelectedGame() == null)
                 return;
             Game game = model.getSelectedGame();
-            model.removeGame(game);
+            App.removeGame(game);
             App.setSelectedGame(null);
             Optional<ChoiceBoxItem> gameChoiceBoxItem = gameChoiceBox.getItems().stream().filter(ChoiceBoxItem.class::isInstance).map(ChoiceBoxItem.class::cast).filter(x -> ((ChoiceBoxItem) x).getGame() == game).findFirst();
             gameChoiceBoxItem.ifPresent(gameChoiceBox.getItems()::remove);

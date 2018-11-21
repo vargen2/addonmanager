@@ -1,7 +1,5 @@
 package addonmanager.app;
 
-import addonmanager.app.file.Saver;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,24 +25,19 @@ public class Model implements Serializable {
         return Collections.unmodifiableList(games);
     }
 
-    public boolean addGame(Game game) {
+    protected boolean addGame(Game game) {
         synchronized (lock) {
             if (games.contains(game))
                 return false;
             if (games.stream().anyMatch(x -> x.getDirectory().equals(game.getDirectory())))
                 return false;
-            games.add(game);
-            return true;
+            return games.add(game);
         }
     }
 
-    public boolean removeGame(Game game) {
+    protected boolean removeGame(Game game) {
         synchronized (lock) {
-            boolean removed = games.remove(game);
-            if (removed) {
-                Saver.save();
-            }
-            return removed;
+            return games.remove(game);
         }
     }
     //    public final ObservableList<Game> games = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());

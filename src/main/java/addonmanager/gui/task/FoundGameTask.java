@@ -1,7 +1,7 @@
 package addonmanager.gui.task;
 
+import addonmanager.app.App;
 import addonmanager.app.Game;
-import addonmanager.app.Model;
 import addonmanager.app.file.FileOperations;
 import addonmanager.gui.ChoiceBoxItem;
 import addonmanager.gui.Controller;
@@ -12,30 +12,28 @@ import javafx.scene.control.ChoiceBox;
 public class FoundGameTask extends Task<Void> {
 
     private static final Object lock = new Object();
-    private Model model;
     private ChoiceBox choiceBox;
     private Game game;
 
-    public FoundGameTask(Game game, Model model, ChoiceBox choiceBox) {
+    public FoundGameTask(Game game, ChoiceBox choiceBox) {
         this.game = game;
-        this.model = model;
         this.choiceBox = choiceBox;
     }
 
     @Override
     protected Void call() {
-        for (var g : model.getGames()) {
+        for (var g : App.model.getGames()) {
             if (g.getDirectory().equals(game.getDirectory()))
                 return null;
         }
 
         Platform.runLater(() -> {
-            if(!model.addGame(game))
+            if (!App.addGame(game))
                 return;
 
             Task<Void> refreshTask;
             ChoiceBoxItem cbi = new ChoiceBoxItem(game);
-            if (model.getSelectedGame() == null) {
+            if (App.model.getSelectedGame() == null) {
                 choiceBox.setValue(cbi);
                 refreshTask = new Task<Void>() {
                     @Override

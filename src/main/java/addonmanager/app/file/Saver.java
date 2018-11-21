@@ -21,15 +21,12 @@ import java.util.stream.Collectors;
 public class Saver {
 
     private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private static final ScheduledExecutorService settingsExecutor = Executors.newSingleThreadScheduledExecutor();
     private static final StampedLock lock = new StampedLock();
     private static final StampedLock settingsLock = new StampedLock();
 
     private static final Set<Settings> settingsSet = new HashSet<>();
 
     //todo 1 per game?
-    //todo 1 file for app and
-    // todo 1for fx settings
     public static Model load(Factory factory) {
         if (Files.notExists(Path.of("save.save")))
             return null;
@@ -65,7 +62,6 @@ public class Saver {
 
     public static void exit() {
         try {
-            System.out.println("attempt to shutdown executor");
             executor.shutdown();
             executor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -75,7 +71,6 @@ public class Saver {
                 System.err.println("cancel non-finished tasks");
             }
             executor.shutdownNow();
-            System.out.println("shutdown finished");
         }
     }
 
@@ -94,7 +89,7 @@ public class Saver {
         if (value == 0)
             return;
 
-        settingsExecutor.schedule(() -> {
+        executor.schedule(() -> {
             String saveString = settingsSet.stream().map(Settings::save).collect(Collectors.joining());
             try {
                 Files.writeString(Path.of("settings.txt"), saveString);

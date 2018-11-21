@@ -110,7 +110,7 @@ public class Controller {
                 //System.out.println("triggred");
                 if (((ChoiceBoxItem) newValue).getGame() != null) {
                     gameChoiceBox.getItems().remove(add);
-                    model.setSelectedGame(((ChoiceBoxItem) newValue).getGame());
+                    App.setSelectedGame(((ChoiceBoxItem) newValue).getGame());
                 }
                 if (newValue == manual || newValue == scan) {
                     ((ChoiceBoxItem) newValue).getConsumer().accept(0);
@@ -224,6 +224,9 @@ public class Controller {
 
 
         });
+        //stateCol.setSortable(true);
+        //stateCol.setSortType(TableColumn.SortType.ASCENDING);
+
         Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
         refreshButton.setTooltip(new Tooltip("Refresh all addons."));
         refreshButton.setOnAction(event -> {
@@ -243,7 +246,7 @@ public class Controller {
                 return;
             Game game = model.getSelectedGame();
             model.removeGame(game);
-            model.setSelectedGame(null);
+            App.setSelectedGame(null);
             Optional<ChoiceBoxItem> gameChoiceBoxItem = gameChoiceBox.getItems().stream().filter(ChoiceBoxItem.class::isInstance).map(ChoiceBoxItem.class::cast).filter(x -> ((ChoiceBoxItem) x).getGame() == game).findFirst();
             gameChoiceBoxItem.ifPresent(gameChoiceBox.getItems()::remove);
             if (model.getGames().isEmpty()) {
@@ -286,6 +289,9 @@ public class Controller {
                 removeButton.setDisable(model.getSelectedGame() == null);
             }
         }
+
+        tableView.getSortOrder().add(stateCol);
+        tableView.sort();
 
         System.out.println("CONTROLLER END");
     }

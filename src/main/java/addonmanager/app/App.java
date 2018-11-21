@@ -111,7 +111,7 @@ public class App implements Serializable {
         if (addon.getStatus() == Addon.Status.IGNORE)
             return false;
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
-        if (addon.getProjectUrl() == null)
+        if (addon.getProjectUrl() == null || addon.getProjectUrl().equals("https://www.curseforge.com/wow/addons/"))
             addon.setProjectUrl(FindProject.find(addon));
         LOG.fine("App.downloadversions found: " + addon.getProjectUrl());
         DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
@@ -176,5 +176,10 @@ public class App implements Serializable {
                 .collect(Collectors.toList());
         addonsToBeRemoved.forEach(x -> LOG.info("Sub folders to be removed " + x.getFolderName()));
         addonsToBeRemoved.forEach(game::removeAddon);
+    }
+
+    public static void setSelectedGame(Game game) {
+        App.model.setSelectedGame(game);
+        Saver.save();
     }
 }

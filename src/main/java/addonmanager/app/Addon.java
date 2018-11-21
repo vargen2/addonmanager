@@ -10,7 +10,9 @@ import java.util.Locale;
 
 public class Addon implements Serializable {
 
-    public enum Status {NONE, IGNORE, GETTING_VERSIONS, CAN_UPDATE, UPDATING, UP_TO_DATE}
+    public static final long serialVersionUID = 73946550836612000L;
+
+    public enum Status {CAN_UPDATE, UPDATING, UP_TO_DATE, GETTING_VERSIONS, NONE, IGNORE}
 
     public enum ReleaseType {
         ALPHA("alpha"),
@@ -69,7 +71,6 @@ public class Addon implements Serializable {
         this.version = addon.version;
         this.dateUploaded = addon.dateUploaded;
         this.gameVersion = addon.gameVersion;
-
         this.latestDownload = addon.latestDownload;
         this.latestUpdate = addon.latestUpdate;
         this.extraFolders = addon.extraFolders;

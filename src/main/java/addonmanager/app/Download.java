@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public final class Download implements Serializable {
+
+    public static final long serialVersionUID = 73946550836600000L;
+
     private final String release;
     private final String title;
     private final String fileSize;

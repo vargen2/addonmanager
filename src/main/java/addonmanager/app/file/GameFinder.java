@@ -1,12 +1,15 @@
 package addonmanager.app.file;
 
-import addonmanager.app.Updateable;
 import addonmanager.app.App;
 import addonmanager.app.Game;
+import addonmanager.app.Updateable;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -118,7 +121,7 @@ class GameFinder {
                 //System.out.println(parent.getPath());
                 //laptop /stationär
                 //if (dir.getPath().contains("World of Warcraft Beta")){
-                if (dir.getPath().contains("Wow")) {
+                if (dir.getPath().contains("Wow") || dir.getPath().contains("Beta") || dir.getPath().contains("Test")) {
                     Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
                     consumer.accept(game);
                     games.add(game);

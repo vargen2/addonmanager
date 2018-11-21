@@ -18,6 +18,7 @@ public class FindProject {
         addonProjectNames.put("bigwigs", new ArrayList<>(List.of("big-wigs")));
         addonProjectNames.put("dbm-core", new ArrayList<>(List.of("deadly-boss-mods")));
         addonProjectNames.put("omnicc", new ArrayList<>(List.of("omni-cc")));
+        addonProjectNames.put("omen", new ArrayList<>(List.of("omen-threat-meter")));
     }
 
     public static String find(Addon addon) {

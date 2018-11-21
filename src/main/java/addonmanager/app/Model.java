@@ -1,11 +1,15 @@
 package addonmanager.app;
 
+import addonmanager.app.file.Saver;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Model implements Serializable {
+
+    public static final long serialVersionUID = 73946550836612044L;
 
     private final transient Object lock = new Object();
     private Game selectedGame;
@@ -36,7 +40,11 @@ public class Model implements Serializable {
 
     public boolean removeGame(Game game) {
         synchronized (lock) {
-            return games.remove(game);
+            boolean removed = games.remove(game);
+            if (removed) {
+                Saver.save();
+            }
+            return removed;
         }
     }
     //    public final ObservableList<Game> games = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
@@ -45,7 +53,7 @@ public class Model implements Serializable {
         return selectedGame;
     }
 
-    public void setSelectedGame(Game selectedGame) {
+    protected void setSelectedGame(Game selectedGame) {
         this.selectedGame = selectedGame;
     }
 }

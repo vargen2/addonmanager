@@ -34,12 +34,12 @@ public class FXAddon extends Addon {
         latestDownloadProperty = new SimpleObjectProperty<>(this, "latestDownload");
         releaseLatestProperty = new SimpleStringProperty(this, "releaseLatest");
         statusProperty = new SimpleObjectProperty<>(this, "status");
-        setTitle(super.getTitle());
-        setVersion(super.getVersion());
-        setGameVersion(super.getGameVersion());
-        setLatestDownload(super.getLatestDownload());
-        setStatus(super.getStatus());
-        setReleaseType(super.getReleaseType());
+        setTitle(addon.getTitle());
+        setVersion(addon.getVersion());
+        setGameVersion(addon.getGameVersion());
+        setLatestDownload(addon.getLatestDownload());
+        setReleaseType(addon.getReleaseType());
+        setStatus(addon.getStatus());
     }
 
     public ReadOnlyStringProperty titleVersionProperty() {

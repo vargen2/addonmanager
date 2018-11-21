@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Game implements Serializable {
 
+    public static final long serialVersionUID = 73946550836612022L;
+
     private final String name;
     private final String directory;
     private final String addonDirectory;

@@ -20,7 +20,7 @@ public class FXModel extends Model {
     }
 
     @Override
-    public void setSelectedGame(Game selectedGame) {
+    protected void setSelectedGame(Game selectedGame) {
         super.setSelectedGame(selectedGame);
         selectedGameProperty.setValue(selectedGame);
     }

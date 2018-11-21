@@ -5,9 +5,9 @@ import addonmanager.app.Download;
 
 import java.util.List;
 
-public abstract class DownloadVersions {
+public abstract class VersionDownloader {
 
-    public static DownloadVersions createDownloadVersion(Addon addon) {
+    public static VersionDownloader create(Addon addon) {
         if (addon.getProjectUrl().contains("https://wow.curseforge.com/projects/")) {
 
             return new WowCurseForge(addon);
@@ -25,7 +25,7 @@ public abstract class DownloadVersions {
     protected Addon addon;
     protected int page;
 
-    public DownloadVersions(Addon addon) {
+    public VersionDownloader(Addon addon) {
         this.addon = addon;
     }
 

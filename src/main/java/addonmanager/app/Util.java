@@ -1,4 +1,4 @@
-package addonmanager.app.net;
+package addonmanager.app;
 
 public class Util {
 
@@ -6,5 +6,13 @@ public class Util {
         int startI = input.indexOf(start) + start.length();
         String mid = input.substring(startI);
         return mid.substring(0, mid.indexOf(end)).trim();
+    }
+
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            App.LOG.severe("Util.sleep() " + e.getMessage());
+        }
     }
 }

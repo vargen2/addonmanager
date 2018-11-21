@@ -1,10 +1,6 @@
 package addonmanager.app.net.version;
 
-import addonmanager.app.Addon;
-import addonmanager.app.App;
-import addonmanager.app.Download;
-import addonmanager.app.Updateable;
-import addonmanager.app.net.Util;
+import addonmanager.app.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,9 +14,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WowCurseForge extends DownloadVersions {
+class WowCurseForge extends VersionDownloader {
 
-    public WowCurseForge(Addon addon) {
+    WowCurseForge(Addon addon) {
         super(addon);
     }
 
@@ -55,7 +51,7 @@ public class WowCurseForge extends DownloadVersions {
             e.printStackTrace();
         }
         if (response.statusCode() != 200) {
-            App.LOG.info("DL fail " + addon.getProjectUrl());
+            App.LOG.fine("DL fail " + addon.getProjectUrl());
 
             updateable.updateMessage("DL fail " + addon.getProjectUrl());
             return downloads;

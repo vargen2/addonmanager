@@ -28,6 +28,7 @@ import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.glyphfont.FontAwesome;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -293,37 +294,24 @@ public class Controller {
         tableView.getSortOrder().add(stateCol);
         tableView.sort();
 
-        System.out.println("CONTROLLER END");
+
     }
 
 
     public static void refreshFromNet(Game game) {
 
         game.getAddons().forEach(addon -> {
-            Thread thread = new Thread(
-                    new Task<Void>() {
-                        @Override
-                        protected Void call() {
+            CompletableFuture.runAsync(new Task<Void>() {
+                @Override
+                protected Void call() {
+                    addon.setUpdateable(Updateable.createUpdateable(this, this::updateMessage, this::updateProgress));
+                    if (!App.downLoadVersions(addon))
+                        cancel();
+                    return null;
+                }
+            });
+            Util.sleep(Controller.fxSettings.getRefreshDelay());
 
-                            Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
-                            addon.setUpdateable(updateable);
-
-                            if (!App.downLoadVersions(addon)) {
-                                cancel();
-                                return null;
-                            }
-                            return null;
-                        }
-                    }
-            );
-            thread.setDaemon(true);
-            thread.start();
-            try {
-
-                Thread.sleep(Controller.fxSettings.getRefreshDelay());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         });
 
 

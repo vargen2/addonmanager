@@ -3,7 +3,7 @@ package addonmanager.app.net;
 import addonmanager.app.Addon;
 import addonmanager.app.App;
 import addonmanager.app.Download;
-import addonmanager.app.net.version.DownloadVersions;
+import addonmanager.app.net.version.VersionDownloader;
 
 import java.io.File;
 import java.util.List;
@@ -25,8 +25,7 @@ public class NetOperations {
     }
 
     public static boolean downLoadVersions(Addon addon) {
-        DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
-        List<Download> downloads = downloadVersions.getDownloads();
+        List<Download> downloads = VersionDownloader.create(addon).getDownloads();
         if (downloads.isEmpty()) {
             addon.setDownloads(downloads);
             return false;
@@ -35,9 +34,9 @@ public class NetOperations {
         while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
             addon.getUpdateable().updateProgress(0.2, 1);
             App.LOG.info(page + " hit " + addon.getFolderName() + " " + addon.getProjectUrl());
-            DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon);
-            moreDownloadversions.setPage(page);
-            downloads.addAll(moreDownloadversions.getDownloads());
+            VersionDownloader versionDownloader = VersionDownloader.create(addon);
+            versionDownloader.setPage(page);
+            downloads.addAll(versionDownloader.getDownloads());
             page++;
         }
         addon.getUpdateable().updateProgress(1, 1);

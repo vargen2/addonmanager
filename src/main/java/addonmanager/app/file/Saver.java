@@ -55,7 +55,7 @@ public class Saver {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            App.LOG.info("saved");
+            App.LOG.fine("saved");
             lock.unlockWrite(value);
         }, 2, TimeUnit.SECONDS);
     }
@@ -96,7 +96,7 @@ public class Saver {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            App.LOG.info("saved settings");
+            App.LOG.fine("saved settings");
             settingsLock.unlockWrite(value);
         }, 1, TimeUnit.SECONDS);
 

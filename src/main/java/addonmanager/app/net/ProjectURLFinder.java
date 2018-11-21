@@ -2,6 +2,7 @@ package addonmanager.app.net;
 
 import addonmanager.app.Addon;
 import addonmanager.app.App;
+import addonmanager.app.Util;
 
 import java.io.IOException;
 import java.net.URI;
@@ -41,7 +42,7 @@ class ProjectURLFinder {
                 HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                 if (response.statusCode() != 200) {
-                    App.LOG.info("Find projectURL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                    App.LOG.fine("Find project URL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
                     continue;
                 }
                 String input = response.body();
@@ -54,7 +55,7 @@ class ProjectURLFinder {
             }
         }
 
-        App.LOG.info("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
+        App.LOG.fine("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
         return "https://www.curseforge.com/wow/addons/";
 
     }

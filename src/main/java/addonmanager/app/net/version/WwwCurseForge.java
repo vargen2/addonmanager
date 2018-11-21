@@ -1,10 +1,6 @@
 package addonmanager.app.net.version;
 
-import addonmanager.app.Addon;
-import addonmanager.app.App;
-import addonmanager.app.Download;
-import addonmanager.app.Updateable;
-import addonmanager.app.net.Util;
+import addonmanager.app.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,9 +14,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WwwCurseForge extends DownloadVersions {
+class WwwCurseForge extends VersionDownloader {
 
-    public WwwCurseForge(Addon addon) {
+    WwwCurseForge(Addon addon) {
         super(addon);
     }
 
@@ -56,14 +52,14 @@ public class WwwCurseForge extends DownloadVersions {
                 e.printStackTrace();
             }
             if (response.statusCode() != 200) {
-                App.LOG.info("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                App.LOG.fine("DL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
                 retrying += ".";
                 updateable.updateMessage(retrying);
                 continue;
 
             } else {
                 input = response.body();
-                App.LOG.info("FOUND " + addon.getProjectUrl() + " " + input.length());
+                App.LOG.fine("FOUND " + addon.getProjectUrl() + " " + input.length());
                 break;
             }
 

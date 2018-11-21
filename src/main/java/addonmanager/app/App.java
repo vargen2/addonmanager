@@ -7,12 +7,11 @@ import addonmanager.app.net.NetOperations;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.*;
 import java.util.stream.Collectors;
 
-public class App implements Serializable {
+public class App {
 
     public static final List<Level> levels = List.of(Level.OFF, Level.SEVERE, Level.INFO, Level.FINE);
     public static final Logger LOG = Logger.getGlobal();

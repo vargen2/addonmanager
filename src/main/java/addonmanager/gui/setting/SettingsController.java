@@ -19,14 +19,14 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.logging.Level;
 
-public class Settings {
+public class SettingsController {
 
     private final ObservableMap<String, Object> observableMap;
     private PopOver popOver;
     private Model model;
     private FXSettings fxSettings;
 
-    public Settings(Model model, FXSettings fxSettings) {
+    public SettingsController(Model model, FXSettings fxSettings) {
         this.model = model;
         this.fxSettings = fxSettings;
         observableMap = FXCollections.observableMap(new LinkedHashMap<>());
@@ -92,7 +92,7 @@ public class Settings {
 
 
     public void show(Node node) {
-        popOver.show(node);
+        popOver.show(node.getScene().getWindow());
     }
 
     public void hide() {

@@ -21,13 +21,13 @@ public class App implements Serializable {
     private static Handler fileHandler;
     private static final Handler consoleHandler = new ConsoleHandler();
     public static Model model;
+    public static AppSettings appSettings;
 
     static {
         LogManager.getLogManager().reset();
         try {
             fileHandler = new FileHandler("log.txt");
             fileHandler.setFormatter(new SimpleFormatter());
-            fileHandler.setLevel(Level.OFF);
             LOG.addHandler(fileHandler);
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,16 +56,27 @@ public class App implements Serializable {
     };
     private static Factory factory = DEFAULT_FACTORY;
 
+    public static void init(AppSettings appSettings) {
+        App.appSettings = appSettings;
+        App.consoleHandler.setLevel(appSettings.getConsoleLevel());
+        App.fileHandler.setLevel(appSettings.getFileLevel());
+    }
+
     public static void setFileLoggingLevel(Level level) {
-        if (fileHandler != null) fileHandler.setLevel(level);
+        if (fileHandler != null)
+            fileHandler.setLevel(level);
+        App.appSettings.setFileLevel(level);
+        Saver.saveSettings();
     }
 
     public static void setConsoleLoggingLevel(Level level) {
         consoleHandler.setLevel(level);
+        App.appSettings.setConsoleLevel(level);
+        Saver.saveSettings();
     }
 
     public static Level getFileLoggingLevel() {
-        return (fileHandler != null) ? fileHandler.getLevel() : Level.OFF;
+        return (fileHandler != null) ? fileHandler.getLevel() : App.appSettings.getFileLevel();
     }
 
     public static Level getConsoleLoggingLevel() {

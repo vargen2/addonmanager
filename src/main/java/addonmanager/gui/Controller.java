@@ -6,7 +6,7 @@ import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;
 import addonmanager.gui.setting.FXSettings;
-import addonmanager.gui.setting.Settings;
+import addonmanager.gui.setting.SettingsController;
 import addonmanager.gui.tableview.ReleaseLatestVersionCell;
 import addonmanager.gui.tableview.StatusCell;
 import addonmanager.gui.task.FindGamesTask;
@@ -29,6 +29,7 @@ import org.controlsfx.glyphfont.FontAwesome;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class Controller {
 
@@ -62,9 +63,14 @@ public class Controller {
         Model model = loaded != null ? loaded : App.getFactory().createModel();
         //Model model=App.getFactory().createModel();
         App.model = model;
-        Controller.fxSettings = new FXSettings();
+
+        AppSettings appSettings = new AppSettings(Level.OFF, Level.OFF);
+        Controller.fxSettings = new FXSettings(250);
+        Saver.loadSettings(appSettings, Controller.fxSettings);
+        App.init(appSettings);
+
+        SettingsController settingsController = new SettingsController(model, Controller.fxSettings);
         AddonContextMenu addonContextMenu = new AddonContextMenu();
-        Settings settings = new Settings(model, Controller.fxSettings);
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -249,10 +255,10 @@ public class Controller {
 
         Icon.setIcon(settingsButton, FontAwesome.Glyph.COG, Color.DARKSLATEGRAY);
         settingsButton.setOnAction(event -> {
-            if (!settings.isShowing())
-                settings.show(settingsButton);
+            if (!settingsController.isShowing())
+                settingsController.show(settingsButton);
             else
-                settings.hide();
+                settingsController.hide();
         });
 
 //        Thread thread = new Thread(() -> {
@@ -308,7 +314,7 @@ public class Controller {
             thread.start();
             try {
                 //todo lägg till denna i settings
-                Thread.sleep(fxSettings.getRefreshDelay());
+                Thread.sleep(Controller.fxSettings.getRefreshDelay());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

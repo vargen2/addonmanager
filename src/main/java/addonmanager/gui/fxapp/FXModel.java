@@ -16,7 +16,8 @@ public class FXModel extends Model {
     public FXModel(Model model) {
         super();
         model.getGames().forEach(x -> addGame(new FXGame(x)));
-        getGames().stream().filter(x -> model.getSelectedGame().getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
+        if (model.getSelectedGame() != null)
+            getGames().stream().filter(x -> model.getSelectedGame().getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
     }
 
     @Override

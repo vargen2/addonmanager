@@ -24,7 +24,7 @@ class DownloadAddonTest {
         List<Download> downloads = new ArrayList<>();
         downloads.add(download);
         addon.setDownloads(downloads);
-        File zipFile = DownloadAddon.downLoadFile(addon, addon.getLatestDownload());
+        File zipFile = AddonDownloader.downLoadFile(addon, addon.getLatestDownload());
 
         assertTrue(zipFile.exists());
 

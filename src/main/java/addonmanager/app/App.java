@@ -3,9 +3,7 @@ package addonmanager.app;
 import addonmanager.app.file.FileOperations;
 import addonmanager.app.file.Saver;
 import addonmanager.app.logging.SingleLineFormatter;
-import addonmanager.app.net.DownloadAddon;
-import addonmanager.app.net.FindProject;
-import addonmanager.app.net.version.DownloadVersions;
+import addonmanager.app.net.NetOperations;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,34 +104,15 @@ public class App implements Serializable {
     }
 
 
-    //todo movto net.NetOperations net.NetActions??
+
     public static boolean downLoadVersions(Addon addon) {
         if (addon.getStatus() == Addon.Status.IGNORE)
             return false;
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
-        if (addon.getProjectUrl() == null || addon.getProjectUrl().equals("https://www.curseforge.com/wow/addons/"))
-            addon.setProjectUrl(FindProject.find(addon));
-        LOG.fine("App.downloadversions found: " + addon.getProjectUrl());
-        DownloadVersions downloadVersions = DownloadVersions.createDownloadVersion(addon);
-        List<Download> downloads = downloadVersions.getDownloads();
-        if (downloads.isEmpty()) {
-            addon.setDownloads(downloads);
-            return false;
-        }
-        int page = 2;
-        while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
-            addon.getUpdateable().updateProgress(0.2, 1);
-            LOG.info(page + " hit " + addon.getFolderName() + " " + addon.getProjectUrl());
-
-            DownloadVersions moreDownloadversions = DownloadVersions.createDownloadVersion(addon);
-            moreDownloadversions.setPage(page);
-            downloads.addAll(moreDownloadversions.getDownloads());
-            page++;
-        }
-        addon.getUpdateable().updateProgress(1, 1);
-        addon.setDownloads(downloads);
-        Saver.save();
-        return true;
+        NetOperations.findProject(addon);
+        boolean downloaded = NetOperations.downLoadVersions(addon);
+        if (downloaded) Saver.save();
+        return downloaded;
     }
 
 
@@ -141,13 +120,12 @@ public class App implements Serializable {
         if (addon == null || download == null)
             return false;
         addon.setStatus(Addon.Status.UPDATING);
-        File zipFile = DownloadAddon.downLoadFile(addon, download, 0, 0.7);
+        File zipFile = NetOperations.downLoadFile(addon, download, 0, 0.7);
         if (!FileOperations.replaceAddon(addon, download, zipFile, 0.8, 1.0)) {
             addon.setStatus(Addon.Status.NONE);
             return false;
         }
         FileOperations.refreshToc(addon);
-        //addon.setStatus(Addon.Status.UP_TO_DATE);
         Saver.save();
         return true;
     }

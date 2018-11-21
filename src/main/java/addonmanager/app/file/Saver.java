@@ -57,7 +57,7 @@ public class Saver {
             }
             App.LOG.info("saved");
             lock.unlockWrite(value);
-        }, 3, TimeUnit.SECONDS);
+        }, 2, TimeUnit.SECONDS);
     }
 
     public static void exit() {

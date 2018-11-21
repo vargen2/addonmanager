@@ -1,8 +1,8 @@
 package addonmanager.app.net;
 
-import addonmanager.app.Updateable;
 import addonmanager.app.Addon;
 import addonmanager.app.Download;
+import addonmanager.app.Updateable;
 import addonmanager.app.file.FileOperations;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -13,14 +13,17 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.*;
 
-//todo net.NetOperations
-public class DownloadAddon {
+class AddonDownloader {
 
-    public static File downLoadFile(Addon addon, Download download) {
-        return downLoadFile(addon, download, 0, 1);
+    private final Addon addon;
+    private final Download download;
+
+    AddonDownloader(Addon addon, Download download) {
+        this.addon = addon;
+        this.download = download;
     }
 
-    public static File downLoadFile(Addon addon, Download download, double from, double to) {
+    File downLoad(double from, double to) {
         if (!FileOperations.directoriesExists())
             return null;
         Updateable updateable = addon.getUpdateable();
@@ -63,13 +66,6 @@ public class DownloadAddon {
 
     }
 
-//    public static File downLoadFile(Addon addon) {
-//        return downLoadFile(addon, 0, 1);
-//    }
-//
-//    public static File downLoadFile(Addon addon, double from, double to) {
-//        return downLoadFile(addon, addon.getLatestDownload(), from, to);
-//    }
 
 
 }

@@ -9,7 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-public class RedirectStrategy extends LaxRedirectStrategy {
+class RedirectStrategy extends LaxRedirectStrategy {
 
     @Override
     protected URI createLocationURI(String location) throws ProtocolException {

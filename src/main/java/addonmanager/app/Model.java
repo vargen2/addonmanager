@@ -18,7 +18,8 @@ public class Model implements Serializable {
 
     public Model(Model model) {
         model.getGames().stream().forEach(x -> this.games.add(new Game(x)));
-        this.games.stream().filter(x -> model.selectedGame.getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
+        if (model.getSelectedGame() != null)
+            this.games.stream().filter(x -> model.selectedGame.getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
     }
 
     public List<Game> getGames() {

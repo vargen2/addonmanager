@@ -10,20 +10,26 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 
-public class FindProject {
+class ProjectURLFinder {
 
-    public static Map<String, List<String>> addonProjectNames = new LinkedHashMap<>();
+    private final static Map<String, List<String>> ADDON_PROJECT_NAMES = new LinkedHashMap<>();
 
     static {
-        addonProjectNames.put("bigwigs", new ArrayList<>(List.of("big-wigs")));
-        addonProjectNames.put("dbm-core", new ArrayList<>(List.of("deadly-boss-mods")));
-        addonProjectNames.put("omnicc", new ArrayList<>(List.of("omni-cc")));
-        addonProjectNames.put("omen", new ArrayList<>(List.of("omen-threat-meter")));
+        ADDON_PROJECT_NAMES.put("bigwigs", new ArrayList<>(List.of("big-wigs")));
+        ADDON_PROJECT_NAMES.put("dbm-core", new ArrayList<>(List.of("deadly-boss-mods")));
+        ADDON_PROJECT_NAMES.put("omnicc", new ArrayList<>(List.of("omni-cc")));
+        ADDON_PROJECT_NAMES.put("omen", new ArrayList<>(List.of("omen-threat-meter")));
     }
 
-    public static String find(Addon addon) {
+    private final Addon addon;
+
+    ProjectURLFinder(Addon addon) {
+        this.addon = addon;
+    }
+
+    String find() {
         List<String> urlNames = new LinkedList<>(List.of(addon.getTitle().replaceAll(" ", "-"), addon.getFolderName(), addon.getTitle()));
-        var projectNames = addonProjectNames.get(addon.getFolderName().toLowerCase());
+        var projectNames = ADDON_PROJECT_NAMES.get(addon.getFolderName().toLowerCase());
         if (projectNames != null)
             urlNames.addAll(0, projectNames);
 
@@ -51,13 +57,5 @@ public class FindProject {
         App.LOG.info("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
         return "https://www.curseforge.com/wow/addons/";
 
-
-//        int index1 = input.indexOf("<p class=\"infobox__cta\"");
-//        int index2 = input.substring(index1).indexOf("</p>");
-//        String data = input.substring(index1, index1 + index2);
-//        String result = Util.parse(data, "<a href=\"", "\">");
-//
-//
-//        return result;
     }
 }

@@ -24,6 +24,8 @@ public class FXAddon extends Addon {
         latestDownloadProperty = new SimpleObjectProperty<>(this, "latestDownload");
         releaseLatestProperty = new SimpleStringProperty(this, "releaseLatest");
         statusProperty = new SimpleObjectProperty<>(this, "status");
+        setStatus(super.getStatus());
+        setReleaseType(super.getReleaseType());
     }
 
     FXAddon(Game game, Addon addon) {

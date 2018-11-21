@@ -319,7 +319,7 @@ public class Controller {
             thread.setDaemon(true);
             thread.start();
             try {
-                //todo lägg till denna i settings
+
                 Thread.sleep(Controller.fxSettings.getRefreshDelay());
             } catch (InterruptedException e) {
                 e.printStackTrace();

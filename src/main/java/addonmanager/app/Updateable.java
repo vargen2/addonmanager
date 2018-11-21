@@ -6,14 +6,10 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 
-import java.io.Serializable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-//todo separate to FXUpdateable
-//String getMessage()
-//double getProgress()
-public interface Updateable extends Serializable {
+public interface Updateable {
     ReadOnlyStringProperty messageProperty();
 
     ReadOnlyDoubleProperty progressProperty();

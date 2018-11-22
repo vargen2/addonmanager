@@ -1855,4 +1855,13 @@
 }
 
 
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-padding: 0;
+}
 
+.dialog-pane > .content {
+    -fx-padding: 0.0em; /* 10 */
+    -fx-font-size: 1.333em; /* 14px */
+    -fx-wrap-text: true;
+}

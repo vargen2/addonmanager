@@ -9,10 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Saver {
@@ -23,8 +20,8 @@ public class Saver {
         return thread;
     };
 
-    private static final ThreadPoolExecutor modelSaver = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2), DAEMON_THREAD, new ThreadPoolExecutor.DiscardPolicy());
-    private static final ThreadPoolExecutor settingsSaver = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2), DAEMON_THREAD, new ThreadPoolExecutor.DiscardPolicy());
+    private static final ThreadPoolExecutor modelSaver = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2), Executors.defaultThreadFactory(), new ThreadPoolExecutor.DiscardPolicy());
+    private static final ThreadPoolExecutor settingsSaver = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2), Executors.defaultThreadFactory(), new ThreadPoolExecutor.DiscardPolicy());
     private static final Set<Settings> settings = new HashSet<>();
 
     public static Optional<Model> load(Factory factory) {
@@ -54,6 +51,11 @@ public class Saver {
             App.LOG.fine("saved");
             Util.sleep(2000);
         });
+    }
+
+    public static void exit() {
+        modelSaver.shutdown();
+        settingsSaver.shutdown();
     }
 
     public static void loadSettings(Settings... settings) {

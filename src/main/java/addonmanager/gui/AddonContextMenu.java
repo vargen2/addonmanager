@@ -11,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
-import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -104,6 +103,7 @@ public class AddonContextMenu extends ContextMenu {
                     if (dl == null)
                         return;
                     hide();
+                    //todo fel theme
                     Window owner = getScene().getWindow();
                     Alert dlg = new Alert(Alert.AlertType.CONFIRMATION, "");
                     dlg.initModality(Modality.APPLICATION_MODAL);
@@ -112,7 +112,8 @@ public class AddonContextMenu extends ContextMenu {
                     dlg.getDialogPane().setGraphic(null);
                     dlg.getDialogPane().setHeaderText(null);
                     dlg.getDialogPane().setContentText("Do you want to change to " + dl.getRelease() + " " + dl.getTitle() + "?");
-                    dlg.initStyle(StageStyle.DECORATED);
+                    dlg.getDialogPane().getStylesheets().add("JMetroLightTheme.css");
+                    //dlg.initStyle(StageStyle.DECORATED);
                     dlg.showAndWait().ifPresent(result -> {
                         if (result == ButtonType.OK) {
                             UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon, dl);
@@ -154,11 +155,14 @@ public class AddonContextMenu extends ContextMenu {
         CustomMenuItem projectURL = new CustomMenuItem(projectLink);
         projectURL.setId("hyperlinkmenu");
 
+        MenuItem infoMenuItem = new MenuItem();
+
         Menu infoMenu = new Menu("Info");
         infoMenu.setOnShowing(event -> {
+            infoMenuItem.setText(addon.toDetailedString());
             projectLink.setText("[" + addon.getProjectUrl() + "]");
         });
-        infoMenu.getItems().addAll(projectURL);
+        infoMenu.getItems().addAll(infoMenuItem, projectURL);
 
         getItems().addAll(ignore, alphaMenuItem, betaMenuItem, releaseMenuItem, versionsMenu, infoMenu);
         setOnShowing(event -> {

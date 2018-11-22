@@ -222,4 +222,24 @@ public class Addon implements Serializable {
     public Game getGame() {
         return game;
     }
+
+
+    public String toDetailedString() {
+        return "game=" + game + "\n" +
+                "downloads=" + downloads.size() + "\n" +
+                "folderName=" + folderName + "\n" +
+                "absolutePath=" + absolutePath + "\n" +
+                "projectUrl=" + projectUrl + "\n" +
+                "updateMode=" + updateMode + "\n" +
+                "dateLastModified=" + dateLastModified + "\n" +
+                "title=" + title + "\n" +
+                "version=" + version + "\n" +
+                "dateUploaded=" + dateUploaded + "\n" +
+                "gameVersion=" + gameVersion + "\n" +
+                "releaseType=" + releaseType + "\n" +
+                "latestDownload=" + latestDownload + "\n" +
+                "latestUpdate=" + latestUpdate + "\n" +
+                "status=" + status + "\n" +
+                "extraFolders=" + extraFolders;
+    }
 }

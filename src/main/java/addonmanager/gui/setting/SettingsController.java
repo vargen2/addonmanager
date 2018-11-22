@@ -26,6 +26,7 @@ public class SettingsController {
     private Model model;
     private FXSettings fxSettings;
 
+    //todo suddigt
     public SettingsController(Model model, FXSettings fxSettings) {
         this.model = model;
         this.fxSettings = fxSettings;

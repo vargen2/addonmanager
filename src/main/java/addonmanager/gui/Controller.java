@@ -52,26 +52,20 @@ public class Controller {
     private TaskProgressView<Task<Void>> taskProgressView;
 
 
-//    private AddonContextMenu addonContextMenu;
-//    private Settings settings;
-
     @FXML
     private void initialize() {
 
         App.setFactory(new FXFactory());
-        // Model loaded=null;
-        Model loaded = Saver.load(App.getFactory());
-        Model model = loaded != null ? loaded : App.getFactory().createModel();
-        //Model model=App.getFactory().createModel();
-        App.model = model;
+        var loadedModel = Saver.load(App.getFactory());
+        App.model = loadedModel.orElse(App.getFactory().createModel());
 
-        AppSettings appSettings = new AppSettings(Level.OFF, Level.OFF);
+        var appSettings = new AppSettings(Level.OFF, Level.OFF);
         Controller.fxSettings = new FXSettings(250);
         Saver.loadSettings(appSettings, Controller.fxSettings);
         App.init(appSettings);
 
-        SettingsController settingsController = new SettingsController(model, Controller.fxSettings);
-        AddonContextMenu addonContextMenu = new AddonContextMenu();
+        var settingsController = new SettingsController(App.model, Controller.fxSettings);
+        var addonContextMenu = new AddonContextMenu();
 
         gameChoiceBox.getItems().add(new Separator());
 
@@ -137,8 +131,8 @@ public class Controller {
             }
         });
 
-        if (model instanceof FXModel) {
-            ((FXModel) model).selectedGameProperty.addListener((observable, oldValue, newValue) -> {
+        if (App.model instanceof FXModel) {
+            ((FXModel) App.model).selectedGameProperty.addListener((observable, oldValue, newValue) -> {
                 if (newValue instanceof FXGame) {
                     tableView.setItems(((FXGame) newValue).addonObservableList);
                 } else {
@@ -231,7 +225,7 @@ public class Controller {
         Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
         refreshButton.setTooltip(new Tooltip("Refresh all addons."));
         refreshButton.setOnAction(event -> {
-            Game game = model.getSelectedGame();
+            Game game = App.model.getSelectedGame();
             if (game == null)
                 return;
 
@@ -243,14 +237,14 @@ public class Controller {
         Icon.setIcon(removeButton, FontAwesome.Glyph.REMOVE, Color.INDIANRED);
         removeButton.setTooltip(new Tooltip("Remove game from this application."));
         removeButton.setOnAction(event -> {
-            if (model.getSelectedGame() == null)
+            if (App.model.getSelectedGame() == null)
                 return;
-            Game game = model.getSelectedGame();
+            Game game = App.model.getSelectedGame();
             App.removeGame(game);
             App.setSelectedGame(null);
             Optional<ChoiceBoxItem> gameChoiceBoxItem = gameChoiceBox.getItems().stream().filter(ChoiceBoxItem.class::isInstance).map(ChoiceBoxItem.class::cast).filter(x -> ((ChoiceBoxItem) x).getGame() == game).findFirst();
             gameChoiceBoxItem.ifPresent(gameChoiceBox.getItems()::remove);
-            if (model.getGames().isEmpty()) {
+            if (App.model.getGames().isEmpty()) {
                 gameChoiceBox.getItems().add(0, add);
                 gameChoiceBox.setValue(add);
             }
@@ -273,10 +267,10 @@ public class Controller {
 //        thread.start();
         // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
         // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
-        if (loaded != null) {
-            Game game = model.getSelectedGame();
+        loadedModel.ifPresent((model1) -> {
+            Game game = App.model.getSelectedGame();
             if (game != null) {
-                model.getGames().stream().forEach(x -> {
+                App.model.getGames().stream().forEach(x -> {
                     ChoiceBoxItem cbi = new ChoiceBoxItem(x);
                     gameChoiceBox.getItems().add(0, cbi);
                     if (x == game) {
@@ -285,11 +279,11 @@ public class Controller {
                     }
                 });
                 if (game instanceof FXGame)
-                    tableView.setItems(((FXGame) model.getSelectedGame()).addonObservableList);
-                refreshButton.setDisable(model.getSelectedGame() == null);
-                removeButton.setDisable(model.getSelectedGame() == null);
+                    tableView.setItems(((FXGame) App.model.getSelectedGame()).addonObservableList);
+                refreshButton.setDisable(App.model.getSelectedGame() == null);
+                removeButton.setDisable(App.model.getSelectedGame() == null);
             }
-        }
+        });
 
         tableView.getSortOrder().add(stateCol);
         tableView.sort();

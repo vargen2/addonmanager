@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class FXModel extends Model {
 
-    public final Property<Game> selectedGameProperty = new SimpleObjectProperty<Game>();
+    public transient final Property<Game> selectedGameProperty = new SimpleObjectProperty<Game>();
 
     FXModel() {
         super();

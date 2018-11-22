@@ -50,6 +50,11 @@ public class App {
         public Model createModel() {
             return new Model();
         }
+
+        @Override
+        public Model load(Model model) {
+            return model;
+        }
     };
     private static Factory factory = DEFAULT_FACTORY;
 

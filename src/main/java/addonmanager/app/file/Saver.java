@@ -4,13 +4,13 @@ import addonmanager.app.App;
 import addonmanager.app.Factory;
 import addonmanager.app.Model;
 import addonmanager.app.Settings;
-import addonmanager.gui.fxapp.FXModel;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,18 +27,17 @@ public class Saver {
     private static final Set<Settings> settingsSet = new HashSet<>();
 
     //todo 1 per game?
-    public static Model load(Factory factory) {
+    public static Optional<Model> load(Factory factory) {
         if (Files.notExists(Path.of("save.save")))
-            return null;
+            return Optional.empty();
 
         try (FileInputStream fis = new FileInputStream("save.save")) {
             ObjectInputStream ois = new ObjectInputStream(fis);
-            Model model = new FXModel((Model) ois.readObject());
-            return model;
+            return Optional.of(factory.load((Model) ois.readObject()));
         } catch (IOException | ClassNotFoundException e) {
             App.LOG.severe(e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
     public static void save() {
@@ -48,7 +47,7 @@ public class Saver {
         executor.schedule(() -> {
             try (FileOutputStream fos = new FileOutputStream("save.save")) {
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(new Model(App.model));
+                oos.writeObject(App.model);
             } catch (NotSerializableException e) {
                 System.out.println(e.getMessage());
 

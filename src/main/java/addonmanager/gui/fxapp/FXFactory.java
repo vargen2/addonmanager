@@ -21,7 +21,7 @@ public class FXFactory implements Factory {
         return new FXModel();
     }
 
-    public Model copyModel(Model model) {
+    public Model load(Model model) {
         return new FXModel(model);
     }
 }

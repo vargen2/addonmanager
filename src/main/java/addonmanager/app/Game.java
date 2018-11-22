@@ -20,10 +20,10 @@ public class Game implements Serializable {
         this.addonDirectory = addonDirectory;
     }
 
-    Game(Game game) {
-        this(game.name, game.directory, game.addonDirectory);
-        game.getAddons().stream().forEach(x -> addons.add(new Addon(this, x)));
-    }
+//    Game(Game game) {
+//        this(game.name, game.directory, game.addonDirectory);
+//        game.getAddons().stream().forEach(x -> addons.add(new Addon(this, x)));
+//    }
 
     public String getDirectory() {
         return directory;

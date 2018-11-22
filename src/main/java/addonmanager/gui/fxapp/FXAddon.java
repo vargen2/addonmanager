@@ -9,35 +9,22 @@ import java.util.List;
 
 public class FXAddon extends Addon {
 
-    private final StringProperty titleVersionProperty;
-    private final StringProperty gameVersionProperty;
-    private final ObjectProperty<ReleaseType> releaseTypeProperty;
-    private final ObjectProperty<Download> latestDownloadProperty;
-    private final StringProperty releaseLatestProperty;
-    private final ObjectProperty<Status> statusProperty;
+    private transient final StringProperty titleVersionProperty = new SimpleStringProperty(this, "titleVersion");
+    private transient final StringProperty gameVersionProperty = new SimpleStringProperty(this, "gameVersion");
+    private transient final ObjectProperty<ReleaseType> releaseTypeProperty = new SimpleObjectProperty<>(this, "releaseType");
+    private transient final ObjectProperty<Download> latestDownloadProperty = new SimpleObjectProperty<>(this, "latestDownload");
+    private transient final StringProperty releaseLatestProperty = new SimpleStringProperty(this, "releaseLatest");
+    private transient final ObjectProperty<Status> statusProperty = new SimpleObjectProperty<>(this, "status");
 
     FXAddon(Game game, String folderName, String absolutePath) {
         super(game, folderName, absolutePath);
-        titleVersionProperty = new SimpleStringProperty(this, "titleVersion");
-        gameVersionProperty = new SimpleStringProperty(this, "gameVersion");
-        releaseTypeProperty = new SimpleObjectProperty<>(this, "releaseType");
-        latestDownloadProperty = new SimpleObjectProperty<>(this, "latestDownload");
-        releaseLatestProperty = new SimpleStringProperty(this, "releaseLatest");
-        statusProperty = new SimpleObjectProperty<>(this, "status");
         setStatus(super.getStatus());
         setReleaseType(super.getReleaseType());
     }
 
     FXAddon(Game game, Addon addon) {
         super(game, addon);
-        titleVersionProperty = new SimpleStringProperty(this, "titleVersion");
-        gameVersionProperty = new SimpleStringProperty(this, "gameVersion");
-        releaseTypeProperty = new SimpleObjectProperty<>(this, "releaseType");
-        latestDownloadProperty = new SimpleObjectProperty<>(this, "latestDownload");
-        releaseLatestProperty = new SimpleStringProperty(this, "releaseLatest");
-        statusProperty = new SimpleObjectProperty<>(this, "status");
-        setTitle(addon.getTitle());
-        setVersion(addon.getVersion());
+        updateTitleVersion();
         setGameVersion(addon.getGameVersion());
         setLatestDownload(addon.getLatestDownload());
         setReleaseType(addon.getReleaseType());

@@ -1,9 +1,6 @@
 package addonmanager.app.file;
 
-import addonmanager.app.App;
-import addonmanager.app.Factory;
-import addonmanager.app.Model;
-import addonmanager.app.Settings;
+import addonmanager.app.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,21 +9,24 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.StampedLock;
 import java.util.stream.Collectors;
 
 public class Saver {
 
-    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private static final StampedLock lock = new StampedLock();
-    private static final StampedLock settingsLock = new StampedLock();
+    private static final ThreadFactory DAEMON_THREAD = r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        return thread;
+    };
 
-    private static final Set<Settings> settingsSet = new HashSet<>();
+    private static final ThreadPoolExecutor modelSaver = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2), DAEMON_THREAD, new ThreadPoolExecutor.DiscardPolicy());
+    private static final ThreadPoolExecutor settingsSaver = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2), DAEMON_THREAD, new ThreadPoolExecutor.DiscardPolicy());
+    private static final Set<Settings> settings = new HashSet<>();
 
-    //todo 1 per game?
     public static Optional<Model> load(Factory factory) {
         if (Files.notExists(Path.of("save.save")))
             return Optional.empty();
@@ -41,10 +41,7 @@ public class Saver {
     }
 
     public static void save() {
-        long value = lock.tryWriteLock();
-        if (value == 0)
-            return;
-        executor.schedule(() -> {
+        modelSaver.execute(() -> {
             try (FileOutputStream fos = new FileOutputStream("save.save")) {
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(App.model);
@@ -55,26 +52,12 @@ public class Saver {
                 e.printStackTrace();
             }
             App.LOG.fine("saved");
-            lock.unlockWrite(value);
-        }, 2, TimeUnit.SECONDS);
-    }
-
-    public static void exit() {
-        try {
-            executor.shutdown();
-            executor.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            System.err.println("tasks interrupted");
-        } finally {
-            if (!executor.isTerminated()) {
-                System.err.println("cancel non-finished tasks");
-            }
-            executor.shutdownNow();
-        }
+            Util.sleep(2000);
+        });
     }
 
     public static void loadSettings(Settings... settings) {
-        settingsSet.addAll(Arrays.asList(settings));
+        Saver.settings.addAll(Arrays.asList(settings));
         try {
             String settingsString = Files.readString(Path.of("settings.txt"));
             Arrays.stream(settings).forEach(setting -> setting.load(settingsString));
@@ -84,22 +67,16 @@ public class Saver {
     }
 
     public static void saveSettings() {
-        long value = settingsLock.tryWriteLock();
-        if (value == 0)
-            return;
-
-        executor.schedule(() -> {
-            String saveString = settingsSet.stream().map(Settings::save).collect(Collectors.joining());
+        settingsSaver.execute(() -> {
+            String saveString = settings.stream().map(Settings::save).collect(Collectors.joining());
             try {
                 Files.writeString(Path.of("settings.txt"), saveString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             App.LOG.fine("saved settings");
-            settingsLock.unlockWrite(value);
-        }, 1, TimeUnit.SECONDS);
-
-
+            Util.sleep(2000);
+        });
     }
 
 }

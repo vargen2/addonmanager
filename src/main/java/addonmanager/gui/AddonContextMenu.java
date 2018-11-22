@@ -23,6 +23,7 @@ import java.time.Period;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+// TODO: 2018-11-22 show most recent update download, maybe under info
 public class AddonContextMenu extends ContextMenu {
 
     private Addon addon;

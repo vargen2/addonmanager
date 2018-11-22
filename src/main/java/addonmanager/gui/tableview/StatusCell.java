@@ -67,6 +67,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     progressBar.setVisible(true);
                     label.textProperty().bind(addon.getUpdateable().messageProperty());
                     label.setVisible(true);
+                    label.setOpacity(1);
                     button.setVisible(false);
                     button.setText("");
                 }
@@ -91,6 +92,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     label.textProperty().unbind();
                     label.setVisible(true);
                     label.setText("up to date");
+                    label.setOpacity(1);
                     progressBar.setVisible(false);
                     progressBar.progressProperty().unbind();
                     button.setText("");
@@ -101,6 +103,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     label.textProperty().unbind();
                     label.setVisible(true);
                     label.setText(" - ");
+                    label.setOpacity(1);
                     progressBar.setVisible(false);
                     progressBar.progressProperty().unbind();
                     button.setText("");
@@ -111,6 +114,7 @@ public class StatusCell extends TableCell<Addon, Status> {
                     label.textProperty().unbind();
                     label.setVisible(true);
                     label.setText("Ignored");
+                    label.setOpacity(0.4);
                     progressBar.setVisible(false);
                     progressBar.progressProperty().unbind();
                     button.setText("");

@@ -26,15 +26,15 @@ class TocRefresher {
 
         for (var charset : CHARSETS) {
             try {
-                var liness = Files.readString(tocFile[0].toPath());
+                var liness = Files.readString(tocFile[0].toPath(), charset);
                 //liness.lines()
-                var lines = Files.readAllLines(tocFile[0].toPath(), charset);
-                lines.stream().filter(line -> line.contains("Interface:")).findAny().ifPresent(line -> addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim()));
-                lines.stream().filter(line -> line.contains("Version:")).findAny().ifPresent(line -> addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim()));
-                lines.stream().filter(line -> line.contains("Title:")).findAny().ifPresent(line -> addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim()));
+                //var lines = Files.readAllLines(tocFile[0].toPath(), charset);
+                liness.lines().filter(line -> line.contains("Interface:")).findAny().ifPresent(line -> addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim()));
+                liness.lines().filter(line -> line.contains("Version:")).findAny().ifPresent(line -> addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim()));
+                liness.lines().filter(line -> line.contains("Title:")).findAny().ifPresent(line -> addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim()));
                 if (addon.getFolderName().equalsIgnoreCase("dbm-core"))
                     return true;
-                return !lines.stream().anyMatch(line -> line.contains("Dependencies") || line.contains("RequiredDeps"));
+                return liness.lines().noneMatch(line -> line.contains("Dependencies") || line.contains("RequiredDeps"));
             } catch (MalformedInputException e) {
                 App.LOG.info(addon.getFolderName() + " " + e.getMessage());
             } catch (IOException e) {

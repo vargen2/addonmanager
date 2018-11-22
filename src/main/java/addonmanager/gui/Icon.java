@@ -30,8 +30,8 @@ public class Icon {
             return;
         button.setGraphic(glyph.size(20).color(color));
         button.setText("");
-        button.setPrefHeight(25);
-        button.setMinHeight(25);
-        button.setMaxHeight(25);
+        button.setPrefHeight(26);
+        button.setMinHeight(26);
+        button.setMaxHeight(26);
     }
 }

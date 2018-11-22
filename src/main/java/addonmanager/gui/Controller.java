@@ -148,7 +148,7 @@ public class Controller {
 
         TableColumn<Addon, String> titleVersionCol = new TableColumn<>("Title");
         titleVersionCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
-        titleVersionCol.setPrefWidth(200);
+        titleVersionCol.setPrefWidth(250);
 
 
 //        TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
@@ -175,7 +175,7 @@ public class Controller {
 
         TableColumn<Addon, String> releaseLatestCol = new TableColumn<>("Latest Version");
         releaseLatestCol.setCellValueFactory(new PropertyValueFactory("releaseLatest"));
-        releaseLatestCol.setPrefWidth(100);
+        releaseLatestCol.setPrefWidth(250);
         releaseLatestCol.setCellFactory(ReleaseLatestVersionCell.cellFactory());
 
         TableColumn<Addon, Addon.Status> stateCol = new TableColumn<>("Status");
@@ -187,7 +187,7 @@ public class Controller {
 
         TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
-        gameVersionCol.setPrefWidth(100);
+        gameVersionCol.setPrefWidth(150);
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {

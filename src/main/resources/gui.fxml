@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.TaskProgressView?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <AnchorPane prefHeight="540.0" prefWidth="960.0" stylesheets="@JMetroLightTheme.css"
             xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="addonmanager.gui.Controller">
@@ -50,9 +51,13 @@
             </ToolBar>-->
             <HBox alignment="TOP_RIGHT" maxHeight="31" maxWidth="550" minHeight="31" minWidth="550" prefHeight="31"
                   prefWidth="550" spacing="4" translateY="2" StackPane.alignment="TOP_RIGHT">
-                <Button fx:id="refreshButton" disable="true" ellipsisString="." maxHeight="-Infinity"
-                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-                        prefHeight="32.0" prefWidth="50.0" text="Refresh" wrapText="true">
+                <Button fx:id="refreshButton" contentDisplay="GRAPHIC_ONLY" disable="true" ellipsisString="."
+                        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                        mnemonicParsing="false" prefHeight="32.0" prefWidth="50.0" text="Refresh" wrapText="true">
+                    <graphic>
+                        <Glyph contentDisplay="CENTER" fontFamily="FontAwesome" fontSize="24.0" graphicTextGap="0.0"
+                               icon="REFRESH" textAlignment="CENTER" textFill="#1fc66a"/>
+                    </graphic>
                     <tooltip>
                         <Tooltip text="Refresh"/>
                     </tooltip>
@@ -63,16 +68,24 @@
                         <Tooltip text="Select Game"/>
                     </tooltip>
                 </ChoiceBox>
-                <Button fx:id="removeButton" disable="true" ellipsisString="." maxHeight="-Infinity"
-                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-                        prefHeight="32.0" prefWidth="50.0" text="Remove" wrapText="true">
+                <Button fx:id="removeButton" contentDisplay="GRAPHIC_ONLY" disable="true" ellipsisString="."
+                        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                        mnemonicParsing="false" prefHeight="32.0" prefWidth="50.0" text="Remove" wrapText="true">
+                    <graphic>
+                        <Glyph contentDisplay="CENTER" fontFamily="FontAwesome" fontSize="24.0" graphicTextGap="0.0"
+                               icon="REMOVE" textAlignment="CENTER" textFill="#cd5959"/>
+                    </graphic>
                     <tooltip>
                         <Tooltip text="Remove"/>
                     </tooltip>
                 </Button>
-                <Button fx:id="settingsButton" ellipsisString="." maxHeight="-Infinity" maxWidth="-Infinity"
-                        minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="32.0"
-                        prefWidth="50.0" text="Settings" wrapText="true">
+                <Button fx:id="settingsButton" contentDisplay="GRAPHIC_ONLY" ellipsisString="." maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        prefHeight="32.0" prefWidth="50.0" text="Settings" wrapText="true">
+                    <graphic>
+                        <Glyph contentDisplay="CENTER" fontFamily="FontAwesome" fontSize="24.0" graphicTextGap="0.0"
+                               icon="COG" textAlignment="CENTER"/>
+                    </graphic>
                     <tooltip>
                         <Tooltip text="Settings"/>
                     </tooltip>

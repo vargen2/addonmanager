@@ -157,12 +157,15 @@ public class AddonContextMenu extends ContextMenu {
 
         MenuItem infoMenuItem = new MenuItem();
 
+
         Menu infoMenu = new Menu("Info");
         infoMenu.setOnShowing(event -> {
             infoMenuItem.setText(addon.toDetailedString());
             projectLink.setText("[" + addon.getProjectUrl() + "]");
         });
         infoMenu.getItems().addAll(infoMenuItem, projectURL);
+//        infoMenu.setId("fancytext");
+//        infoMenu.setStyle("#fancytext:focused {-fx-background-color: #cccccc; }");
 
         getItems().addAll(ignore, alphaMenuItem, betaMenuItem, releaseMenuItem, versionsMenu, infoMenu);
         setOnShowing(event -> {

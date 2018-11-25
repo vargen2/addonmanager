@@ -13,8 +13,6 @@ import addonmanager.gui.task.FindGamesTask;
 import addonmanager.gui.task.FoundGameTask;
 import addonmanager.gui.task.RefreshGameTask;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -22,9 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import org.controlsfx.control.TaskProgressView;
-import org.controlsfx.glyphfont.FontAwesome;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -33,7 +29,7 @@ import java.util.logging.Level;
 
 public class Controller {
 
-    public static FXSettings fxSettings;
+    private static FXSettings fxSettings;
 
     @FXML
     private Button refreshButton;
@@ -65,27 +61,21 @@ public class Controller {
         App.model = loadedModel.orElse(App.getFactory().createModel());
 
         var appSettings = new AppSettings(Level.OFF, Level.OFF);
-        Controller.fxSettings = new FXSettings(250);
-        Saver.loadSettings(appSettings, Controller.fxSettings);
+        fxSettings = new FXSettings(250);
+        Saver.loadSettings(appSettings, fxSettings);
         App.init(appSettings);
 
-        var settingsController = new SettingsController(App.model, Controller.fxSettings);
+        var settingsController = new SettingsController(App.model, fxSettings);
         var addonContextMenu = new AddonContextMenu();
 
         gameChoiceBox.getItems().add(new Separator());
 
-        ChoiceBoxItem add = new ChoiceBoxItem(new Consumer() {
-            @Override
-            public void accept(Object o) {
+        ChoiceBoxItem add = new ChoiceBoxItem(o -> {
 
-            }
         }, "Add Games...");
         gameChoiceBox.getItems().add(add);
-        ChoiceBoxItem manual = new ChoiceBoxItem(new Consumer() {
-            @Override
-            public void accept(Object o) {
+        ChoiceBoxItem manual = new ChoiceBoxItem(o -> {
 
-            }
         }, "Add Directory manually...");
         gameChoiceBox.getItems().add(manual);
         ChoiceBoxItem scan = new ChoiceBoxItem(o -> {
@@ -104,35 +94,29 @@ public class Controller {
         gameChoiceBox.getItems().add(scan);
 
         gameChoiceBox.setValue(add);
-        gameChoiceBox.valueProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                //System.out.println("triggred");
-                if (((ChoiceBoxItem) newValue).getGame() != null) {
-                    gameChoiceBox.getItems().remove(add);
-                    App.setSelectedGame(((ChoiceBoxItem) newValue).getGame());
-                }
-                if (newValue == manual || newValue == scan) {
-                    ((ChoiceBoxItem) newValue).getConsumer().accept(0);
-                    if (gameChoiceBox.getItems().contains(oldValue) && !(oldValue == manual || oldValue == scan))
-                        gameChoiceBox.setValue(oldValue);
-                }
+        gameChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            //System.out.println("triggred");
+            if (((ChoiceBoxItem) newValue).getGame() != null) {
+                gameChoiceBox.getItems().remove(add);
+                App.setSelectedGame(((ChoiceBoxItem) newValue).getGame());
+            }
+            if (newValue == manual || newValue == scan) {
+                ((ChoiceBoxItem) newValue).getConsumer().accept(0);
+                if (gameChoiceBox.getItems().contains(oldValue) && !(oldValue == manual || oldValue == scan))
+                    gameChoiceBox.setValue(oldValue);
             }
         });
 
 
-        taskProgressView.getTasks().addListener(new ListChangeListener<Task<Void>>() {
-            @Override
-            public void onChanged(Change<? extends Task<Void>> c) {
-                c.next();
-                if (c.wasAdded()) {
-                    taskProgressView.setVisible(true);
-                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() + 90);
-                }
-                if (c.wasRemoved()) {
-                    taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() - 90);
-                    taskProgressView.setVisible(false);
-                }
+        taskProgressView.getTasks().addListener((ListChangeListener<Task<Void>>) c -> {
+            c.next();
+            if (c.wasAdded()) {
+                taskProgressView.setVisible(true);
+                taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() + 90);
+            }
+            if (c.wasRemoved()) {
+                taskProgressView.setPrefHeight(taskProgressView.getPrefHeight() - 90);
+                taskProgressView.setVisible(false);
             }
         });
 
@@ -159,7 +143,7 @@ public class Controller {
         releaseLatestCol.setCellFactory(ReleaseLatestVersionCell.cellFactory());
 
         stateCol.setCellFactory(StatusCell.cellFactory());
-        stateCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.Status>("status"));
+        stateCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         stateCol.setPrefWidth(200);
 
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
@@ -167,10 +151,7 @@ public class Controller {
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            //if (addonContextMenu == null) {
-            //    addonContextMenu = new AddonContextMenu();
-            //    App.LOG.info("addoncontextmenu not async loaded");
-            //}
+
             if (event.getButton() != MouseButton.SECONDARY) {
 
                 addonContextMenu.hide();
@@ -195,11 +176,8 @@ public class Controller {
 
 
         });
-        //stateCol.setSortable(true);
-        //stateCol.setSortType(TableColumn.SortType.ASCENDING);
 
-        Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
-        // refreshButton.setTooltip(new Tooltip("Refresh all addons."));
+        //Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
         refreshButton.setOnAction(event -> {
             Game game = App.model.getSelectedGame();
             if (game == null)
@@ -210,8 +188,7 @@ public class Controller {
             thread.start();
         });
 
-        Icon.setIcon(removeButton, FontAwesome.Glyph.REMOVE, Color.INDIANRED);
-        //  removeButton.setTooltip(new Tooltip("Remove game from this application."));
+        //Icon.setIcon(removeButton, FontAwesome.Glyph.REMOVE, Color.INDIANRED);
         removeButton.setOnAction(event -> {
             if (App.model.getSelectedGame() == null)
                 return;
@@ -227,7 +204,7 @@ public class Controller {
 
         });
 
-        Icon.setIcon(settingsButton, FontAwesome.Glyph.COG, Color.DARKSLATEGRAY);
+        //Icon.setIcon(settingsButton, FontAwesome.Glyph.COG, Color.DARKSLATEGRAY);
         settingsButton.setOnAction(event -> {
             if (!settingsController.isShowing())
                 settingsController.show(settingsButton);
@@ -235,14 +212,6 @@ public class Controller {
                 settingsController.hide();
         });
 
-//        Thread thread = new Thread(() -> {
-//            addonContextMenu = new AddonContextMenu();
-//            settings = new Settings(model, Controller.fxSettings);
-//        });
-//        thread.setDaemon(true);
-//        thread.start();
-        // CompletableFuture.runAsync(() -> addonContextMenu = new AddonContextMenu());
-        // CompletableFuture.runAsync(() -> settings = new Settings(model, Controller.fxSettings));
         loadedModel.ifPresent((model1) -> {
             Game game = App.model.getSelectedGame();
             if (game != null) {
@@ -280,7 +249,7 @@ public class Controller {
                     return null;
                 }
             });
-            Util.sleep(Controller.fxSettings.getRefreshDelay());
+            Util.sleep(fxSettings.getRefreshDelay());
 
         });
 

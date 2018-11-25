@@ -28,10 +28,8 @@ public class Icon {
         Glyph glyph=Icon.create(fGlyph);
         if(glyph==null)
             return;
-        button.setGraphic(glyph.size(20).color(color));
+        button.setGraphic(glyph.size(24).color(color));
         button.setText("");
-        button.setPrefHeight(26);
-        button.setMinHeight(26);
-        button.setMaxHeight(26);
+
     }
 }

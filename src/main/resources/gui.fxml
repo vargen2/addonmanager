@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.TaskProgressView?>
-<AnchorPane stylesheets="JMetroLightTheme.css" prefHeight="540.0" prefWidth="960.0"
-            xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="addonmanager.gui.Controller">
+<AnchorPane prefHeight="540.0" prefWidth="960.0" stylesheets="@JMetroLightTheme.css"
+            xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="addonmanager.gui.Controller">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
         <!--<MenuBar>
@@ -19,21 +19,25 @@
                 <MenuItem mnemonicParsing="false" text="About"/>
             </Menu>
         </MenuBar>-->
-        <StackPane VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+        <StackPane HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 
-            <TabPane VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
-                <Tab text="addons" closable="false" >
-                    <StackPane fx:id="bottomStackPane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+            <TabPane HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <Tab closable="false" text="Addons">
+                    <StackPane fx:id="bottomStackPane" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                         <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
-
+                            <columns>
+                                <TableColumn fx:id="titleVersionCol" prefWidth="250.0" text="Title"/>
+                                <TableColumn fx:id="releaseLatestCol" prefWidth="250.0" text="Latest Version"/>
+                                <TableColumn fx:id="stateCol" prefWidth="200.0" text="Status"/>
+                                <TableColumn fx:id="gameVersionCol" prefWidth="150.0" text="Game Version"/>
+                            </columns>
                         </TableView>
-                        <TaskProgressView visible="false" fx:id="taskProgressView" prefHeight="0" minHeight="0"
-                                          maxHeight="-Infinity"
-                                          VBox.vgrow="NEVER" StackPane.alignment="BOTTOM_CENTER"/>
+                        <TaskProgressView fx:id="taskProgressView" maxHeight="-Infinity" minHeight="0" prefHeight="0"
+                                          visible="false" StackPane.alignment="BOTTOM_CENTER" VBox.vgrow="NEVER"/>
 
                     </StackPane>
                 </Tab>
-                <Tab text="add" closable="false" >
+                <Tab closable="false" text="Get more">
 
                 </Tab>
             </TabPane>
@@ -44,12 +48,35 @@
                 <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0"/>
                 <Button fx:id="scanButton" mnemonicParsing="false" text="Scan for games"/>
             </ToolBar>-->
-            <HBox translateY="2" spacing="4" prefHeight="31" minHeight="31" maxHeight="31" prefWidth="550"
-                  minWidth="550" maxWidth="550" alignment="TOP_RIGHT" StackPane.alignment="TOP_RIGHT">
-                <Button fx:id="refreshButton" disable="true" mnemonicParsing="false" text="Refresh"/>
-                <ChoiceBox fx:id="gameChoiceBox" prefWidth="400.0"/>
-                <Button fx:id="removeButton" disable="true" mnemonicParsing="false" text="Remove"/>
-                <Button fx:id="settingsButton" mnemonicParsing="false" text="Settings"/>
+            <HBox alignment="TOP_RIGHT" maxHeight="31" maxWidth="550" minHeight="31" minWidth="550" prefHeight="31"
+                  prefWidth="550" spacing="4" translateY="2" StackPane.alignment="TOP_RIGHT">
+                <Button fx:id="refreshButton" disable="true" ellipsisString="." maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        prefHeight="32.0" prefWidth="50.0" text="Refresh" wrapText="true">
+                    <tooltip>
+                        <Tooltip text="Refresh"/>
+                    </tooltip>
+                </Button>
+                <ChoiceBox fx:id="gameChoiceBox" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0"
+                           prefWidth="400.0">
+                    <tooltip>
+                        <Tooltip text="Select Game"/>
+                    </tooltip>
+                </ChoiceBox>
+                <Button fx:id="removeButton" disable="true" ellipsisString="." maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        prefHeight="32.0" prefWidth="50.0" text="Remove" wrapText="true">
+                    <tooltip>
+                        <Tooltip text="Remove"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="settingsButton" ellipsisString="." maxHeight="-Infinity" maxWidth="-Infinity"
+                        minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="32.0"
+                        prefWidth="50.0" text="Settings" wrapText="true">
+                    <tooltip>
+                        <Tooltip text="Settings"/>
+                    </tooltip>
+                </Button>
             </HBox>
         </StackPane>
     </VBox>

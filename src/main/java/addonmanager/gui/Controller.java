@@ -22,7 +22,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -47,7 +46,13 @@ public class Controller {
     @FXML
     private TableView<Addon> tableView;
     @FXML
-    private StackPane bottomStackPane;
+    private TableColumn<Addon, String> titleVersionCol;
+    @FXML
+    private TableColumn<Addon, String> releaseLatestCol;
+    @FXML
+    private TableColumn<Addon, Addon.Status> stateCol;
+    @FXML
+    private TableColumn<Addon, String> gameVersionCol;
     @FXML
     private TaskProgressView<Task<Void>> taskProgressView;
 
@@ -146,46 +151,17 @@ public class Controller {
             App.LOG.info("model not FXModel");
         }
 
-        TableColumn<Addon, String> titleVersionCol = new TableColumn<>("Title");
         titleVersionCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
         titleVersionCol.setPrefWidth(250);
 
-
-//        TableColumn<Addon, Addon.ReleaseType> releaseTypeCol = new TableColumn<>("Release Type");
-//        releaseTypeCol.setCellValueFactory(new PropertyValueFactory("releaseType"));
-//        releaseTypeCol.setPrefWidth(50);
-//        releaseTypeCol.setCellFactory(new Callback<TableColumn<Addon, Addon.ReleaseType>, TableCell<Addon, Addon.ReleaseType>>() {
-//            @Override
-//            public TableCell<Addon, Addon.ReleaseType> call(TableColumn<Addon, Addon.ReleaseType> param) {
-//                return new TableCell<Addon, Addon.ReleaseType>() {
-//
-//                    @Override
-//                    public void updateItem(Addon.ReleaseType item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            this.setStyle("-fx-font-size: 2em");
-//                            setText(item.toString());
-//                        }else {
-//                            setText(null);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-
-        TableColumn<Addon, String> releaseLatestCol = new TableColumn<>("Latest Version");
         releaseLatestCol.setCellValueFactory(new PropertyValueFactory("releaseLatest"));
         releaseLatestCol.setPrefWidth(250);
         releaseLatestCol.setCellFactory(ReleaseLatestVersionCell.cellFactory());
 
-        TableColumn<Addon, Addon.Status> stateCol = new TableColumn<>("Status");
         stateCol.setCellFactory(StatusCell.cellFactory());
-
         stateCol.setCellValueFactory(new PropertyValueFactory<Addon, Addon.Status>("status"));
         stateCol.setPrefWidth(200);
 
-
-        TableColumn<Addon, String> gameVersionCol = new TableColumn<>("Game Version");
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
         gameVersionCol.setPrefWidth(150);
 
@@ -223,7 +199,7 @@ public class Controller {
         //stateCol.setSortType(TableColumn.SortType.ASCENDING);
 
         Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);
-        refreshButton.setTooltip(new Tooltip("Refresh all addons."));
+        // refreshButton.setTooltip(new Tooltip("Refresh all addons."));
         refreshButton.setOnAction(event -> {
             Game game = App.model.getSelectedGame();
             if (game == null)
@@ -235,7 +211,7 @@ public class Controller {
         });
 
         Icon.setIcon(removeButton, FontAwesome.Glyph.REMOVE, Color.INDIANRED);
-        removeButton.setTooltip(new Tooltip("Remove game from this application."));
+        //  removeButton.setTooltip(new Tooltip("Remove game from this application."));
         removeButton.setOnAction(event -> {
             if (App.model.getSelectedGame() == null)
                 return;

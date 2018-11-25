@@ -81,6 +81,7 @@
     -fx-text-fill: TEXT;
 }
 
+
 .button:hover, .toggle-button:hover {
     -fx-border-color: BORDER_HOVER;
 }
@@ -1370,9 +1371,11 @@
  ******************************************************************************/
 
 .choice-box {
-    -fx-background-color: transparent, #cccccc, transparent, #cccccc;
+    -fx-background-color: transparent, transparent, transparent, transparent;
     -fx-background-radius: 0, 0, 0, 0;
     -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 2px;
 
     -fx-padding: 0em 0.166667em 0em 0.166667em; /* 0 2px 0 2px*/
 
@@ -1487,17 +1490,17 @@
 /****** Column Header ******/
 
 .table-view .column-header-background {
-    -fx-background-color: white;
+    -fx-background-color: #f4f4f4;
 }
 
 .table-view .column-header, .table-view .filler {
     /* borders around table header */
-    -fx-background-color: white;
+    -fx-background-color: #f4f4f4;
     -fx-border-color: transparent transparent TABLE_VIEW_BORDER_COLOR transparent;
 }
 
 .table-view .filler {
-    -fx-background-color: transparent, white;
+    -fx-background-color: #f4f4f4, #f4f4f4;
     -fx-background-insets: 0 0 0 0, 1 0 1 0;
 }
 
@@ -1548,7 +1551,12 @@
     -fx-padding: 0.833333em 2em 0.5em 2em;
 }
 
+/*
 .table-cell:filled:hover {
+    -fx-background-color: LIGHT_ACCENT_COLOR;
+}
+*/
+.table-row-cell:filled:hover {
     -fx-background-color: LIGHT_ACCENT_COLOR;
 }
 
@@ -1723,6 +1731,7 @@
 .tab-pane {
     -fx-tab-min-height: 2.91666375em; /* 34 */
     -fx-tab-max-height: 2.91666375em; /* 34 */
+    LIGHT_ACCENT_COLOR: derive(ACCENT_COLOR, 95%);
 }
 
 .tab-pane > .tab-header-area {
@@ -1736,29 +1745,37 @@
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-    -fx-background-color: transparent, #cccccc, white;
+    -fx-background-color: transparent, transparent, #f4f4f4;
     -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
+    -fx-background-insets: 0 0 0 0, 0 0 0 0, 2 2 0 2;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
     -fx-text-fill: #767676;
-    -fx-font-size: 1.333333em; /* 16 */
-    -fx-font-family: "Segoe UI";
+    -fx-font-size: 1.166667em; /* 14 */
+    -fx-font-family: "Segoe UI SemiBold";
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
-    -fx-text-fill: ACCENT_COLOR;
+    -fx-text-fill: black;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:hover > .tab-container > .tab-label {
-    -fx-text-fill: ACCENT_COLOR;
+    -fx-text-fill: black;
+
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:hover {
+    -fx-background-color: transparent,
+    transparent, LIGHT_ACCENT_COLOR;
+    -fx-background-insets: 1 1 0 1, 0 0 1 0, 0;
 }
 
 .tab-pane > .tab-header-area > .tab-header-background {
-    -fx-background-color: -fx-outer-border,
+    -fx-background-color: transparent,
     transparent,
     white;
-    -fx-background-insets: 1 1 0 1, 0 0 1 0, 1;
+    -fx-background-insets: 1 1 0 1, 0 0 1 0, 0;
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {

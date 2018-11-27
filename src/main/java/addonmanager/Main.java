@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -16,7 +17,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Parent root = FXMLLoader.load(getClass().getResource("../gui.fxml"));
-        //primaryStage.getIcons().add(new Image("icon.png"));
+        primaryStage.getIcons().add(new Image("icon.png"));
         primaryStage.setTitle("Addon Manager");
         //new JMetro(JMetro.Style.LIGHT).applyTheme(root);
         primaryStage.setScene(new Scene(root, 960, 727));

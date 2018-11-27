@@ -1,6 +1,7 @@
 package addonmanager.gui.setting;
 
 import addonmanager.app.Settings;
+import addonmanager.app.Util;
 import addonmanager.app.file.Saver;
 
 public class FXSettings implements Settings {
@@ -41,7 +42,7 @@ public class FXSettings implements Settings {
 
     @Override
     public String save() {
-        return "fxrefreshdelay " + Integer.toString(refreshDelay) + "\n" +
-                "fxautorefresh " + Boolean.toString(autoRefresh) + "\n";
+        return "fxrefreshdelay " + Integer.toString(refreshDelay) + Util.LINE +
+                "fxautorefresh " + Boolean.toString(autoRefresh) + Util.LINE;
     }
 }

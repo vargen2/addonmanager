@@ -20,6 +20,7 @@ class ProjectURLFinder {
         ADDON_PROJECT_NAMES.put("dbm-core", new ArrayList<>(List.of("deadly-boss-mods")));
         ADDON_PROJECT_NAMES.put("omnicc", new ArrayList<>(List.of("omni-cc")));
         ADDON_PROJECT_NAMES.put("omen", new ArrayList<>(List.of("omen-threat-meter")));
+        ADDON_PROJECT_NAMES.put("littlewigs", new ArrayList<>(List.of("little-wigs")));
     }
 
     private final Addon addon;

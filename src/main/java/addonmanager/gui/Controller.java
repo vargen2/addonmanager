@@ -2,6 +2,7 @@ package addonmanager.gui;
 
 import addonmanager.app.*;
 import addonmanager.app.file.Saver;
+import addonmanager.app.file.TocRefresher;
 import addonmanager.gui.fxapp.FXFactory;
 import addonmanager.gui.fxapp.FXGame;
 import addonmanager.gui.fxapp.FXModel;
@@ -55,7 +56,7 @@ public class Controller {
 
     @FXML
     private void initialize() {
-
+        TocRefresher.loadKnownSubFolders();
         App.setFactory(new FXFactory());
         var loadedModel = Saver.load(App.getFactory());
         App.model = loadedModel.orElse(App.getFactory().createModel());
@@ -199,6 +200,7 @@ public class Controller {
 
         //Icon.setIcon(settingsButton, FontAwesome.Glyph.COG, Color.DARKSLATEGRAY);
         settingsButton.setOnAction(event -> {
+
             if (!settingsController.isShowing())
                 settingsController.show(settingsButton);
             else
@@ -218,8 +220,12 @@ public class Controller {
             });
             if (selectedGame instanceof FXGame) {
                 tableView.setItems(((FXGame) selectedGame).addonObservableList);
-                if (fxSettings.isAutoRefresh())
-                    CompletableFuture.runAsync(new RefreshGameTask(selectedGame));
+                if (fxSettings.isAutoRefresh()) {
+                    CompletableFuture.runAsync(() -> {
+                        Util.sleep(2000);
+                        CompletableFuture.runAsync(new RefreshGameTask(selectedGame));
+                    });
+                }
             }
             refreshButton.setDisable(selectedGame == null);
             removeButton.setDisable(selectedGame == null);

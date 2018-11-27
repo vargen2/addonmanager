@@ -16,11 +16,11 @@ public class Model implements Serializable {
     protected Model() {
     }
 
-//    public Model(Model model) {
-//        model.getGames().stream().forEach(x -> this.games.add(new Game(x)));
-//        if (model.getSelectedGame() != null)
-//            this.games.stream().filter(x -> model.selectedGame.getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
-//    }
+    public Model(Model model) {
+        model.getGames().forEach(x -> this.games.add(new Game(x)));
+        if (model.getSelectedGame() != null)
+            this.games.stream().filter(x -> model.selectedGame.getDirectory().equals(x.getDirectory())).findAny().ifPresent(this::setSelectedGame);
+    }
 
     public List<Game> getGames() {
         return Collections.unmodifiableList(games);

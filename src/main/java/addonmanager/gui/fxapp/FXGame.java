@@ -9,6 +9,7 @@ public class FXGame extends Game {
 
     public transient final ObservableList<Addon> addonObservableList;
 
+
     FXGame(String name, String directory, String addonDirectory) {
         super(name, directory, addonDirectory);
         addonObservableList = FXCollections.observableList(addons);

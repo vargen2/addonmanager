@@ -79,17 +79,10 @@ public class Controller {
         }, "Add Directory manually...");
         gameChoiceBox.getItems().add(manual);
         ChoiceBoxItem scan = new ChoiceBoxItem(o -> {
-            Consumer<Game> consumer = game -> {
-                Thread t = new Thread(new FoundGameTask(game, gameChoiceBox));
-                t.setDaemon(true);
-                t.start();
-            };
+            Consumer<Game> consumer = game -> CompletableFuture.runAsync(new FoundGameTask(game, gameChoiceBox));
             FindGamesTask ds = new FindGamesTask(consumer, false);
             Platform.runLater(() -> taskProgressView.getTasks().add(ds));
-
-            Thread t = new Thread(ds);
-            t.setDaemon(true);
-            t.start();
+            CompletableFuture.runAsync(ds);
         }, "Scan for Directories...");
         gameChoiceBox.getItems().add(scan);
 
@@ -213,21 +206,24 @@ public class Controller {
         });
 
         loadedModel.ifPresent((model1) -> {
-            Game game = App.model.getSelectedGame();
-            if (game != null) {
-                App.model.getGames().stream().forEach(x -> {
-                    ChoiceBoxItem cbi = new ChoiceBoxItem(x);
-                    gameChoiceBox.getItems().add(0, cbi);
-                    if (x == game) {
-                        x.getAddons().forEach(y -> App.LOG.fine("loaded addons: " + y.getFolderName()));
-                        gameChoiceBox.setValue(cbi);
-                    }
-                });
-                if (game instanceof FXGame)
-                    tableView.setItems(((FXGame) App.model.getSelectedGame()).addonObservableList);
-                refreshButton.setDisable(App.model.getSelectedGame() == null);
-                removeButton.setDisable(App.model.getSelectedGame() == null);
+            var selectedGame = App.model.getSelectedGame();
+            App.model.getGames().forEach(game -> {
+                ChoiceBoxItem cbi = new ChoiceBoxItem(game);
+                gameChoiceBox.getItems().add(0, cbi);
+                if (selectedGame != null && game == selectedGame) {
+                    App.LOG.fine("selected game found: " + selectedGame.toString());
+                    game.getAddons().forEach(addon -> App.LOG.fine("loaded addons: " + addon.getFolderName()));
+                    gameChoiceBox.setValue(cbi);
+                }
+            });
+            if (selectedGame instanceof FXGame) {
+                tableView.setItems(((FXGame) selectedGame).addonObservableList);
+                if (fxSettings.isAutoRefresh())
+                    CompletableFuture.runAsync(new RefreshGameTask(selectedGame));
             }
+            refreshButton.setDisable(selectedGame == null);
+            removeButton.setDisable(selectedGame == null);
+
         });
 
         tableView.getSortOrder().add(stateCol);

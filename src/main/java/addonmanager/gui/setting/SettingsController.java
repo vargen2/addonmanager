@@ -32,6 +32,7 @@ public class SettingsController {
         this.fxSettings = fxSettings;
         observableMap = FXCollections.observableMap(new LinkedHashMap<>());
         observableMap.put("current.Set All", Addon.ReleaseType.RELEASE);
+        observableMap.put("global.Auto Refresh", fxSettings.isAutoRefresh());
         observableMap.put("global.Refresh Delay", fxSettings.getRefreshDelay());
         observableMap.put("global.Console Log", App.getConsoleLoggingLevel());
         observableMap.put("global.File Log", App.getFileLoggingLevel());
@@ -73,6 +74,10 @@ public class SettingsController {
             if (change.getKey().equals("current.Set All")) {
                 if (addedValue instanceof Addon.ReleaseType)
                     App.setReleaseType(model.getSelectedGame(), (Addon.ReleaseType) addedValue);
+            } else if (change.getKey().equals("global.Auto Refresh")) {
+                if (addedValue instanceof Boolean) {
+                    fxSettings.setAutoRefresh((Boolean) addedValue);
+                }
             } else if (change.getKey().equals("global.Refresh Delay")) {
                 if (addedValue instanceof Number) {
                     int intVal = ((Number) addedValue).intValue();

@@ -12,17 +12,12 @@ public class RefreshGameTask extends Task<Void> {
     public RefreshGameTask(Game game) {
         super();
         this.game = game;
-//        exceptionProperty().addListener((observableValue, throwable, t1) -> {
-//            System.out.println("throwable: " + throwable.getMessage());
-//            System.out.println("t1: " + t1.getMessage());
-//        });
     }
 
     @Override
     protected Void call() {
         FileOperations.refreshGameDirectory(game);
         Controller.refreshFromNet(game);
-
         return null;
     }
 

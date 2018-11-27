@@ -23,9 +23,8 @@ public class AppSettings implements Settings {
 
     @Override
     public String save() {
-        String saveString = "consolelevel " + consoleLevel.toString() + "\n";
-        saveString += "filelevel " + fileLevel.toString() + "\n";
-        return saveString;
+        return "consolelevel " + consoleLevel.toString() + "\n" +
+                "filelevel " + fileLevel.toString() + "\n";
     }
 
     public Level getConsoleLevel() {

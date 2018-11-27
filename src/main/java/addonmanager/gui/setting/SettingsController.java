@@ -41,11 +41,12 @@ public class SettingsController {
         propertySheet.setPropertyEditorFactory(param -> {
             if (param.getValue() instanceof Number) {
                 return new NumberSliderEditor(param);
-            }
-
-            if (param.getValue() instanceof Level) {
+            } else if (param.getValue() instanceof Level) {
                 return Editors.createChoiceEditor(param, App.levels);
             }
+//            else if (param.getValue() instanceof Boolean) {
+//                return new ToggleSwitchEditor(param);
+//            }
 
             return defaultPropertyEditorFactory.call(param);
         });

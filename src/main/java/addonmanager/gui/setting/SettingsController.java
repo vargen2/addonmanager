@@ -98,7 +98,7 @@ public class SettingsController {
 
 
     public void show(Node node) {
-        popOver.show(node.getScene().getWindow());
+        popOver.show(node);
     }
 
     public void hide() {

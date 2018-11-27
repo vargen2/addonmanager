@@ -1404,7 +1404,7 @@
     -fx-opacity: .4;
 }
 
-.choice-box > ..open-button {
+.choice-box > .open-button {
     -fx-background-color: transparent, transparent, transparent;
 }
 

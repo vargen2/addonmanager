@@ -59,7 +59,7 @@ public class AddonContextMenu extends ContextMenu {
         ////////////////////////////////////////
 
         ListView<Download> listView = new ListView<>();
-        listView.setPrefWidth(300);
+        listView.setPrefWidth(430);
 
         listView.setCellFactory(new Callback<ListView<Download>, ListCell<Download>>() {
             @Override
@@ -82,11 +82,11 @@ public class AddonContextMenu extends ContextMenu {
                             periodFrom += "ago";
 
                             Label release = new Label(item.getRelease());
-                            release.setPrefWidth(60);
+                            release.setPrefWidth(70);
                             Label version = new Label(item.getTitle());
-                            version.setPrefWidth(90);
+                            version.setPrefWidth(230);
                             Label time = new Label(periodFrom);
-                            time.setPrefWidth(90);
+                            time.setPrefWidth(100);
                             HBox hBox = new HBox(0, release, version, time);
                             this.setTooltip(new Tooltip("Click to change to this version.\n" + item.toDetailedStringLines()));
                             this.getTooltip().setShowDelay(Duration.millis(50));

@@ -240,6 +240,6 @@ public class Addon implements Serializable {
                 "latestDownload=" + latestDownload + "\n" +
                 "latestUpdate=" + latestUpdate + "\n" +
                 "status=" + status + "\n" +
-                "extraFolders=" + extraFolders;
+                "extraFolders=" + (extraFolders != null ? extraFolders.size() : "");
     }
 }

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.HyperlinkLabel?>
 <?import org.controlsfx.control.TaskProgressView?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 <?import org.controlsfx.glyphfont.Glyph?>
@@ -47,7 +50,33 @@
                                       AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <CustomTextField fx:id="searchField" promptText="search"/>
+                                        <CustomTextField fx:id="searchField" promptText="search">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                            </VBox.margin>
+                                        </CustomTextField>
+                                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                                            <children>
+                                                <Label text="title">
+                                                    <font>
+                                                        <Font size="14.0"/>
+                                                    </font>
+                                                </Label>
+                                                <HyperlinkLabel text="link"/>
+                                                <Label text="description">
+                                                    <font>
+                                                        <Font size="14.0"/>
+                                                    </font>
+                                                </Label>
+                                                <Button mnemonicParsing="false" text="Instal"/>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                            </VBox.margin>
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </VBox>
                                     </children>
                                 </VBox>
                             </children>

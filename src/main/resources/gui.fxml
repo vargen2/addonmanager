@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.TaskProgressView?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 <?import org.controlsfx.glyphfont.Glyph?>
 <AnchorPane prefHeight="540.0" prefWidth="960.0" stylesheets="@JMetroLightTheme.css"
             xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
@@ -39,7 +40,19 @@
                     </StackPane>
                 </Tab>
                 <Tab closable="false" text="Get more">
-
+                    <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                            <children>
+                                <VBox layoutX="430.0" layoutY="152.0" prefHeight="200.0" prefWidth="100.0"
+                                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <CustomTextField fx:id="searchField" promptText="search"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
                 </Tab>
             </TabPane>
             <!--<ToolBar maxHeight="32.0" minHeight="32.0" prefHeight="32.0" HBox.hgrow="ALWAYS" StackPane.alignment="TOP_RIGHT">

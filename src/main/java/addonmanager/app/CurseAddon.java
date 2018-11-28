@@ -26,6 +26,10 @@ public final class CurseAddon {
 
     @Override
     public String toString() {
+        return title;
+    }
+
+    public String detailedToString() {
         return "addonURL=" + addonURL + " title=" + title + " description=" + description;
     }
 }

@@ -13,15 +13,21 @@ import addonmanager.gui.tableview.StatusCell;
 import addonmanager.gui.task.FindGamesTask;
 import addonmanager.gui.task.FoundGameTask;
 import addonmanager.gui.task.RefreshGameTask;
+import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 import org.controlsfx.control.TaskProgressView;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +35,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class Controller {
+
 
     private static FXSettings fxSettings;
 
@@ -52,6 +59,8 @@ public class Controller {
     private TableColumn<Addon, String> gameVersionCol;
     @FXML
     private TaskProgressView<Task<Void>> taskProgressView;
+    @FXML
+    private CustomTextField searchField;
 
 
     @FXML
@@ -66,9 +75,28 @@ public class Controller {
         Saver.loadSettings(appSettings, fxSettings);
         App.init(appSettings);
 
-        System.out.println("before");
+
         App.curseAddons = Saver.loadCurseAddons();
-        System.out.println("after curseaddons size" + App.curseAddons.size());
+
+        if (App.curseAddons != null && App.curseAddons.size() > 10) {
+            var suggestionProvider = SuggestionProvider.create(new Callback<CurseAddon, String>() {
+                @Override
+                public String call(CurseAddon curseAddon) {
+                    return curseAddon.getAddonURL() + " " + curseAddon.getTitle();
+                }
+            }, App.curseAddons);
+
+            AutoCompletionBinding<CurseAddon> autoCompletionBinding = TextFields.bindAutoCompletion(searchField, suggestionProvider);
+            autoCompletionBinding.prefWidthProperty().bind(searchField.widthProperty());
+            autoCompletionBinding.setOnAutoCompleted(new EventHandler<AutoCompletionBinding.AutoCompletionEvent<CurseAddon>>() {
+                @Override
+                public void handle(AutoCompletionBinding.AutoCompletionEvent<CurseAddon> curseAddonAutoCompletionEvent) {
+                    System.out.println("hit");
+                }
+            });
+
+        }
+
         var settingsController = new SettingsController(App.model, fxSettings);
         var addonContextMenu = new AddonContextMenu();
 

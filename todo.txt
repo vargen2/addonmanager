@@ -1,0 +1,4 @@
+addonscraper try update from new addons
+button for scrape
+setting for autoscrape
+install addon from get more tab

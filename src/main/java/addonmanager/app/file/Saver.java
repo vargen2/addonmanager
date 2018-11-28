@@ -1,14 +1,13 @@
 package addonmanager.app.file;
 
 import addonmanager.app.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -80,6 +79,20 @@ public class Saver {
             App.LOG.fine("saved settings");
             Util.sleep(2000);
         });
+    }
+
+    public static List<CurseAddon> loadCurseAddons() {
+
+
+        try {
+            String addons = Files.readString(Path.of("curseaddons.txt"));
+            Gson gson = new Gson();
+            return gson.fromJson(addons, new TypeToken<List<CurseAddon>>() {
+            }.getType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new LinkedList<>();
     }
 
 }

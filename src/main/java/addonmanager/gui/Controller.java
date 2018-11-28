@@ -66,6 +66,9 @@ public class Controller {
         Saver.loadSettings(appSettings, fxSettings);
         App.init(appSettings);
 
+        System.out.println("before");
+        App.curseAddons = Saver.loadCurseAddons();
+        System.out.println("after curseaddons size" + App.curseAddons.size());
         var settingsController = new SettingsController(App.model, fxSettings);
         var addonContextMenu = new AddonContextMenu();
 

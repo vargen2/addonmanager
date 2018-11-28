@@ -2,12 +2,15 @@ package addonmanager.app.net;
 
 import addonmanager.app.CurseAddon;
 import addonmanager.app.Util;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,23 +18,34 @@ import java.util.regex.Pattern;
 
 public class AddonScraper {
 
-    public static void scrapeAndSaveToFile() {
+    public static void scrapeAndSaveToFile(int from, int to) {
 
-        var addons = scrape(1);
-        saveToFile(addons);
+        var addons = scrape(from, to);
+        saveToFile(addons, from, to);
     }
 
-    public static void saveToFile(List<CurseAddon> addons) {
-
+    public static void saveToFile(List<CurseAddon> addons, int from, int to) {
+        var gson = new GsonBuilder().setPrettyPrinting().create();
+        var json = gson.toJson(addons);
+        try {
+            Files.writeString(Path.of("curseaddons" + from + "" + to + ".txt"), json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    public static List<CurseAddon> scrape(int pages) {
+    public static List<CurseAddon> scrape(int from, int to) {
         List<CurseAddon> addons = new LinkedList<>();
-        for (int i = 1; i <= pages; i++) {
-
+        for (int i = from; i <= to; i++) {
+            Util.sleep(1000);
             String page = find(i);
-            addons.addAll(parsePage(page));
+            if (page == null || page.isEmpty()) {
+                System.out.println("MISSED page: " + i);
+            } else {
+                addons.addAll(parsePage(page));
+                System.out.println("page " + i);
+            }
         }
 
         return addons;
@@ -41,24 +55,26 @@ public class AddonScraper {
         String body = "";
         HttpClient httpClient = HttpClient.newHttpClient();
 
+        boolean done = false;
+        while (!done) {
+            try {
 
-        try {
-
-            URI uri = URI.create("https://www.curseforge.com/wow/addons" + "?page=" + page);
-            HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() != 200) {
-                //App.LOG.fine("not found " + uri.toString());
-                System.out.println("not found " + uri.toString());
-                return body;
+                URI uri = URI.create("https://www.curseforge.com/wow/addons" + "?page=" + page);
+                HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() != 200) {
+                    //App.LOG.fine("not found " + uri.toString());
+                    System.out.println("not found " + uri.toString());
+                    return body;
+                }
+                if (response.body() != null) {
+                    body = response.body();
+                    done = true;
+                }
+            } catch (IOException | InterruptedException | IllegalArgumentException e) {
+                //App.LOG.severe(" " + e.getMessage());
+                System.out.println(" " + e.getMessage());
             }
-            if (response.body() != null)
-                body = response.body();
-
-
-        } catch (IOException | InterruptedException | IllegalArgumentException e) {
-            //App.LOG.severe(" " + e.getMessage());
-            System.out.println(" " + e.getMessage());
         }
         return body;
     }
@@ -80,7 +96,7 @@ public class AddonScraper {
 
             String url = "https://www.curseforge.com/wow/addons" + Util.parse(subString, "<a href=\"/wow/addons", "\">").strip();
             String title = Util.parse(subString, "<h2 class=\"list-item__title strong mg-b-05\">", "</h2>");
-            String description = Util.parse(subString, "<p title=\"", "</p>");
+            String description = Util.parse(subString, "<p title=\"", "\">");
             addons.add(new CurseAddon(url, title, description));
         }
         return addons;

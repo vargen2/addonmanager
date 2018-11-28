@@ -12,7 +12,7 @@ public class Addon implements Serializable {
 
     public static final long serialVersionUID = 73946550836612000L;
 
-    public enum Status {CAN_UPDATE, UPDATING, UP_TO_DATE, GETTING_VERSIONS, NONE, IGNORE}
+    public enum Status {CAN_UPDATE, UPDATING, NOT_SURE, UP_TO_DATE, GETTING_VERSIONS, NONE, IGNORE}
 
     public enum ReleaseType {
         ALPHA("alpha"),
@@ -144,7 +144,7 @@ public class Addon implements Serializable {
                     setStatus(Status.CAN_UPDATE);
 
                 } else {
-                    setStatus(Status.UP_TO_DATE);
+                    setStatus(Status.NOT_SURE);
                 }
             } else if (getLatestDownload() != null && getVersion() == null) {
                 setStatus(Status.CAN_UPDATE);

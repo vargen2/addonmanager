@@ -19,6 +19,7 @@ public class App {
     private static final Handler consoleHandler = new ConsoleHandler();
     public static Model model;
     public static AppSettings appSettings;
+    public static List<CurseAddon> curseAddons;
 
     static {
         LogManager.getLogManager().reset();

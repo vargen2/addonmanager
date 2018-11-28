@@ -21,6 +21,7 @@ class ProjectURLFinder {
         ADDON_PROJECT_NAMES.put("omnicc", new ArrayList<>(List.of("omni-cc")));
         ADDON_PROJECT_NAMES.put("omen", new ArrayList<>(List.of("omen-threat-meter")));
         ADDON_PROJECT_NAMES.put("littlewigs", new ArrayList<>(List.of("little-wigs")));
+        ADDON_PROJECT_NAMES.put("elvui_sle", new ArrayList<>(List.of("elvui-shadow-light")));
     }
 
     private final Addon addon;

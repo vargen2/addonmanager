@@ -63,7 +63,6 @@ public class TocRefresher {
                 tocString.lines().filter(line -> line.contains("Interface:")).findAny().ifPresent(line -> addon.setGameVersion(line.substring(line.indexOf("Interface:") + 10).trim()));
                 tocString.lines().filter(line -> line.contains("Version:")).findAny().ifPresent(line -> addon.setVersion(line.substring(line.indexOf("Version:") + 8).trim()));
                 tocString.lines().filter(line -> line.contains("Title:")).findAny().ifPresent(line -> addon.setTitle(line.substring(line.indexOf("Title:") + 6).replaceAll("\\|c[a-zA-Z_0-9]{8}", "").replaceAll("\\|r", "").trim()));
-                System.out.println("i toc folder name:" + addon.getFolderName());
                 return knownSubFolders.stream().noneMatch(folder -> folder.equalsIgnoreCase(addon.getFolderName()));
             } catch (MalformedInputException e) {
                 App.LOG.info(addon.getFolderName() + " " + e.getMessage());

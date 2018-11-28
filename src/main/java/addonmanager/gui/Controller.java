@@ -13,9 +13,10 @@ import addonmanager.gui.tableview.StatusCell;
 import addonmanager.gui.task.FindGamesTask;
 import addonmanager.gui.task.FoundGameTask;
 import addonmanager.gui.task.RefreshGameTask;
-import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.SetChangeListener;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,12 +24,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
+import org.controlsfx.control.HyperlinkLabel;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.net.URI;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -59,9 +62,15 @@ public class Controller {
     private TableColumn<Addon, String> gameVersionCol;
     @FXML
     private TaskProgressView<Task<Void>> taskProgressView;
+
     @FXML
     private CustomTextField searchField;
-
+    @FXML
+    private Label titleLabel, descriptionLabel;
+    @FXML
+    private HyperlinkLabel linkLabel;
+    @FXML
+    private Button installButton;
 
     @FXML
     private void initialize() {
@@ -79,19 +88,38 @@ public class Controller {
         App.curseAddons = Saver.loadCurseAddons();
 
         if (App.curseAddons != null && App.curseAddons.size() > 10) {
-            var suggestionProvider = SuggestionProvider.create(new Callback<CurseAddon, String>() {
-                @Override
-                public String call(CurseAddon curseAddon) {
-                    return curseAddon.getAddonURL() + " " + curseAddon.getTitle();
-                }
-            }, App.curseAddons);
+            var observableSet = FXCollections.observableSet(new HashSet<CurseAddon>());
+            observableSet.addListener((SetChangeListener<CurseAddon>) change -> {
+                if (!change.wasAdded())
+                    return;
+                change.getSet().forEach(addon -> {
 
-            AutoCompletionBinding<CurseAddon> autoCompletionBinding = TextFields.bindAutoCompletion(searchField, suggestionProvider);
+                    System.out.println(addon.getTitle());
+                });
+            });
+            var provider = AddonSuggestionProvider.create(curseAddon -> curseAddon.getAddonURL() + " " + curseAddon.getTitle(), App.curseAddons);
+            provider.setObservedSet(observableSet);
+            var autoCompletionBinding = TextFields.bindAutoCompletion(searchField, provider);
             autoCompletionBinding.prefWidthProperty().bind(searchField.widthProperty());
             autoCompletionBinding.setOnAutoCompleted(new EventHandler<AutoCompletionBinding.AutoCompletionEvent<CurseAddon>>() {
                 @Override
-                public void handle(AutoCompletionBinding.AutoCompletionEvent<CurseAddon> curseAddonAutoCompletionEvent) {
-                    System.out.println("hit");
+                public void handle(AutoCompletionBinding.AutoCompletionEvent<CurseAddon> param) {
+                    if (param == null)
+                        return;
+                    CurseAddon curseAddon = param.getCompletion();
+                    titleLabel.setText(curseAddon.getTitle());
+                    linkLabel.setOnAction(event -> {
+                        Hyperlink link = (Hyperlink) event.getSource();
+                        if (link == null)
+                            return;
+                        AddonContextMenu.openWebpage(URI.create(link.getText()));
+                    });
+                    linkLabel.setText("[" + curseAddon.getAddonURL() + "]");
+                    descriptionLabel.setText(curseAddon.getDescription());
+                    installButton.setOnAction(actionEvent -> {
+                        System.out.println("hit");
+                    });
+
                 }
             });
 

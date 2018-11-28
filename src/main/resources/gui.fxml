@@ -13,17 +13,6 @@
             fx:controller="addonmanager.gui.Controller">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
-        <!--<MenuBar>
-            <Menu mnemonicParsing="false" text="File">
-                <MenuItem mnemonicParsing="false" text="Close"/>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-                <MenuItem mnemonicParsing="false" text="Delete"/>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-                <MenuItem mnemonicParsing="false" text="About"/>
-            </Menu>
-        </MenuBar>-->
         <StackPane HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 
             <TabPane HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
@@ -57,18 +46,19 @@
                                         </CustomTextField>
                                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                                             <children>
-                                                <Label text="title">
+                                                <Label fx:id="titleLabel" text="title">
                                                     <font>
                                                         <Font size="14.0"/>
                                                     </font>
                                                 </Label>
-                                                <HyperlinkLabel text="link"/>
-                                                <Label text="description">
+                                                <HyperlinkLabel fx:id="linkLabel" text="link">
+                                                </HyperlinkLabel>
+                                                <Label fx:id="descriptionLabel" text="description">
                                                     <font>
                                                         <Font size="14.0"/>
                                                     </font>
                                                 </Label>
-                                                <Button mnemonicParsing="false" text="Instal"/>
+                                                <Button fx:id="installButton" mnemonicParsing="false" text="Install"/>
                                             </children>
                                             <VBox.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
@@ -84,13 +74,6 @@
                     </content>
                 </Tab>
             </TabPane>
-            <!--<ToolBar maxHeight="32.0" minHeight="32.0" prefHeight="32.0" HBox.hgrow="ALWAYS" StackPane.alignment="TOP_RIGHT">
-                <Button fx:id="experimentButton" mnemonicParsing="false" text="Experiment"/>
-                <Pane HBox.hgrow="ALWAYS"/>
-                <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh"/>
-                <ChoiceBox fx:id="gameChoiceBox" prefWidth="300.0"/>
-                <Button fx:id="scanButton" mnemonicParsing="false" text="Scan for games"/>
-            </ToolBar>-->
             <HBox alignment="TOP_RIGHT" maxHeight="31" maxWidth="550" minHeight="31" minWidth="550" prefHeight="31"
                   prefWidth="550" spacing="4" translateY="2" StackPane.alignment="TOP_RIGHT">
                 <Button fx:id="refreshButton" contentDisplay="GRAPHIC_ONLY" disable="true" ellipsisString="."

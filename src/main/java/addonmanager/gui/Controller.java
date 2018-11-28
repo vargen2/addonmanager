@@ -225,7 +225,9 @@ public class Controller {
                         Util.sleep(2000);
                         CompletableFuture.runAsync(new RefreshGameTask(selectedGame));
                     });
+                    //todo lägg till auto donwload på individ addons lägg till på completable future andthen
                 }
+
             }
             refreshButton.setDisable(selectedGame == null);
             removeButton.setDisable(selectedGame == null);

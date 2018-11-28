@@ -33,6 +33,8 @@ Details_Streamer
 Details_TimeAttack
 Details_TinyThreat
 Details_Vanguard
+ElvUI_Config
+GottaGoFastHistory
 MasterPlanA
 OmniCC_Config
 WeakAurasModelPaths

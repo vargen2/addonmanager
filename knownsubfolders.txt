@@ -5,6 +5,13 @@ BigWigs_CrucibleOfStorms
 BigWigs_Options
 BigWigs_Plugins
 BigWigs_Uldir
+BigWigs_Antorus
+BigWigs_ArgusInvasionPoints
+BigWigs_BrokenIsles
+BigWigs_Nighthold
+BigWigs_Nightmare
+BigWigs_TombOfSargeras
+BigWigs_TrialOfValor
 DBM-Azeroth-BfA
 DBM-Brawlers
 DBM-CrucibleofStorms

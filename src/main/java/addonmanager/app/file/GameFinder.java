@@ -120,8 +120,8 @@ class GameFinder {
             } else {
                 //System.out.println(parent.getPath());
                 //laptop /stationär
-                //if (dir.getPath().contains("World of Warcraft Beta")){
-                if (dir.getPath().contains("Wow") || dir.getPath().contains("Warcraft") || dir.getPath().contains("Beta") || dir.getPath().contains("Test")) {
+                //if (dir.getPath().contains("World of Warcraft Beta")){   || dir.getPath().contains("Warcraft")
+                if (dir.getPath().contains("Wow") || dir.getPath().contains("Beta") || dir.getPath().contains("Test")) {
                     Game game = App.getFactory().createGame(parent.getName(), parent.getPath(), File.separator + "Interface" + File.separator + "AddOns");
                     consumer.accept(game);
                     games.add(game);

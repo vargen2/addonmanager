@@ -116,15 +116,17 @@ public class Controller {
             curseInstallCol.setCellFactory(new Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>>() {
                 @Override
                 public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
+                    Button button = new Button("Install");
+                    button.setPrefWidth(140);
                     TableCell tableCell = new TableCell<CurseAddon, String>() {
 
-                        private Button installButton = new Button("Install");
+                        private final Button installButton = button;
 
                         @Override
                         protected void updateItem(String item, boolean empty) {
                             super.updateItem(item, empty);
+                            setText(null);
                             if (empty) {
-                                setText(null);
                                 setGraphic(null);
                             } else {
                                 var addon = getTableRow().getItem();
@@ -132,16 +134,17 @@ public class Controller {
                                 if (addon != null && game != null) {
                                     if (game.getAddons().stream().anyMatch(a ->
                                             a.getFolderName().equalsIgnoreCase(addon.getTitle()) ||
-                                                    a.getTitle().equalsIgnoreCase(addon.getTitle()))) {
-                                        setText("Installed");
-                                        setGraphic(null);
+                                                    a.getTitle().equalsIgnoreCase(addon.getTitle()) ||
+                                                    (a.getProjectUrl() != null && a.getProjectUrl().contains(addon.getTitle()))
+                                    )) {
+                                        installButton.setText("Installed");
+                                        installButton.setDisable(true);
                                     } else {
-                                        setText(null);
                                         installButton.setText("Install");
-                                        setGraphic(installButton);
+                                        installButton.setDisable(false);
                                     }
+                                    setGraphic(installButton);
                                 } else {
-                                    setText(null);
                                     setGraphic(null);
                                 }
                             }

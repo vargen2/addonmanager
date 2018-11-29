@@ -47,7 +47,7 @@
                                                 <TableColumn fx:id="curseTitleCol" prefWidth="200.0" text="Title"/>
                                                 <TableColumn fx:id="curseDescCol" prefWidth="300.0" text="Description"/>
                                                 <TableColumn fx:id="curseDLCol" prefWidth="100.0" text="Downloads"/>
-                                                <TableColumn fx:id="curseInstallCol" prefWidth="100.0" text="Install"/>
+                                                <TableColumn fx:id="curseInstallCol" prefWidth="160.0" text="Install"/>
                                                 <TableColumn fx:id="curseAuthorCol" prefWidth="200.0" text="Author"/>
                                             </columns>
                                             <VBox.margin>

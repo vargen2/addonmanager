@@ -135,7 +135,9 @@ public class Controller {
                                     if (game.getAddons().stream().anyMatch(a ->
                                             a.getFolderName().equalsIgnoreCase(addon.getTitle()) ||
                                                     a.getTitle().equalsIgnoreCase(addon.getTitle()) ||
-                                                    (a.getProjectUrl() != null && a.getProjectUrl().contains(addon.getTitle()))
+                                                    a.getFolderName().equalsIgnoreCase(addon.getAddonURL()) ||
+                                                    a.getTitle().equalsIgnoreCase(addon.getAddonURL()) ||
+                                                    (a.getProjectUrl() != null && a.getProjectUrl().contains(addon.getAddonURL()))
                                     )) {
                                         installButton.setText("Installed");
                                         installButton.setDisable(true);

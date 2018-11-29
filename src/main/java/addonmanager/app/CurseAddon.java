@@ -1,6 +1,6 @@
 package addonmanager.app;
 
-public final class CurseAddon {
+public class CurseAddon {
 
     private final String addonURL;
     private final String title;

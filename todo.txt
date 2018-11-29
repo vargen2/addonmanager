@@ -1,6 +1,0 @@
-addonscraper try update from new addons
-button for scrape
-setting for autoscrape
-install addon from get more tab
-task.Tasks.create???Task()
-searchfieldet - nog custom autocomplete list view. är no autocompletionbinding + autocompletepopupskin

@@ -2,14 +2,7 @@
 addonmanager.iml
 backup/
 classes/
-target/classes/gui.fxml
-target/classes/style1.css
-target/classes/style2.css
-target/generated-sources/
-target/generated-test-sources/
-target/maven-archiver/
-target/maven-status/
-target/surefire-reports/
+target/
 temp/
 log.txt
 save

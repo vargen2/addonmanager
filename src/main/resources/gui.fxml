@@ -3,8 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<?import org.controlsfx.control.HyperlinkLabel?>
 <?import org.controlsfx.control.TaskProgressView?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 <?import org.controlsfx.glyphfont.Glyph?>
@@ -41,32 +39,21 @@
                                     <children>
                                         <CustomTextField fx:id="searchField" promptText="search">
                                             <VBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                <Insets bottom="10.0" left="2.0" right="2.0" top="10.0"/>
                                             </VBox.margin>
                                         </CustomTextField>
-                                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                                            <children>
-                                                <Label fx:id="titleLabel" text="title">
-                                                    <font>
-                                                        <Font size="14.0"/>
-                                                    </font>
-                                                </Label>
-                                                <HyperlinkLabel fx:id="linkLabel" text="link">
-                                                </HyperlinkLabel>
-                                                <Label fx:id="descriptionLabel" text="description">
-                                                    <font>
-                                                        <Font size="14.0"/>
-                                                    </font>
-                                                </Label>
-                                                <Button fx:id="installButton" mnemonicParsing="false" text="Install"/>
-                                            </children>
+                                        <TableView fx:id="getMoreTableView" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="curseTitleCol" prefWidth="200.0" text="Title"/>
+                                                <TableColumn fx:id="curseDescCol" prefWidth="300.0" text="Description"/>
+                                                <TableColumn fx:id="curseDLCol" prefWidth="100.0" text="Downloads"/>
+                                                <TableColumn fx:id="curseInstallCol" prefWidth="100.0" text="Install"/>
+                                                <TableColumn fx:id="curseAuthorCol" prefWidth="200.0" text="Author"/>
+                                            </columns>
                                             <VBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                <Insets/>
                                             </VBox.margin>
-                                            <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                            </padding>
-                                        </VBox>
+                                        </TableView>
                                     </children>
                                 </VBox>
                             </children>

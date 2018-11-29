@@ -82,7 +82,7 @@ public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBindin
                 }
             }
             suggestions.sort(getComparator());
-            if (observedSet != null && suggestions.size() <= 10) {
+            if (observedSet != null && suggestions.size() <= 40) {
                 observedSet.clear();
                 observedSet.addAll(suggestions);
             }

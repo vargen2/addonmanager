@@ -81,18 +81,17 @@ public class Saver {
         });
     }
 
-    public static List<CurseAddon> loadCurseAddons() {
-
-
+    public static List<CurseAddon> loadCurseAddons(Factory factory) {
         try {
             String addons = Files.readString(Path.of("curseaddons.txt"));
             Gson gson = new Gson();
-            return gson.fromJson(addons, new TypeToken<List<CurseAddon>>() {
+            List<CurseAddon> addonsList = gson.fromJson(addons, new TypeToken<List<CurseAddon>>() {
             }.getType());
+            return addonsList.stream().map(factory::load).collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new LinkedList<>();
+        return new ArrayList<>();
     }
 
 }

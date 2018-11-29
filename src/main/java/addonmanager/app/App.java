@@ -56,6 +56,11 @@ public class App {
         public Model load(Model model) {
             return model;
         }
+
+        @Override
+        public CurseAddon load(CurseAddon curseAddon) {
+            return curseAddon;
+        }
     };
     private static Factory factory = DEFAULT_FACTORY;
 
@@ -107,7 +112,6 @@ public class App {
         game.getAddons().forEach(x -> x.setReleaseType(releaseType));
         Saver.save();
     }
-
 
 
     public static boolean downLoadVersions(Addon addon) {

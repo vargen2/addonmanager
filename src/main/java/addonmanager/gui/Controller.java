@@ -24,13 +24,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import org.controlsfx.control.HyperlinkLabel;
+import javafx.util.Callback;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -66,11 +65,9 @@ public class Controller {
     @FXML
     private CustomTextField searchField;
     @FXML
-    private Label titleLabel, descriptionLabel;
+    private TableColumn<CurseAddon, String> curseTitleCol, curseDescCol, curseInstallCol, curseDLCol, curseAuthorCol;
     @FXML
-    private HyperlinkLabel linkLabel;
-    @FXML
-    private Button installButton;
+    private TableView<CurseAddon> getMoreTableView;
 
     @FXML
     private void initialize() {
@@ -85,17 +82,85 @@ public class Controller {
         App.init(appSettings);
 
 
-        App.curseAddons = Saver.loadCurseAddons();
+        App.curseAddons = Saver.loadCurseAddons(App.getFactory());
 
         if (App.curseAddons != null && App.curseAddons.size() > 10) {
+            curseTitleCol.setCellValueFactory(new PropertyValueFactory("title"));
+            curseDescCol.setCellValueFactory(new PropertyValueFactory("description"));
+            curseDescCol.setCellFactory(new Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>>() {
+                @Override
+                public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
+                    TableCell tableCell = new TableCell<CurseAddon, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            if (item == getItem()) return;
+
+                            super.updateItem(item, empty);
+
+                            if (item == null) {
+                                super.setText(null);
+                                super.setGraphic(null);
+                            } else {
+                                super.setText(item);
+                                super.setGraphic(null);
+                            }
+                        }
+                    };
+                    tableCell.setPrefHeight(44); //44+ needed to get 2 lines
+                    tableCell.setWrapText(true);
+                    tableCell.setTextOverrun(OverrunStyle.WORD_ELLIPSIS);
+
+                    return tableCell;
+                }
+            });
+            curseInstallCol.setCellFactory(new Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>>() {
+                @Override
+                public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
+                    TableCell tableCell = new TableCell<CurseAddon, String>() {
+
+                        private Button installButton = new Button("Install");
+
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setText(null);
+                                setGraphic(null);
+                            } else {
+                                var addon = getTableRow().getItem();
+                                var game = App.model.getSelectedGame();
+                                if (addon != null && game != null) {
+                                    if (game.getAddons().stream().anyMatch(a ->
+                                            a.getFolderName().equalsIgnoreCase(addon.getTitle()) ||
+                                                    a.getTitle().equalsIgnoreCase(addon.getTitle()))) {
+                                        setText("Installed");
+                                        setGraphic(null);
+                                    } else {
+                                        setText(null);
+                                        installButton.setText("Install");
+                                        setGraphic(installButton);
+                                    }
+                                } else {
+                                    setText(null);
+                                    setGraphic(null);
+                                }
+                            }
+                        }
+                    };
+                    tableCell.setPrefHeight(44); //44+ needed to get 2 lines
+                    tableCell.setWrapText(true);
+                    tableCell.setTextOverrun(OverrunStyle.WORD_ELLIPSIS);
+
+                    return tableCell;
+                }
+            });
+
+            getMoreTableView.setItems(FXCollections.observableArrayList(App.curseAddons));
             var observableSet = FXCollections.observableSet(new HashSet<CurseAddon>());
             observableSet.addListener((SetChangeListener<CurseAddon>) change -> {
                 if (!change.wasAdded())
                     return;
-                change.getSet().forEach(addon -> {
-
-                    System.out.println(addon.getTitle());
-                });
+                getMoreTableView.setItems(FXCollections.observableArrayList(change.getSet()));
             });
             var provider = AddonSuggestionProvider.create(curseAddon -> curseAddon.getAddonURL() + " " + curseAddon.getTitle(), App.curseAddons);
             provider.setObservedSet(observableSet);
@@ -107,18 +172,22 @@ public class Controller {
                     if (param == null)
                         return;
                     CurseAddon curseAddon = param.getCompletion();
-                    titleLabel.setText(curseAddon.getTitle());
-                    linkLabel.setOnAction(event -> {
-                        Hyperlink link = (Hyperlink) event.getSource();
-                        if (link == null)
-                            return;
-                        AddonContextMenu.openWebpage(URI.create(link.getText()));
-                    });
-                    linkLabel.setText("[" + curseAddon.getAddonURL() + "]");
-                    descriptionLabel.setText(curseAddon.getDescription());
-                    installButton.setOnAction(actionEvent -> {
-                        System.out.println("hit");
-                    });
+                    if (curseAddon == null)
+                        return;
+                    getMoreTableView.setItems(FXCollections.observableArrayList(curseAddon));
+//                    CurseAddon curseAddon = param.getCompletion();
+//                    titleLabel.setText(curseAddon.getTitle());
+//                    linkLabel.setOnAction(event -> {
+//                        Hyperlink link = (Hyperlink) event.getSource();
+//                        if (link == null)
+//                            return;
+//                        AddonContextMenu.openWebpage(URI.create(link.getText()));
+//                    });
+//                    linkLabel.setText("[" + curseAddon.getAddonURL() + "]");
+//                    descriptionLabel.setText(curseAddon.getDescription());
+//                    installButton.setOnAction(actionEvent -> {
+//                        System.out.println("hit");
+//                    });
 
                 }
             });
@@ -189,18 +258,11 @@ public class Controller {
         }
 
         titleVersionCol.setCellValueFactory(new PropertyValueFactory("titleVersion"));
-        titleVersionCol.setPrefWidth(250);
-
         releaseLatestCol.setCellValueFactory(new PropertyValueFactory("releaseLatest"));
-        releaseLatestCol.setPrefWidth(250);
         releaseLatestCol.setCellFactory(ReleaseLatestVersionCell.cellFactory());
-
         stateCol.setCellFactory(StatusCell.cellFactory());
         stateCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        stateCol.setPrefWidth(200);
-
         gameVersionCol.setCellValueFactory(new PropertyValueFactory("gameVersion"));
-        gameVersionCol.setPrefWidth(150);
 
         tableView.getColumns().setAll(titleVersionCol, releaseLatestCol, stateCol, gameVersionCol);
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {

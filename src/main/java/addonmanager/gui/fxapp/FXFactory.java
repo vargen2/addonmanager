@@ -1,9 +1,6 @@
 package addonmanager.gui.fxapp;
 
-import addonmanager.app.Addon;
-import addonmanager.app.Factory;
-import addonmanager.app.Game;
-import addonmanager.app.Model;
+import addonmanager.app.*;
 
 public class FXFactory implements Factory {
     @Override
@@ -21,7 +18,13 @@ public class FXFactory implements Factory {
         return new FXModel();
     }
 
+    @Override
     public Model load(Model model) {
         return new FXModel(model);
+    }
+
+    @Override
+    public CurseAddon load(CurseAddon curseAddon) {
+        return new FXCurseAddon(curseAddon);
     }
 }

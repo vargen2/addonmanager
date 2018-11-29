@@ -15,6 +15,10 @@ public class FXCurseAddon extends CurseAddon {
         super(addonURL, title, description);
     }
 
+    public FXCurseAddon(CurseAddon curseAddon) {
+        this(curseAddon.getAddonURL(), curseAddon.getTitle(), curseAddon.getDescription());
+    }
+
     public ReadOnlyStringProperty urlProperty() {
         if (urlProperty == null)
             urlProperty = new SimpleStringProperty(this, "url", getAddonURL());

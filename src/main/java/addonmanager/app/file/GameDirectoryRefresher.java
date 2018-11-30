@@ -5,6 +5,8 @@ import addonmanager.app.App;
 import addonmanager.app.Game;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 class GameDirectoryRefresher {
@@ -35,5 +37,11 @@ class GameDirectoryRefresher {
 
         }
 
+        var addons = new ArrayList<>(game.getAddons());
+        for (var a : addons) {
+            if (Arrays.stream(directories).noneMatch(d -> d.getName().equalsIgnoreCase(a.getFolderName()))) {
+                game.removeAddon(a);
+            }
+        }
     }
 }

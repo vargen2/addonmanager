@@ -67,7 +67,9 @@ public class Controller {
     @FXML
     private CustomTextField searchField;
     @FXML
-    private TableColumn<CurseAddon, String> curseTitleCol, curseDescCol, curseInstallCol, curseDLCol, curseUpdatedCol, curseCreatedCol;
+    private TableColumn<CurseAddon, String> curseTitleCol, curseDescCol, curseDLCol, curseUpdatedCol, curseCreatedCol;
+    @FXML
+    private TableColumn<CurseAddon, CurseAddon.Status> curseInstallCol;
     @FXML
     private TableView<CurseAddon> getMoreTableView;
 
@@ -118,73 +120,122 @@ public class Controller {
                     return tableCell;
                 }
             });
-            curseInstallCol.setCellFactory(new Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>>() {
+            curseInstallCol.setCellValueFactory(new PropertyValueFactory("status"));
+            curseInstallCol.setCellFactory(new Callback<TableColumn<CurseAddon, CurseAddon.Status>, TableCell<CurseAddon, CurseAddon.Status>>() {
                 @Override
-                public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
+                public TableCell<CurseAddon, CurseAddon.Status> call(TableColumn<CurseAddon, CurseAddon.Status> param) {
                     Button button = new Button("Install");
                     ProgressBar bar = new ProgressBar();
                     bar.setPrefWidth(140);
                     button.setPrefWidth(140);
 
-                    TableCell tableCell = new TableCell<CurseAddon, String>() {
+                    TableCell tableCell = new TableCell<CurseAddon, CurseAddon.Status>() {
 
                         private final Button installButton = button;
                         private final ProgressBar progressBar = bar;
 
                         @Override
-                        protected void updateItem(String item, boolean empty) {
+                        protected void updateItem(CurseAddon.Status item, boolean empty) {
                             super.updateItem(item, empty);
                             setText(null);
                             if (empty) {
                                 setGraphic(null);
                             } else {
+                                final TableColumn<CurseAddon, CurseAddon.Status> column = getTableColumn();
+                                var statusObjectValue = column == null ? null : column.getCellObservableValue(getIndex());
+                                CurseAddon.Status tempStatus = null;
+                                if (statusObjectValue != null)
+                                    tempStatus = statusObjectValue.getValue();
+
                                 var addon = getTableRow().getItem();
                                 var game = App.model.getSelectedGame();
-                                if (addon != null && game != null) {
-                                    if (game.getAddons().stream().anyMatch(a ->
-                                            a.getFolderName().equalsIgnoreCase(addon.getTitle()) ||
-                                                    a.getTitle().equalsIgnoreCase(addon.getTitle()) ||
-                                                    a.getFolderName().equalsIgnoreCase(addon.getAddonURL()) ||
-                                                    a.getTitle().equalsIgnoreCase(addon.getAddonURL()) ||
-                                                    (a.getProjectUrl() != null && a.getProjectUrl().contains(addon.getAddonURL()))
-                                    )) {
+                                if (tempStatus != null && addon != null && game != null) {
+                                    if (tempStatus == CurseAddon.Status.UNKNOWN) {
+                                        if (game.getAddons().stream().anyMatch(a ->
+                                                a.getFolderName().equalsIgnoreCase(addon.getTitle()) ||
+                                                        a.getTitle().equalsIgnoreCase(addon.getTitle()) ||
+                                                        a.getFolderName().equalsIgnoreCase(addon.getAddonURL()) ||
+                                                        a.getTitle().equalsIgnoreCase(addon.getAddonURL()) ||
+                                                        (a.getProjectUrl() != null && a.getProjectUrl().contains(addon.getAddonURL()))
+                                        )) {
+                                            progressBar.progressProperty().unbind();
+                                            addon.setStatus(CurseAddon.Status.INSTALLED);
+                                            installButton.setText("Installed");
+                                            installButton.setDisable(true);
+                                            setGraphic(installButton);
+                                        } else {
+                                            progressBar.progressProperty().unbind();
+                                            addon.setStatus(CurseAddon.Status.NOT_INSTALLED);
+                                            installButton.setText("Install");
+                                            installButton.setDisable(false);
+                                            installButton.setOnAction(event -> {
+                                                CompletableFuture.runAsync(new Task<Void>() {
+                                                    @Override
+                                                    protected Void call() {
+                                                        System.out.println("start1");
+                                                        Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
+                                                        addon.setUpdateable(updateable);
+//                                                        Platform.runLater(() -> {
+//                                                            progressBar.progressProperty().bind(updateable.progressProperty());
+//
+//                                                        });
+
+
+                                                        System.out.println("start2");
+                                                        if (!App.installAddon(game, addon, updateable)) {
+
+                                                            cancel();
+
+                                                        }
+                                                        addon.setStatus(CurseAddon.Status.UNKNOWN);
+                                                        return null;
+                                                    }
+                                                });
+                                                addon.setStatus(CurseAddon.Status.INSTALLING);
+                                            });
+                                            setGraphic(installButton);
+                                        }
+                                    } else if (tempStatus == CurseAddon.Status.INSTALLED) {
+                                        progressBar.progressProperty().unbind();
                                         installButton.setText("Installed");
                                         installButton.setDisable(true);
                                         setGraphic(installButton);
-                                    } else {
+                                    } else if (tempStatus == CurseAddon.Status.NOT_INSTALLED) {
+                                        progressBar.progressProperty().unbind();
                                         installButton.setText("Install");
                                         installButton.setDisable(false);
                                         installButton.setOnAction(event -> {
                                             CompletableFuture.runAsync(new Task<Void>() {
                                                 @Override
                                                 protected Void call() {
-                                                    System.out.println("start1");
+
                                                     Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
-                                                    Platform.runLater(() -> {
-                                                        progressBar.progressProperty().bind(updateable.progressProperty());
+                                                    addon.setUpdateable(updateable);
+//                                                    Platform.runLater(() -> {
+//                                                        progressBar.progressProperty().bind(updateable.progressProperty());
+//
+//                                                    });
 
-                                                    });
 
-
-                                                    System.out.println("start2");
                                                     if (!App.installAddon(game, addon, updateable)) {
 
                                                         cancel();
 
                                                     }
-                                                    Platform.runLater(() -> {
-                                                        progressBar.progressProperty().unbind();
-                                                    });
+                                                    addon.setStatus(CurseAddon.Status.UNKNOWN);
                                                     return null;
                                                 }
                                             });
-                                            installButton.setDisable(true);
-                                            setGraphic(progressBar);
+                                            addon.setStatus(CurseAddon.Status.INSTALLING);
                                         });
                                         setGraphic(installButton);
+                                    } else if (tempStatus == CurseAddon.Status.INSTALLING) {
+                                        progressBar.progressProperty().bind(addon.getUpdateable().progressProperty());
+                                        setGraphic(progressBar);
                                     }
 
                                 } else {
+                                    progressBar.progressProperty().unbind();
                                     installButton.setText("No Game");
                                     installButton.setDisable(true);
                                     setGraphic(installButton);

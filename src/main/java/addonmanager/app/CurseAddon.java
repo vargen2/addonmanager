@@ -2,12 +2,17 @@ package addonmanager.app;
 
 public class CurseAddon {
 
+    public enum Status {INSTALLED, INSTALLING, NOT_INSTALLED, UNKNOWN}
+
+    private transient Status status = Status.UNKNOWN;
+    private transient Updateable updateable = Updateable.EMPTY_UPDATEABLE;
     private final String addonURL;
     private final String title;
     private final String description;
     private long downloads;
     private String updatedEpoch;
     private final String createdEpoch;
+
 
     public CurseAddon(String addonURL, String title, String description, long downloads, String updatedEpoch, String createdEpoch) {
         this.addonURL = addonURL;
@@ -43,6 +48,21 @@ public class CurseAddon {
         return createdEpoch;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Updateable getUpdateable() {
+        return updateable;
+    }
+
+    public void setUpdateable(Updateable updateable) {
+        this.updateable = updateable;
+    }
 
     @Override
     public String toString() {

@@ -49,8 +49,11 @@ public class FileOperations {
         if (addon == null || addon.getGame() == null || curseAddon == null || download == null || zipFile == null || !zipFile.exists())
             return false;
         AddonInstaller addonInstaller = new AddonInstaller(addon, curseAddon, download, zipFile);
+
+
         List<File> folders = addonInstaller.install(from, to, updateable);
 
+        //todo flytta det som är under  här till App
         if (folders.isEmpty())
             return false;
         refreshGameDirectory(addon.getGame());

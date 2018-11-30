@@ -23,6 +23,9 @@ class ProjectURLFinder {
         ADDON_PROJECT_NAMES.put("omen", new ArrayList<>(List.of("omen-threat-meter")));
         ADDON_PROJECT_NAMES.put("littlewigs", new ArrayList<>(List.of("little-wigs")));
         ADDON_PROJECT_NAMES.put("elvui_sle", new ArrayList<>(List.of("elvui-shadow-light")));
+        ADDON_PROJECT_NAMES.put("atlasloot", new ArrayList<>(List.of("atlasloot-enhanced")));
+        ADDON_PROJECT_NAMES.put("healbot", new ArrayList<>(List.of("heal-bot-continued")));
+        ADDON_PROJECT_NAMES.put("tradeskillmaster", new ArrayList<>(List.of("tradeskill-master")));
     }
 
     private final Addon addon;
@@ -33,6 +36,8 @@ class ProjectURLFinder {
 
     String find() {
         List<String> urlNames = new LinkedList<>(List.of(addon.getTitle().replaceAll(" ", "-"), addon.getFolderName(), addon.getTitle()));
+
+
         var projectNames = ADDON_PROJECT_NAMES.get(addon.getFolderName().toLowerCase());
         if (projectNames != null)
             urlNames.addAll(0, projectNames);

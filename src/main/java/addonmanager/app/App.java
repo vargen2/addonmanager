@@ -119,7 +119,7 @@ public class App {
             return false;
         addon.setStatus(Addon.Status.GETTING_VERSIONS);
         NetOperations.findProject(addon);
-        boolean downloaded = NetOperations.downLoadVersions(addon);
+        boolean downloaded = NetOperations.downLoadVersions(addon, 0, 1);
         if (downloaded) Saver.save();
         return downloaded;
     }
@@ -151,7 +151,7 @@ public class App {
             return false;
         System.out.println("hit2");
         updateable.updateProgress(0.1, 1);
-        Addon addon = App.getFactory().createAddon(game, "newaddon", "");
+        Addon addon = App.getFactory().createAddon(game, curseAddon.getAddonURL(), "");
         addon.setProjectUrl(projectUrl);
         addon.setUpdateable(updateable);
         System.out.println("hit3");

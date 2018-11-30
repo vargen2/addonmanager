@@ -30,14 +30,14 @@ public class NetOperations {
     }
 
     public static boolean downLoadVersions(Addon addon, double from, double to) {
-        addon.getUpdateable().updateProgress(from + (to - from) * 0.0, 1);
+
         List<Download> downloads = VersionDownloader.create(addon).getDownloads();
         if (downloads.isEmpty()) {
             addon.setDownloads(downloads);
             addon.getUpdateable().updateProgress(from + (to - from) * 1.0, 1);
             return false;
         }
-        addon.getUpdateable().updateProgress(from + (to - from) * 0.5, 1);
+        addon.getUpdateable().updateProgress(from + (to - from) * 0.4, 1);
         int page = 2;
         while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
 

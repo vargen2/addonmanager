@@ -11,6 +11,7 @@ public class FXCurseAddon extends CurseAddon {
     private LongProperty downloadsProperty;
     private StringProperty updatedEpochProperty;
     private StringProperty createdEpochProperty;
+    private ObjectProperty<Status> statusProperty;
 
     public FXCurseAddon(String addonURL, String title, String description, long downloads, String updatedEpoch, String createdEpoch) {
         super(addonURL, title, description, downloads, updatedEpoch, createdEpoch);
@@ -54,5 +55,17 @@ public class FXCurseAddon extends CurseAddon {
         if (createdEpochProperty == null)
             createdEpochProperty = new SimpleStringProperty(this, "createdEpoch", getCreatedEpoch());
         return createdEpochProperty;
+    }
+
+    public ObjectProperty<Status> statusProperty() {
+        if (statusProperty == null)
+            statusProperty = new SimpleObjectProperty<>(this, "status", getStatus());
+        return statusProperty;
+    }
+
+    @Override
+    public void setStatus(Status status) {
+        super.setStatus(status);
+        statusProperty().setValue(status);
     }
 }

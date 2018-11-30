@@ -44,26 +44,17 @@ public class Controller {
     private static FXSettings fxSettings;
 
     @FXML
-    private Button refreshButton;
-    @FXML
-    private Button removeButton;
-    @FXML
-    private Button settingsButton;
+    private Button refreshButton, removeButton, settingsButton;
     @FXML
     private ChoiceBox gameChoiceBox;
     @FXML
     private TableView<Addon> tableView;
     @FXML
-    private TableColumn<Addon, String> titleVersionCol;
-    @FXML
-    private TableColumn<Addon, String> releaseLatestCol;
+    private TableColumn<Addon, String> titleVersionCol, releaseLatestCol, gameVersionCol;
     @FXML
     private TableColumn<Addon, Addon.Status> stateCol;
     @FXML
-    private TableColumn<Addon, String> gameVersionCol;
-    @FXML
     private TaskProgressView<Task<Void>> taskProgressView;
-
     @FXML
     private CustomTextField searchField;
     @FXML
@@ -72,6 +63,8 @@ public class Controller {
     private TableColumn<CurseAddon, CurseAddon.Status> curseInstallCol;
     @FXML
     private TableView<CurseAddon> getMoreTableView;
+    @FXML
+    private Tab getMoreTab;
 
     @FXML
     private void initialize() {
@@ -313,6 +306,12 @@ public class Controller {
             });
 
         }
+        getMoreTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue)
+                return;
+            getMoreTableView.getItems().stream().forEach(curseAddon -> curseAddon.setStatus(CurseAddon.Status.UNKNOWN));
+            //getMoreTableView.refresh();
+        });
 
         var settingsController = new SettingsController(App.model, fxSettings);
         var addonContextMenu = new AddonContextMenu();
@@ -372,6 +371,7 @@ public class Controller {
                 }
                 refreshButton.setDisable(newValue == null);
                 removeButton.setDisable(newValue == null);
+                getMoreTableView.getItems().stream().forEach(curseAddon -> curseAddon.setStatus(CurseAddon.Status.UNKNOWN));
                 getMoreTableView.refresh();
             });
         } else {

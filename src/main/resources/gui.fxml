@@ -29,7 +29,7 @@
 
                     </StackPane>
                 </Tab>
-                <Tab closable="false" text="Get more">
+                <Tab fx:id="getMoreTab" closable="false" text="Get more">
                     <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                             <children>

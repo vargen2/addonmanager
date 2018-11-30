@@ -145,20 +145,20 @@ public class App {
 
     public static boolean installAddon(Game game, CurseAddon curseAddon, Updateable updateable) {
         updateable.updateProgress(0, 1);
-        System.out.println("hit1");
+
         String projectUrl = NetOperations.findProject(curseAddon);
         if (projectUrl.isEmpty())
             return false;
-        System.out.println("hit2");
+
         updateable.updateProgress(0.1, 1);
         Addon addon = App.getFactory().createAddon(game, curseAddon.getAddonURL(), "");
         addon.setProjectUrl(projectUrl);
         addon.setUpdateable(updateable);
-        System.out.println("hit3");
+
         NetOperations.downLoadVersions(addon, 0.1, 0.3);
-        System.out.println("hit4");
+
         File zipFile = NetOperations.downLoadFile(addon, addon.getLatestDownload(), 0.3, 0.7);
-        System.out.println("hit5");
+
         boolean installed = FileOperations.installAddon(addon, curseAddon, addon.getLatestDownload(), zipFile, 0.7, 0.9, updateable);
         updateable.updateProgress(1, 1);
         if (installed)

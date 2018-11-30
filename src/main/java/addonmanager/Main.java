@@ -20,7 +20,7 @@ public class Main extends Application {
         primaryStage.getIcons().add(new Image("icon.png"));
         primaryStage.setTitle("Addon Manager");
         //new JMetro(JMetro.Style.LIGHT).applyTheme(root);
-        primaryStage.setScene(new Scene(root, 1000, 727));
+        primaryStage.setScene(new Scene(root, 1020, 727));
         primaryStage.setY(0);
         primaryStage.show();
         primaryStage.setOnCloseRequest(t -> {

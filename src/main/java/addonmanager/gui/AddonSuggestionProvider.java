@@ -2,6 +2,7 @@ package addonmanager.gui;
 
 import addonmanager.app.App;
 import addonmanager.app.CurseAddon;
+import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 
@@ -11,7 +12,7 @@ public class AddonSuggestionProvider implements Callback<AutoCompletionBinding.I
 
     private final List<CurseAddon> possibleSuggestions = new ArrayList<>();
     private final Object possibleSuggestionsLock = new Object();
-    private List<CurseAddon> observedList;
+    private ObservableList<CurseAddon> observedList;
 
     private Callback<CurseAddon, String> stringConverter;
 
@@ -68,7 +69,7 @@ public class AddonSuggestionProvider implements Callback<AutoCompletionBinding.I
         }
     }
 
-    public void setObservedList(List<CurseAddon> observedList) {
+    public void setObservedList(ObservableList<CurseAddon> observedList) {
         this.observedList = observedList;
     }
 
@@ -84,8 +85,7 @@ public class AddonSuggestionProvider implements Callback<AutoCompletionBinding.I
                 }
             }
             if (observedList != null && suggestions.size() <= 50) {
-                observedList.clear();
-                observedList.addAll(suggestions);
+                observedList.setAll(suggestions);
                 observedList.sort(new Comparator<CurseAddon>() {
                     @Override
                     public int compare(CurseAddon o1, CurseAddon o2) {
@@ -96,15 +96,13 @@ public class AddonSuggestionProvider implements Callback<AutoCompletionBinding.I
                     }
                 });
             } else {
-                observedList.clear();
-                observedList.addAll(App.curseAddons);
+                observedList.setAll(App.curseAddons);
             }
             suggestions.sort(getComparator());
 
         } else {
             if (observedList != null) {
-                observedList.clear();
-                observedList.addAll(App.curseAddons);
+                observedList.setAll(App.curseAddons);
             }
         }
 

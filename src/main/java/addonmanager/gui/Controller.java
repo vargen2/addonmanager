@@ -16,7 +16,6 @@ import addonmanager.gui.task.RefreshGameTask;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,6 +29,9 @@ import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -64,7 +66,7 @@ public class Controller {
     @FXML
     private CustomTextField searchField;
     @FXML
-    private TableColumn<CurseAddon, String> curseTitleCol, curseDescCol, curseInstallCol, curseDLCol, curseAuthorCol;
+    private TableColumn<CurseAddon, String> curseTitleCol, curseDescCol, curseInstallCol, curseDLCol, curseUpdatedCol, curseCreatedCol;
     @FXML
     private TableView<CurseAddon> getMoreTableView;
 
@@ -87,6 +89,8 @@ public class Controller {
             curseTitleCol.setCellValueFactory(new PropertyValueFactory("title"));
             curseDescCol.setCellValueFactory(new PropertyValueFactory("description"));
             curseDLCol.setCellValueFactory(new PropertyValueFactory("downloads"));
+            curseUpdatedCol.setCellValueFactory(new PropertyValueFactory("updatedEpoch"));
+            curseCreatedCol.setCellValueFactory(new PropertyValueFactory("createdEpoch"));
             curseDescCol.setCellFactory(new Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>>() {
                 @Override
                 public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
@@ -159,17 +163,35 @@ public class Controller {
                     return tableCell;
                 }
             });
-            ObservableList<CurseAddon> allCurseAddons = FXCollections.observableArrayList(App.curseAddons);
+            Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>> dateCallback = new Callback<>() {
+                @Override
+                public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
+                    return new TableCell<>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            if (item == getItem()) return;
 
-            var observableList = FXCollections.observableList(allCurseAddons);
+                            super.updateItem(item, empty);
+
+                            if (item == null) {
+                                super.setText(null);
+                                super.setGraphic(null);
+                            } else {
+
+                                super.setText(LocalDate.ofInstant(Instant.ofEpochSecond(Long.parseLong(item)), ZoneId.systemDefault()).toString());//format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)));
+                                super.setGraphic(null);
+                            }
+                        }
+                    };
+
+                }
+            };
+            curseUpdatedCol.setCellFactory(dateCallback);
+            curseCreatedCol.setCellFactory(dateCallback);
+
+            var observableList = FXCollections.observableList(App.curseAddons);
             getMoreTableView.setItems(observableList);
-//            observableList.addListener((ListChangeListener<CurseAddon>) change -> {
-//
-//                if (change.wasAdded())
-//                    getMoreTableView.setItems(FXCollections.observableArrayList(change.getList()));
-//                else
-//                    getMoreTableView.setItems(allCurseAddons);
-//            });
+
             var provider = AddonSuggestionProvider.create(curseAddon -> curseAddon.getAddonURL() + " " + curseAddon.getTitle(), App.curseAddons);
             provider.setObservedList(observableList);
             var autoCompletionBinding = TextFields.bindAutoCompletion(searchField, provider);
@@ -182,7 +204,7 @@ public class Controller {
                     CurseAddon curseAddon = param.getCompletion();
                     if (curseAddon == null)
                         return;
-                    getMoreTableView.setItems(FXCollections.observableArrayList(curseAddon));
+                    observableList.setAll(curseAddon);
 //                    CurseAddon curseAddon = param.getCompletion();
 //                    titleLabel.setText(curseAddon.getTitle());
 //                    linkLabel.setOnAction(event -> {

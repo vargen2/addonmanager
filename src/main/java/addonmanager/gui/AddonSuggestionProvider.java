@@ -95,14 +95,17 @@ public class AddonSuggestionProvider implements Callback<AutoCompletionBinding.I
 
                     }
                 });
+
             } else {
                 observedList.setAll(App.curseAddons);
+
             }
             suggestions.sort(getComparator());
 
         } else {
             if (observedList != null) {
                 observedList.setAll(App.curseAddons);
+
             }
         }
 

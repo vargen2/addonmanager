@@ -32,6 +32,7 @@ import org.controlsfx.control.textfield.TextFields;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -189,11 +190,12 @@ public class Controller {
             curseUpdatedCol.setCellFactory(dateCallback);
             curseCreatedCol.setCellFactory(dateCallback);
 
-            var observableList = FXCollections.observableList(App.curseAddons);
-            getMoreTableView.setItems(observableList);
+
+            getMoreTableView.setItems(FXCollections.observableList(new ArrayList<>(App.curseAddons)));
+
 
             var provider = AddonSuggestionProvider.create(curseAddon -> curseAddon.getAddonURL() + " " + curseAddon.getTitle(), App.curseAddons);
-            provider.setObservedList(observableList);
+            provider.setObservedList(getMoreTableView.getItems());
             var autoCompletionBinding = TextFields.bindAutoCompletion(searchField, provider);
             autoCompletionBinding.prefWidthProperty().bind(searchField.widthProperty());
             autoCompletionBinding.setOnAutoCompleted(new EventHandler<AutoCompletionBinding.AutoCompletionEvent<CurseAddon>>() {
@@ -204,7 +206,8 @@ public class Controller {
                     CurseAddon curseAddon = param.getCompletion();
                     if (curseAddon == null)
                         return;
-                    observableList.setAll(curseAddon);
+                    getMoreTableView.getItems().setAll(curseAddon);
+
 //                    CurseAddon curseAddon = param.getCompletion();
 //                    titleLabel.setText(curseAddon.getTitle());
 //                    linkLabel.setOnAction(event -> {

@@ -26,27 +26,34 @@ public class NetOperations {
     public static void findProject(Addon addon) {
         if (addon.getProjectUrl() == null || addon.getProjectUrl().equals("https://www.curseforge.com/wow/addons/"))
             addon.setProjectUrl(new ProjectURLFinder(addon).find());
-        App.LOG.fine("App.downloadversions found: " + addon.getProjectUrl());
+        //App.LOG.fine("NetfindProject(Addon addon) {: " + addon.getProjectUrl());
     }
 
-    public static boolean downLoadVersions(Addon addon) {
+    public static boolean downLoadVersions(Addon addon, double from, double to) {
+        addon.getUpdateable().updateProgress(from + (to - from) * 0.0, 1);
         List<Download> downloads = VersionDownloader.create(addon).getDownloads();
         if (downloads.isEmpty()) {
             addon.setDownloads(downloads);
+            addon.getUpdateable().updateProgress(from + (to - from) * 1.0, 1);
             return false;
         }
+        addon.getUpdateable().updateProgress(from + (to - from) * 0.5, 1);
         int page = 2;
         while (downloads.stream().noneMatch(x -> x.getRelease().equalsIgnoreCase(Addon.ReleaseType.RELEASE.toString()))) {
-            addon.getUpdateable().updateProgress(0.2, 1);
+
             App.LOG.info(page + " hit " + addon.getFolderName() + " " + addon.getProjectUrl());
             VersionDownloader versionDownloader = VersionDownloader.create(addon);
             versionDownloader.setPage(page);
             downloads.addAll(versionDownloader.getDownloads());
             page++;
         }
-        addon.getUpdateable().updateProgress(1, 1);
+        addon.getUpdateable().updateProgress(from + (to - from) * 1.0, 1);
         addon.setDownloads(downloads);
         return true;
+    }
+
+    public static boolean downLoadVersions(Addon addon) {
+        return downLoadVersions(addon, 0, 1);
     }
 
 

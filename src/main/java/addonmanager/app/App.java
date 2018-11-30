@@ -124,15 +124,12 @@ public class App {
         return downloaded;
     }
 
-    public static boolean updateAddon(Addon addon) {
-        return updateAddon(addon, addon.getLatestDownload());
-    }
-
-    public static boolean updateAddon(Addon addon, Download download) {
+    public static boolean updateAddon(Addon addon, Download download, File zipFile) {
         if (addon == null || download == null)
             return false;
         addon.setStatus(Addon.Status.UPDATING);
-        File zipFile = NetOperations.downLoadFile(addon, download, 0, 0.7);
+        if (zipFile == null)
+            zipFile = NetOperations.downLoadFile(addon, download, 0, 0.7);
         if (!FileOperations.replaceAddon(addon, download, zipFile, 0.8, 1.0)) {
             addon.setStatus(Addon.Status.NONE);
             return false;
@@ -140,6 +137,10 @@ public class App {
         FileOperations.refreshToc(addon);
         Saver.save();
         return true;
+    }
+
+    public static boolean updateAddon(Addon addon, Download download) {
+        return updateAddon(addon, download, null);
     }
 
     public static boolean installAddon(Game game, CurseAddon curseAddon, Updateable updateable) {
@@ -154,11 +155,12 @@ public class App {
         addon.setProjectUrl(projectUrl);
         addon.setUpdateable(updateable);
         System.out.println("hit3");
-        NetOperations.downLoadVersions(addon);
+        NetOperations.downLoadVersions(addon, 0.1, 0.3);
         System.out.println("hit4");
-        File zipFile = NetOperations.downLoadFile(addon, addon.getLatestDownload(), 0.1, 0.5);
+        File zipFile = NetOperations.downLoadFile(addon, addon.getLatestDownload(), 0.3, 0.7);
         System.out.println("hit5");
-        boolean installed = FileOperations.installAddon(addon, curseAddon, addon.getLatestDownload(), zipFile, 0.5, 0.7, updateable);
+        boolean installed = FileOperations.installAddon(addon, curseAddon, addon.getLatestDownload(), zipFile, 0.7, 0.9, updateable);
+        updateable.updateProgress(1, 1);
         if (installed)
             Saver.save();
         return installed;

@@ -42,16 +42,16 @@ class AddonInstaller {
         if (!FileOperations.directoriesExists())
             return List.of();
         updateable.updateMessage("unzipping...");
-        updateable.updateProgress(from + (to - from) * 0.0, to);
+        updateable.updateProgress(from + (to - from) * 0.0, 1);
         if (!unpack())
             return List.of();
 
         updateable.updateMessage("moving new...");
-        updateable.updateProgress(from + (to - from) * 0.5, to);
+        updateable.updateProgress(from + (to - from) * 0.5, 1);
         if (!moveTempToAddOns())
             return List.of();
         updateable.updateMessage("clean...");
-        updateable.updateProgress(from + (to - from) * 0.75, to);
+        updateable.updateProgress(from + (to - from) * 0.75, 1);
         if (!clean())
             return List.of();
         return List.of(addonFolders);
@@ -109,7 +109,7 @@ class AddonInstaller {
     }
 
     private boolean clean() {
-        FileUtils.deleteQuietly(zipFile);
+
         FileUtils.deleteQuietly(tempWorkingDir);
 
         return true;

@@ -68,7 +68,7 @@ class WowCurseForge extends VersionDownloader {
             return downloads;
         }
         updateable.updateMessage("parsing...");
-        updateable.updateProgress(0.7, 1.0);
+        //updateable.updateProgress(0.7, 1.0);
 
         int index1 = input.indexOf("<div class=\"listing-body\">");
         int index2 = input.substring(index1).indexOf("</table>");
@@ -93,7 +93,7 @@ class WowCurseForge extends VersionDownloader {
 
             downloads.add(download);
         }
-        updateable.updateProgress(0.9, 1.0);
+        //updateable.updateProgress(0.9, 1.0);
         updateable.updateMessage("done");
         return downloads;
     }

@@ -57,8 +57,12 @@ public class FileOperations {
         var addons = addon.getGame().getAddons().stream()
                 .filter(a -> folders.stream().anyMatch(folder -> a.getFolderName().equalsIgnoreCase(folder.getName())))
                 .collect(Collectors.toList());
+
         addons.forEach(App::downLoadVersions);
-        addons.forEach(App::updateAddon);
+
+        addons.stream().filter(a -> a.getProjectUrl().equalsIgnoreCase(addon.getProjectUrl())).findAny().ifPresent(a -> App.updateAddon(a, a.getLatestDownload(), zipFile));
+
+
         addons.forEach(App::removeSubFoldersFromGame);
 
         return true;

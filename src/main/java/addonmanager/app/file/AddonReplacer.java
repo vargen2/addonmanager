@@ -38,22 +38,22 @@ class AddonReplacer {
             return false;
         Updateable updateable = addon.getUpdateable();
         updateable.updateMessage("unzipping...");
-        updateable.updateProgress(from + (to - from) * 0.0, to);
+        updateable.updateProgress(from + (to - from) * 0.0, 1);
         if (!unpack())
             return false;
 
         updateable.updateMessage("removing old...");
-        updateable.updateProgress(from + (to - from) * 0.25, to);
+        updateable.updateProgress(from + (to - from) * 0.25, 1);
         if (!moveOldToBackup())
             return false;
 
         updateable.updateMessage("moving new...");
-        updateable.updateProgress(from + (to - from) * 0.5, to);
+        updateable.updateProgress(from + (to - from) * 0.5, 1);
         if (!moveTempToAddOns())
             return false;
 
         updateable.updateMessage("clean...");
-        updateable.updateProgress(from + (to - from) * 0.75, to);
+        updateable.updateProgress(from + (to - from) * 0.75, 1);
         if (!clean())
             return false;
 

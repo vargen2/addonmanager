@@ -16,7 +16,7 @@ import addonmanager.gui.task.RefreshGameTask;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.SetChangeListener;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,7 +30,6 @@ import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -87,6 +86,7 @@ public class Controller {
         if (App.curseAddons != null && App.curseAddons.size() > 10) {
             curseTitleCol.setCellValueFactory(new PropertyValueFactory("title"));
             curseDescCol.setCellValueFactory(new PropertyValueFactory("description"));
+            curseDLCol.setCellValueFactory(new PropertyValueFactory("downloads"));
             curseDescCol.setCellFactory(new Callback<TableColumn<CurseAddon, String>, TableCell<CurseAddon, String>>() {
                 @Override
                 public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
@@ -159,16 +159,19 @@ public class Controller {
                     return tableCell;
                 }
             });
+            ObservableList<CurseAddon> allCurseAddons = FXCollections.observableArrayList(App.curseAddons);
 
-            getMoreTableView.setItems(FXCollections.observableArrayList(App.curseAddons));
-            var observableSet = FXCollections.observableSet(new HashSet<CurseAddon>());
-            observableSet.addListener((SetChangeListener<CurseAddon>) change -> {
-                if (!change.wasAdded())
-                    return;
-                getMoreTableView.setItems(FXCollections.observableArrayList(change.getSet()));
-            });
+            var observableList = FXCollections.observableList(allCurseAddons);
+            getMoreTableView.setItems(observableList);
+//            observableList.addListener((ListChangeListener<CurseAddon>) change -> {
+//
+//                if (change.wasAdded())
+//                    getMoreTableView.setItems(FXCollections.observableArrayList(change.getList()));
+//                else
+//                    getMoreTableView.setItems(allCurseAddons);
+//            });
             var provider = AddonSuggestionProvider.create(curseAddon -> curseAddon.getAddonURL() + " " + curseAddon.getTitle(), App.curseAddons);
-            provider.setObservedSet(observableSet);
+            provider.setObservedList(observableList);
             var autoCompletionBinding = TextFields.bindAutoCompletion(searchField, provider);
             autoCompletionBinding.prefWidthProperty().bind(searchField.widthProperty());
             autoCompletionBinding.setOnAutoCompleted(new EventHandler<AutoCompletionBinding.AutoCompletionEvent<CurseAddon>>() {

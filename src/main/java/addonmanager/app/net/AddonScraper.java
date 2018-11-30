@@ -94,10 +94,21 @@ public class AddonScraper {
 
             String subString = data.substring(matcher.start());
 
-            String url = "https://www.curseforge.com/wow/addons" + Util.parse(subString, "<a href=\"/wow/addons", "\">").strip();
+            String url = Util.parse(subString, "<a href=\"/wow/addons/", "\">").strip();
             String title = Util.parse(subString, "<h2 class=\"list-item__title strong mg-b-05\">", "</h2>");
             String description = Util.parse(subString, "<p title=\"", "\">");
-            addons.add(new CurseAddon(url, title, description));
+
+            String tempDL = Util.parse(subString, "<span class=\"has--icon count--download\">", "</span>").replaceAll(",", "").trim();
+            long downloads = Long.valueOf(tempDL);
+
+            String updatedSub = Util.parse(subString, "<span class=\"has--icon date--updated\">", "</abbr></span>");
+            String updatedEpoch = Util.parse(updatedSub, "data-epoch=\"", "\">");
+
+            String createdSub = Util.parse(subString, "<span class=\"has--icon date--created\">", "</abbr></span>");
+            String createdEpoch = Util.parse(createdSub, "data-epoch=\"", "\">");
+
+
+            addons.add(new CurseAddon(url, title, description, downloads, updatedEpoch, createdEpoch));
         }
         return addons;
     }

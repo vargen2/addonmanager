@@ -1,21 +1,23 @@
 package addonmanager.gui;
 
+import addonmanager.app.App;
+import addonmanager.app.CurseAddon;
 import javafx.util.Callback;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 
 import java.util.*;
 
-public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBinding.ISuggestionRequest, Collection<T>> {
+public class AddonSuggestionProvider implements Callback<AutoCompletionBinding.ISuggestionRequest, Collection<CurseAddon>> {
 
-    private final List<T> possibleSuggestions = new ArrayList<>();
+    private final List<CurseAddon> possibleSuggestions = new ArrayList<>();
     private final Object possibleSuggestionsLock = new Object();
-    private Set<T> observedSet;
+    private List<CurseAddon> observedList;
 
-    private Callback<T, String> stringConverter;
+    private Callback<CurseAddon, String> stringConverter;
 
-    private final Comparator<T> stringComparator = new Comparator<T>() {
+    private final Comparator<CurseAddon> stringComparator = new Comparator<CurseAddon>() {
         @Override
-        public int compare(T o1, T o2) {
+        public int compare(CurseAddon o1, CurseAddon o2) {
             String o1str = stringConverter.call(o1);
             String o2str = stringConverter.call(o2);
             return o1str.compareTo(o2str);
@@ -23,14 +25,14 @@ public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBindin
     };
 
 
-    private AddonSuggestionProvider(Callback<T, String> stringConverter) {
+    private AddonSuggestionProvider(Callback<CurseAddon, String> stringConverter) {
         this.stringConverter = stringConverter;
 
         // In case no stringConverter was provided, use the default strategy
         if (this.stringConverter == null) {
-            this.stringConverter = new Callback<T, String>() {
+            this.stringConverter = new Callback<CurseAddon, String>() {
                 @Override
-                public String call(T obj) {
+                public String call(CurseAddon obj) {
                     return obj != null ? obj.toString() : ""; //$NON-NLS-1$
                 }
             };
@@ -42,7 +44,7 @@ public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBindin
      *
      * @param newPossible
      */
-    public void addPossibleSuggestions(@SuppressWarnings("unchecked") T... newPossible) {
+    public void addPossibleSuggestions(@SuppressWarnings("unchecked") CurseAddon... newPossible) {
         addPossibleSuggestions(Arrays.asList(newPossible));
     }
 
@@ -51,7 +53,7 @@ public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBindin
      *
      * @param newPossible
      */
-    public void addPossibleSuggestions(Collection<T> newPossible) {
+    public void addPossibleSuggestions(Collection<CurseAddon> newPossible) {
         synchronized (possibleSuggestionsLock) {
             possibleSuggestions.addAll(newPossible);
         }
@@ -66,25 +68,43 @@ public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBindin
         }
     }
 
-    public void setObservedSet(Set<T> observedSet) {
-        this.observedSet = observedSet;
+    public void setObservedList(List<CurseAddon> observedList) {
+        this.observedList = observedList;
     }
 
     @Override
-    public final Collection<T> call(final AutoCompletionBinding.ISuggestionRequest request) {
-        List<T> suggestions = new ArrayList<>();
+    public final Collection<CurseAddon> call(final AutoCompletionBinding.ISuggestionRequest request) {
+        List<CurseAddon> suggestions = new ArrayList<>();
         if (!request.getUserText().isEmpty()) {
             synchronized (possibleSuggestionsLock) {
-                for (T possibleSuggestion : possibleSuggestions) {
+                for (CurseAddon possibleSuggestion : possibleSuggestions) {
                     if (isMatch(possibleSuggestion, request)) {
                         suggestions.add(possibleSuggestion);
                     }
                 }
             }
+            if (observedList != null && suggestions.size() <= 50) {
+                observedList.clear();
+                observedList.addAll(suggestions);
+                observedList.sort(new Comparator<CurseAddon>() {
+                    @Override
+                    public int compare(CurseAddon o1, CurseAddon o2) {
+
+                        return Long.compare(o2.getDownloads(), o1.getDownloads());
+
+
+                    }
+                });
+            } else {
+                observedList.clear();
+                observedList.addAll(App.curseAddons);
+            }
             suggestions.sort(getComparator());
-            if (observedSet != null && suggestions.size() <= 40) {
-                observedSet.clear();
-                observedSet.addAll(suggestions);
+
+        } else {
+            if (observedList != null) {
+                observedList.clear();
+                observedList.addAll(App.curseAddons);
             }
         }
 
@@ -93,19 +113,19 @@ public class AddonSuggestionProvider<T> implements Callback<AutoCompletionBindin
     }
 
 
-    private Comparator<T> getComparator() {
+    private Comparator<CurseAddon> getComparator() {
         return stringComparator;
     }
 
-    private boolean isMatch(T suggestion, AutoCompletionBinding.ISuggestionRequest request) {
+    private boolean isMatch(CurseAddon suggestion, AutoCompletionBinding.ISuggestionRequest request) {
         String userTextLower = request.getUserText().toLowerCase();
         String suggestionStr = stringConverter.call(suggestion).toLowerCase();
         return suggestionStr.contains(userTextLower);
     }
 
 
-    public static <T> AddonSuggestionProvider<T> create(Callback<T, String> stringConverter, Collection<T> possibleSuggestions) {
-        AddonSuggestionProvider<T> suggestionProvider = new AddonSuggestionProvider<>(stringConverter);
+    public static AddonSuggestionProvider create(Callback<CurseAddon, String> stringConverter, Collection<CurseAddon> possibleSuggestions) {
+        AddonSuggestionProvider suggestionProvider = new AddonSuggestionProvider(stringConverter);
         suggestionProvider.addPossibleSuggestions(possibleSuggestions);
         return suggestionProvider;
     }

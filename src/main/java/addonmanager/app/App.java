@@ -158,8 +158,10 @@ public class App {
         System.out.println("hit4");
         File zipFile = NetOperations.downLoadFile(addon, addon.getLatestDownload(), 0.1, 0.5);
         System.out.println("hit5");
-        return FileOperations.installAddon(addon, curseAddon, addon.getLatestDownload(), zipFile, 0.5, 0.7, updateable);
-
+        boolean installed = FileOperations.installAddon(addon, curseAddon, addon.getLatestDownload(), zipFile, 0.5, 0.7, updateable);
+        if (installed)
+            Saver.save();
+        return installed;
     }
 
     public static void Ignore(Addon addon) {
@@ -186,6 +188,7 @@ public class App {
                 .collect(Collectors.toList());
         addonsToBeRemoved.forEach(x -> LOG.info("Sub folders to be removed " + x.getFolderName()));
         addonsToBeRemoved.forEach(game::removeAddon);
+        Saver.save();
     }
 
     public static void setSelectedGame(Game game) {

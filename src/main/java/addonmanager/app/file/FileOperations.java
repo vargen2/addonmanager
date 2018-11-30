@@ -59,7 +59,7 @@ public class FileOperations {
                 .collect(Collectors.toList());
         addons.forEach(App::downLoadVersions);
         addons.forEach(App::updateAddon);
-
+        addons.forEach(App::removeSubFoldersFromGame);
 
         return true;
     }

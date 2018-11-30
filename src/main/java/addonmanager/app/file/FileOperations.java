@@ -1,9 +1,6 @@
 package addonmanager.app.file;
 
-import addonmanager.app.Addon;
-import addonmanager.app.Download;
-import addonmanager.app.Game;
-import addonmanager.app.Updateable;
+import addonmanager.app.*;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -12,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class FileOperations {
 
@@ -47,6 +45,24 @@ public class FileOperations {
         return addonReplacer.replace(from, to);
     }
 
+    public static boolean installAddon(Addon addon, CurseAddon curseAddon, Download download, File zipFile, double from, double to, Updateable updateable) {
+        if (addon == null || addon.getGame() == null || curseAddon == null || download == null || zipFile == null || !zipFile.exists())
+            return false;
+        AddonInstaller addonInstaller = new AddonInstaller(addon, curseAddon, download, zipFile);
+        List<File> folders = addonInstaller.install(from, to, updateable);
+
+        if (folders.isEmpty())
+            return false;
+        refreshGameDirectory(addon.getGame());
+        var addons = addon.getGame().getAddons().stream()
+                .filter(a -> folders.stream().anyMatch(folder -> a.getFolderName().equalsIgnoreCase(folder.getName())))
+                .collect(Collectors.toList());
+        addons.forEach(App::downLoadVersions);
+        addons.forEach(App::updateAddon);
+
+
+        return true;
+    }
 
     public static boolean directoriesExists() {
         boolean returnValue = true;

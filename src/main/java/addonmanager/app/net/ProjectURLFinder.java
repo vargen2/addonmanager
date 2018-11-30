@@ -2,6 +2,7 @@ package addonmanager.app.net;
 
 import addonmanager.app.Addon;
 import addonmanager.app.App;
+import addonmanager.app.CurseAddon;
 import addonmanager.app.Util;
 
 import java.io.IOException;
@@ -60,5 +61,28 @@ class ProjectURLFinder {
         App.LOG.fine("Fallback to https://www.curseforge.com/wow/addons/ , foldername: " + addon.getFolderName());
         return "https://www.curseforge.com/wow/addons/";
 
+    }
+
+    static String find(CurseAddon curseAddon) {
+        for (int i = 0; i < 3; i++) {
+            try {
+                HttpClient httpClient = HttpClient.newHttpClient();
+                URI uri = URI.create("https://www.curseforge.com/wow/addons/" + curseAddon.getAddonURL());
+                HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() != 200) {
+                    App.LOG.fine("Find project URL fail " + curseAddon.getAddonURL());
+                    continue;
+                }
+                String input = response.body();
+                int index1 = input.indexOf("<p class=\"infobox__cta\"");
+                int index2 = input.substring(index1).indexOf("</p>");
+                String data = input.substring(index1, index1 + index2);
+                return Util.parse(data, "<a href=\"", "\">");
+            } catch (IOException | InterruptedException | IllegalArgumentException e) {
+                App.LOG.severe("Find project " + curseAddon.getAddonURL() + " " + e.getMessage());
+            }
+        }
+        return "";
     }
 }

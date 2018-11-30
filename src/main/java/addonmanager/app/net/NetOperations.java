@@ -2,6 +2,7 @@ package addonmanager.app.net;
 
 import addonmanager.app.Addon;
 import addonmanager.app.App;
+import addonmanager.app.CurseAddon;
 import addonmanager.app.Download;
 import addonmanager.app.net.version.VersionDownloader;
 
@@ -16,6 +17,10 @@ public class NetOperations {
 
     public static File downLoadFile(Addon addon, Download download, double from, double to) {
         return new AddonDownloader(addon, download).downLoad(from, to);
+    }
+
+    public static String findProject(CurseAddon curseAddon) {
+        return ProjectURLFinder.find(curseAddon);
     }
 
     public static void findProject(Addon addon) {
@@ -43,4 +48,6 @@ public class NetOperations {
         addon.setDownloads(downloads);
         return true;
     }
+
+
 }

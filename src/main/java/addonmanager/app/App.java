@@ -124,6 +124,9 @@ public class App {
         return downloaded;
     }
 
+    public static boolean updateAddon(Addon addon) {
+        return updateAddon(addon, addon.getLatestDownload());
+    }
 
     public static boolean updateAddon(Addon addon, Download download) {
         if (addon == null || download == null)
@@ -137,6 +140,26 @@ public class App {
         FileOperations.refreshToc(addon);
         Saver.save();
         return true;
+    }
+
+    public static boolean installAddon(Game game, CurseAddon curseAddon, Updateable updateable) {
+        updateable.updateProgress(0, 1);
+        System.out.println("hit1");
+        String projectUrl = NetOperations.findProject(curseAddon);
+        if (projectUrl.isEmpty())
+            return false;
+        System.out.println("hit2");
+        updateable.updateProgress(0.1, 1);
+        Addon addon = App.getFactory().createAddon(game, "newaddon", "");
+        addon.setProjectUrl(projectUrl);
+        addon.setUpdateable(updateable);
+        System.out.println("hit3");
+        NetOperations.downLoadVersions(addon);
+        System.out.println("hit4");
+        File zipFile = NetOperations.downLoadFile(addon, addon.getLatestDownload(), 0.1, 0.5);
+        System.out.println("hit5");
+        return FileOperations.installAddon(addon, curseAddon, addon.getLatestDownload(), zipFile, 0.5, 0.7, updateable);
+
     }
 
     public static void Ignore(Addon addon) {

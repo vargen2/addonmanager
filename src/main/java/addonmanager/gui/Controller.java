@@ -122,10 +122,14 @@ public class Controller {
                 @Override
                 public TableCell<CurseAddon, String> call(TableColumn<CurseAddon, String> param) {
                     Button button = new Button("Install");
+                    ProgressBar bar = new ProgressBar();
+                    bar.setPrefWidth(140);
                     button.setPrefWidth(140);
+
                     TableCell tableCell = new TableCell<CurseAddon, String>() {
 
                         private final Button installButton = button;
+                        private final ProgressBar progressBar = bar;
 
                         @Override
                         protected void updateItem(String item, boolean empty) {
@@ -146,14 +150,46 @@ public class Controller {
                                     )) {
                                         installButton.setText("Installed");
                                         installButton.setDisable(true);
+                                        setGraphic(installButton);
                                     } else {
                                         installButton.setText("Install");
                                         installButton.setDisable(false);
+                                        installButton.setOnAction(event -> {
+                                            CompletableFuture.runAsync(new Task<Void>() {
+                                                @Override
+                                                protected Void call() {
+                                                    System.out.println("start1");
+                                                    Updateable updateable = Updateable.createUpdateable(this, this::updateMessage, this::updateProgress);
+                                                    Platform.runLater(() -> {
+                                                        progressBar.progressProperty().bind(updateable.progressProperty());
+
+                                                    });
+
+
+                                                    System.out.println("start2");
+                                                    if (!App.installAddon(game, addon, updateable)) {
+
+                                                        cancel();
+
+                                                    }
+                                                    Platform.runLater(() -> {
+                                                        progressBar.progressProperty().unbind();
+                                                    });
+                                                    return null;
+                                                }
+                                            });
+                                            installButton.setDisable(true);
+                                            setGraphic(progressBar);
+                                        });
+                                        setGraphic(installButton);
                                     }
-                                    setGraphic(installButton);
+
                                 } else {
-                                    setGraphic(null);
+                                    installButton.setText("No Game");
+                                    installButton.setDisable(true);
+                                    setGraphic(installButton);
                                 }
+
                             }
                         }
                     };
@@ -285,6 +321,7 @@ public class Controller {
                 }
                 refreshButton.setDisable(newValue == null);
                 removeButton.setDisable(newValue == null);
+                getMoreTableView.refresh();
             });
         } else {
             App.LOG.info("model not FXModel");

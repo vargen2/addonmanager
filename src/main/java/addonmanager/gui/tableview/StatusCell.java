@@ -109,10 +109,11 @@ public class StatusCell extends TableCell<Addon, Status> {
                     label.setOpacity(0.4);
                 }
 
-            } else if (item != null) {
-                App.LOG.severe("statuscell item !=null");
-
             }
+//            else if (item != null) {
+//                //App.LOG.severe("statuscell item !=null "+item.toString() + "tempstatus " + tempStatus+ " addon " + addon);
+//
+//            }
 
             setGraphic(pane);
         }

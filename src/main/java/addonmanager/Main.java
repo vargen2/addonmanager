@@ -16,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //todo splitta upp i flera trådar load gui och app + filer
-        Parent root = FXMLLoader.load(getClass().getResource("../gui.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
         primaryStage.getIcons().add(new Image("icon.png"));
         primaryStage.setTitle("Addon Manager");
         //new JMetro(JMetro.Style.LIGHT).applyTheme(root);

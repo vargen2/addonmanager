@@ -112,7 +112,7 @@ public class AddonContextMenu extends ContextMenu {
                     dlg.getDialogPane().setGraphic(null);
                     dlg.getDialogPane().setHeaderText(null);
                     dlg.getDialogPane().setContentText("Do you want to change to " + dl.getRelease() + " " + dl.getTitle() + "?");
-                    dlg.getDialogPane().getStylesheets().add("JMetroLightTheme.css");
+                    dlg.getDialogPane().getStylesheets().add("addonmanager/JMetroLightTheme.css");
                     //dlg.initStyle(StageStyle.DECORATED);
                     dlg.showAndWait().ifPresent(result -> {
                         if (result == ButtonType.OK) {

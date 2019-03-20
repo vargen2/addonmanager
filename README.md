@@ -2,14 +2,7 @@
 
 World of Warcraft addon manager.
 
-## Images
-
-![Alt text](/readme/img1.png?raw=true "Optional Title")
-![Alt text](/readme/img2.png?raw=true "Optional Title")
-![Alt text](/readme/img3.png?raw=true "Optional Title")
-![Alt text](/readme/img4.png?raw=true "Optional Title")
-
-### Run
+## Run
 
 For now use
 ```
@@ -17,9 +10,12 @@ mvn package
 mvn exec:java
 ```
 
-## Deployment
+## Images
 
-Add additional notes about how to deploy this on a live system
+![Alt text](/readme/img1.png?raw=true "Optional Title")
+![Alt text](/readme/img2.png?raw=true "Optional Title")
+![Alt text](/readme/img3.png?raw=true "Optional Title")
+![Alt text](/readme/img4.png?raw=true "Optional Title")
 
 ## Built With
 
@@ -30,6 +26,4 @@ Add additional notes about how to deploy this on a live system
 
 ## Authors
 
-* **Hjalmar** - *Initial work* - [Vargen2](https://github.com/Vargen2)
-
-## License
+**Hjalmar** - *Initial work* - [Vargen2](https://github.com/Vargen2)

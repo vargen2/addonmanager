@@ -1,6 +1,6 @@
 # Addonmanager
 
-World of Warcraft addon manager. Desktop application for W10. Built with Java11, JavaFX.
+World of Warcraft addon manager. Desktop application for W10. Built with Java11, JavaFX. Application reads html and parses it.
 
 ### Run
 

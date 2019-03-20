@@ -9,6 +9,11 @@ For now use
 mvn package
 mvn exec:java
 ```
+or
+```
+mvn package
+java -jar target/addonmanager-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
 
 ### Images
 

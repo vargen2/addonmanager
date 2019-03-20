@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 class GameFinder {
 
     private static final FileFilter DIRECTORY_AND_NOT_HIDDEN_FILTER = pathname -> !pathname.isFile() && !pathname.isHidden();
-    private static final FileFilter EXE_FILTER = pathname -> pathname.isFile() && pathname.getName().contains(".exe");
+    private static final FileFilter EXE_FILTER = pathname -> pathname.isFile() && pathname.getName().toLowerCase().contains(".exe") && pathname.getName().contains("Wow");
     private static final String[] COMMON_DIRECTORY_NAMES = {"wow", "world", "warcraft"};
     private final boolean mustHaveExe;
     private int max;

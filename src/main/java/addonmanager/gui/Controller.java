@@ -328,7 +328,7 @@ public class Controller {
         gameChoiceBox.getItems().add(manual);
         ChoiceBoxItem scan = new ChoiceBoxItem(o -> {
             Consumer<Game> consumer = game -> CompletableFuture.runAsync(new FoundGameTask(game, gameChoiceBox));
-            FindGamesTask ds = new FindGamesTask(consumer, false);
+            FindGamesTask ds = new FindGamesTask(consumer, true);
             Platform.runLater(() -> taskProgressView.getTasks().add(ds));
             CompletableFuture.runAsync(ds);
         }, "Scan for Directories...");

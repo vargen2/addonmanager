@@ -85,6 +85,9 @@
                 <configuration>
                     <mainClass>addonmanager.Main</mainClass>
                     <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                    <arguments>
+                        <argument>-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2</argument>
+                    </arguments>
                 </configuration>
             </plugin>
             <!--<plugin>-->

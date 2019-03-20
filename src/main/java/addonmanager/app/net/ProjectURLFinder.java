@@ -5,11 +5,14 @@ import addonmanager.app.App;
 import addonmanager.app.CurseAddon;
 import addonmanager.app.Util;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 class ProjectURLFinder {
@@ -45,7 +48,9 @@ class ProjectURLFinder {
 
         for (String anUrlName : urlNames) {
             try {
-                HttpClient httpClient = HttpClient.newHttpClient();
+                SSLParameters sslParameters = SSLContext.getDefault().getDefaultSSLParameters();
+                sslParameters.setProtocols(new String[]{"TLSv1.2"});
+                HttpClient httpClient = HttpClient.newBuilder().sslParameters(sslParameters).build();
                 URI uri = URI.create("https://www.curseforge.com/wow/addons/" + anUrlName);
                 HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -58,7 +63,7 @@ class ProjectURLFinder {
                 int index2 = input.substring(index1).indexOf("</p>");
                 String data = input.substring(index1, index1 + index2);
                 return Util.parse(data, "<a href=\"", "\">");
-            } catch (IOException | InterruptedException | IllegalArgumentException e) {
+            } catch (IOException | InterruptedException | IllegalArgumentException | NoSuchAlgorithmException e) {
                 App.LOG.severe("Find project " + addon.getFolderName() + " " + e.getMessage());
             }
         }

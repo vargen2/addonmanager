@@ -16,7 +16,7 @@ public class NumberSliderEditor extends AbstractPropertyEditor<Number, Slider> {
     }
 
     public NumberSliderEditor(PropertySheet.Item item) {
-        this(item, new Slider(0,1000,250));
+        this(item, new Slider(0, 2000, 250));
     }
 
     @Override

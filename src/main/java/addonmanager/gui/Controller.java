@@ -13,6 +13,7 @@ import addonmanager.gui.tableview.StatusCell;
 import addonmanager.gui.task.FindGamesTask;
 import addonmanager.gui.task.FoundGameTask;
 import addonmanager.gui.task.RefreshGameTask;
+import addonmanager.gui.task.UpdateAddonTask;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -45,7 +46,7 @@ public class Controller {
     private static FXSettings fxSettings;
 
     @FXML
-    private Button refreshButton, removeButton, settingsButton;
+    private Button notSureButton, refreshButton, removeButton, settingsButton;
     @FXML
     private ChoiceBox gameChoiceBox;
     @FXML
@@ -375,6 +376,7 @@ public class Controller {
                 removeButton.setDisable(newValue == null);
                 getMoreTableView.getItems().stream().forEach(curseAddon -> curseAddon.setStatus(CurseAddon.Status.UNKNOWN));
                 getMoreTableView.refresh();
+                notSureButton.setDisable(newValue == null);
             });
         } else {
             App.LOG.info("model not FXModel");
@@ -413,6 +415,32 @@ public class Controller {
             }
 
 
+        });
+
+        notSureButton.setOnAction(event -> {
+            Game game = App.model.getSelectedGame();
+            if (game == null)
+                return;
+            CompletableFuture.runAsync(() -> game.getAddons().
+                    stream().
+                    filter(a -> (a.getStatus() == Addon.Status.NOT_SURE && a.getLatestDownload() != null)).
+                    forEach(addon ->
+                    {
+                        CompletableFuture.runAsync(new Task<Void>() {
+                            @Override
+                            protected Void call() {
+
+                                UpdateAddonTask updateAddonTask = new UpdateAddonTask(addon, addon.getLatestDownload());
+                                updateAddonTask.setOnSucceeded(workerStateEvent -> CompletableFuture.runAsync(() -> App.removeSubFoldersFromGame(addon)));
+                                Thread t = new Thread(updateAddonTask);
+                                t.setDaemon(true);
+                                t.start();
+                                return null;
+                            }
+                        });
+                        Util.sleep(fxSettings.getRefreshDelay());
+
+                    }));
         });
 
         //Icon.setIcon(refreshButton, FontAwesome.Glyph.REFRESH, Color.MEDIUMSEAGREEN);

@@ -64,6 +64,18 @@
             </TabPane>
             <HBox alignment="TOP_RIGHT" maxHeight="31" maxWidth="550" minHeight="31" minWidth="550" prefHeight="31"
                   prefWidth="550" spacing="4" translateY="2" StackPane.alignment="TOP_RIGHT">
+
+                <Button fx:id="notSureButton" contentDisplay="GRAPHIC_ONLY" disable="true" ellipsisString="."
+                        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                        mnemonicParsing="false" prefHeight="32.0" prefWidth="50.0" text="Fix" wrapText="true">
+                    <graphic>
+                        <Glyph contentDisplay="CENTER" fontFamily="FontAwesome" fontSize="24.0" graphicTextGap="0.0"
+                               icon="WRENCH" textAlignment="CENTER" textFill="#1fc66a"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Try fix not sure"/>
+                    </tooltip>
+                </Button>
                 <Button fx:id="refreshButton" contentDisplay="GRAPHIC_ONLY" disable="true" ellipsisString="."
                         maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
                         mnemonicParsing="false" prefHeight="32.0" prefWidth="50.0" text="Refresh" wrapText="true">

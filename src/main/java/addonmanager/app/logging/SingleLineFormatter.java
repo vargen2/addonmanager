@@ -9,7 +9,6 @@ public class SingleLineFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        //String message = formatMessage(record);
 
         return record.getLevel() + " " + record.getMessage() + "\n";
     }

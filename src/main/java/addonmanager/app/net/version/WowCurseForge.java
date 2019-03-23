@@ -2,6 +2,7 @@ package addonmanager.app.net.version;
 
 import addonmanager.app.*;
 
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -42,24 +43,7 @@ class WowCurseForge extends VersionDownloader {
         }
 
         HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
-        HttpResponse<String> response = null;
-        try {
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (response.statusCode() != 200) {
-            App.LOG.fine("DL fail " + addon.getProjectUrl());
-
-            updateable.updateMessage("DL fail " + addon.getProjectUrl());
-            return downloads;
-
-        } else {
-            input = response.body();
-
-        }
+        input = response(httpClient, request);
 
 
         if (input.length() == 0) {
@@ -98,5 +82,40 @@ class WowCurseForge extends VersionDownloader {
         return downloads;
     }
 
+    private String response(HttpClient httpClient, HttpRequest request) {
+        Updateable updateable = addon.getUpdateable();
+        String retrying = "retrying";
+        HttpResponse<String> response = null;
 
+        for (int i = 0; i < 3; i++) {
+
+
+            try {
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() != 200) {
+                    App.LOG.fine("DL fail " + request.uri().toString() + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                    retrying += ".";
+                    updateable.updateMessage(retrying);
+                } else {
+                    String input = response.body();
+                    App.LOG.fine("FOUND " + addon.getProjectUrl() + " " + input.length());
+                    return input;
+                }
+            } catch (IOException | InterruptedException e) {
+
+                if (e.getCause() instanceof SSLException) {
+                    App.LOG.severe(getClass().getName() + " SLEEP " + e.getMessage());
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    App.LOG.severe(getClass().getName() + " " + e.getMessage());
+                }
+
+            }
+        }
+        return "";
+    }
 }

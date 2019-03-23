@@ -33,6 +33,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -144,7 +145,8 @@ public class Controller {
                                 var game = App.model.getSelectedGame();
                                 if (tempStatus != null && addon != null && game != null) {
                                     if (tempStatus == CurseAddon.Status.UNKNOWN) {
-                                        if (game.getAddons().stream().anyMatch(a ->
+                                        List<Addon> addonList = game.getAddons();
+                                        if (addonList.stream().anyMatch(a ->
                                                 a.getFolderName().equalsIgnoreCase(addon.getTitle()) ||
                                                         a.getTitle().equalsIgnoreCase(addon.getTitle()) ||
                                                         a.getFolderName().equalsIgnoreCase(addon.getAddonURL()) ||

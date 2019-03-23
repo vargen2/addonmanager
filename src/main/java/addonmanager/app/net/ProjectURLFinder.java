@@ -6,6 +6,7 @@ import addonmanager.app.CurseAddon;
 import addonmanager.app.Util;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLParameters;
 import java.io.IOException;
 import java.net.URI;
@@ -47,24 +48,35 @@ class ProjectURLFinder {
 
 
         for (String anUrlName : urlNames) {
-            try {
-                SSLParameters sslParameters = SSLContext.getDefault().getDefaultSSLParameters();
-                sslParameters.setProtocols(new String[]{"TLSv1.2"});
-                HttpClient httpClient = HttpClient.newBuilder().sslParameters(sslParameters).build();
-                URI uri = URI.create("https://www.curseforge.com/wow/addons/" + anUrlName);
-                HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() != 200) {
-                    App.LOG.fine("Find project URL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
-                    continue;
+            for (int i = 0; i < 3; i++) {
+                try {
+                    SSLParameters sslParameters = SSLContext.getDefault().getDefaultSSLParameters();
+                    sslParameters.setProtocols(new String[]{"TLSv1.2"});
+                    HttpClient httpClient = HttpClient.newBuilder().sslParameters(sslParameters).build();
+                    URI uri = URI.create("https://www.curseforge.com/wow/addons/" + anUrlName);
+                    HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
+                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                    if (response.statusCode() != 200) {
+                        App.LOG.fine("Find project URL fail " + anUrlName + " foldername: " + addon.getFolderName() + " title:" + addon.getTitle());
+                        continue;
+                    }
+                    String input = response.body();
+                    int index1 = input.indexOf("<p class=\"infobox__cta\"");
+                    int index2 = input.substring(index1).indexOf("</p>");
+                    String data = input.substring(index1, index1 + index2);
+                    return Util.parse(data, "<a href=\"", "\">");
+                } catch (IOException | InterruptedException | IllegalArgumentException | NoSuchAlgorithmException e) {
+                    if (e.getCause() instanceof SSLException) {
+                        App.LOG.severe(getClass().getName() + " SLEEP " + " " + e.getMessage());
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else {
+                        App.LOG.severe(getClass().getName() + " Find project " + addon.getFolderName() + " " + e.getMessage());
+                    }
                 }
-                String input = response.body();
-                int index1 = input.indexOf("<p class=\"infobox__cta\"");
-                int index2 = input.substring(index1).indexOf("</p>");
-                String data = input.substring(index1, index1 + index2);
-                return Util.parse(data, "<a href=\"", "\">");
-            } catch (IOException | InterruptedException | IllegalArgumentException | NoSuchAlgorithmException e) {
-                App.LOG.severe("Find project " + addon.getFolderName() + " " + e.getMessage());
             }
         }
 
@@ -90,7 +102,16 @@ class ProjectURLFinder {
                 String data = input.substring(index1, index1 + index2);
                 return Util.parse(data, "<a href=\"", "\">");
             } catch (IOException | InterruptedException | IllegalArgumentException e) {
-                App.LOG.severe("Find project " + curseAddon.getAddonURL() + " " + e.getMessage());
+                if (e.getCause() instanceof SSLException) {
+                    App.LOG.severe(ProjectURLFinder.class.getName() + " STATIC SLEEP " + e.getMessage());
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    App.LOG.severe(ProjectURLFinder.class.getName() + " Find project " + curseAddon.getAddonURL() + " " + e.getMessage());
+                }
             }
         }
         return "";

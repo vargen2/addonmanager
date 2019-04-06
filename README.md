@@ -1,6 +1,7 @@
 # Addonmanager
 
 World of Warcraft addon manager. Desktop application for W10. Built with Java11, JavaFX. Application reads html and parses it.
+Development stopped for now. Mostly did the program for fun and get some more experience with java, file-io and http. I'm porting it to c# uwp application (private repo)
 
 ### Run
 

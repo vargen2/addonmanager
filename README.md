@@ -5,7 +5,7 @@ Mostly did the program for fun and get some more experience with java, file-io a
 
 ## Status
 
-    **Development stopped**
+    Development stopped
 
 I'm porting it to c# UWP application (private repo)
 UWP app can be installed from https://www.microsoft.com/store/productId/9NXD1GMVB3ZH

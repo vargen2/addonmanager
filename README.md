@@ -6,9 +6,13 @@ Mostly did the program for fun and get some more experience with java, file-io a
 > ### Status
 > **Development stopped**
 
-I'm porting it to c# UWP application (private repo).
+I've ported it to c# UWP application
 
-UWP app can be installed from https://www.microsoft.com/store/productId/9NXD1GMVB3ZH
+https://github.com/vargen2/Addon
+
+UWP app can be installed from
+
+https://www.microsoft.com/store/productId/9NXD1GMVB3ZH
 
 ## Run
 

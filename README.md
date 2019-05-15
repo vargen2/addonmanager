@@ -7,7 +7,8 @@ Mostly did the program for fun and get some more experience with java, file-io a
 
     Development stopped
 
-I'm porting it to c# UWP application (private repo)
+I'm porting it to c# UWP application (private repo).
+
 UWP app can be installed from https://www.microsoft.com/store/productId/9NXD1GMVB3ZH
 
 ## Run

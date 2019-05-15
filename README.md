@@ -3,9 +3,8 @@
 World of Warcraft addon manager. Desktop application for W10. Built with Java11, JavaFX. Application reads html and parses it.
 Mostly did the program for fun and get some more experience with java, file-io and http. 
 
-## Status
-
-    Development stopped
+> ### Status
+> **Development stopped**
 
 I'm porting it to c# UWP application (private repo).
 
